@@ -3,57 +3,38 @@
 
     <div class="bg-white shadow-sm rounded-lg overflow-hidden">
         <div class="p-6">
-            <h2 class="text-2xl font-bold text-gray-800 mb-6">Detail Notulen Agenda: {{ $agenda->nama_agenda }}</h2>
+            <h2 class="text-2xl font-bold text-gray-800 mb-6">Detail Notulen Agenda</h2>
 
-            <div class="bg-gray-50 p-6 rounded-lg border border-gray-200 mb-6">
-                <div class="mb-6">
-                    <h3 class="text-lg font-medium text-gray-900 mb-2">Informasi Agenda</h3>
-                    <dl class="grid grid-cols-1 md:grid-cols-2 gap-x-4 gap-y-2">
-                        <div>
-                            <dt class="text-sm font-medium text-gray-500">Nama Agenda</dt>
-                            <dd class="text-sm text-gray-900">{{ $agenda->nama_agenda }}</dd>
-                        </div>
-                        <div>
-                            <dt class="text-sm font-medium text-gray-500">Tempat</dt>
-                            <dd class="text-sm text-gray-900">{{ $agenda->tempat }}</dd>
-                        </div>
-                        <div>
-                            <dt class="text-sm font-medium text-gray-500">Tanggal</dt>
-                            <dd class="text-sm text-gray-900">{{ $agenda->tanggal->format('d-m-Y') }}</dd>
-                        </div>
-                        <div>
-                            <dt class="text-sm font-medium text-gray-500">Waktu</dt>
-                            <dd class="text-sm text-gray-900">{{ $agenda->jam_mulai }} - {{ $agenda->jam_selesai }}</dd>
-                        </div>
-                    </dl>
-                </div>
-
-                <div class="mb-6">
-                    <h3 class="text-lg font-medium text-gray-900 mb-2">Pembuat Notulen</h3>
-                    <p class="text-gray-900">{{ $notulen->pembuat }}</p>
-                </div>
-
-                <div>
-                    <h3 class="text-lg font-medium text-gray-900 mb-2">Isi Notulen</h3>
-                    <div class="prose max-w-none bg-white p-4 rounded border border-gray-200">
-                        <p class="whitespace-pre-line">{{ $notulen->isi_notulen }}</p>
-                    </div>
-                </div>
+            {{-- Informasi Agenda --}}
+            <div class="mb-6">
+                <h3 class="text-lg font-medium text-gray-900 mb-2">Informasi Agenda</h3>
+                <p class="text-gray-700">{{ $agenda->nama_agenda }}</p>
+                <p class="text-sm text-gray-500">{{ $agenda->tanggal->format('d F Y') }}, {{ \Carbon\Carbon::parse($agenda->jam_mulai)->format('H:i') }} - {{ \Carbon\Carbon::parse($agenda->jam_selesai)->format('H:i') }}</p>
             </div>
 
-            <div class="flex justify-between">
-                <a href="{{ route('agenda.show', $agenda->id) }}" class="text-indigo-600 hover:text-indigo-900">
+            {{-- Isi Notulen --}}
+            <div class="mb-6">
+                <h3 class="text-lg font-medium text-gray-900 mb-2">Isi Notulen</h3>
+                <div class="prose max-w-none p-4 bg-gray-50 rounded-md border">
+                    {!! nl2br(e($notulen->isi_notulen)) !!}
+                </div>
+                <p class="text-sm text-gray-500 mt-2">Dibuat oleh: {{ $notulen->pembuat }}</p>
+            </div>
+
+            <div class="flex justify-between items-center mt-8 pt-4 border-t">
+                {{-- PERBAIKAN: Menggunakan array asosiatif dan agenda_id --}}
+                <a href="{{ route('agenda.show', ['agenda' => $agenda->agenda_id]) }}" class="text-indigo-600 hover:text-indigo-900 font-medium">
                     &larr; Kembali ke Detail Agenda
                 </a>
 
                 <div class="flex space-x-3">
-                    <a href="{{ route('agenda.notulen.edit', ['agendaId' => $agenda->id, 'id' => $notulen->id]) }}" class="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                    <a href="{{ route('agenda.notulen.edit', ['agendaId' => $agenda->agenda_id, 'id' => $notulen->id]) }}" class="inline-flex items-center px-4 py-2 bg-yellow-500 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-yellow-600 active:bg-yellow-700 focus:outline-none focus:border-yellow-700 focus:ring ring-yellow-300 disabled:opacity-25 transition ease-in-out duration-150">
                         Edit
                     </a>
-                    <form action="{{ route('agenda.notulen.destroy', ['agendaId' => $agenda->id, 'id' => $notulen->id]) }}" method="POST" class="inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus notulen ini?')">
+                    <form action="{{ route('agenda.notulen.destroy', ['agendaId' => $agenda->agenda_id, 'id' => $notulen->id]) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus notulen ini?');">
                         @csrf
                         @method('DELETE')
-                        <button type="submit" class="inline-flex justify-center rounded-md border border-transparent bg-red-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2">
+                        <button type="submit" class="inline-flex items-center px-4 py-2 bg-red-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-red-700 active:bg-red-900 focus:outline-none focus:border-red-900 focus:ring ring-red-300 disabled:opacity-25 transition ease-in-out duration-150">
                             Hapus
                         </button>
                     </form>
