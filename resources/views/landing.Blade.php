@@ -1,6 +1,8 @@
 <x-layout>
     <x-slot:title>Agenda Pemerintah Kabupaten Mojokerto</x-slot:title>
 
+
+    
     <main class="container mx-auto mt-4 px-4">
         {{-- Hero --}}
         <section class="relative bg-cover bg-center py-40 rounded-lg overflow-hidden mb-12" style="background-image: url('/img/mokadbg.jpg');">
