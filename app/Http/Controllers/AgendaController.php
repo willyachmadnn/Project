@@ -13,8 +13,20 @@ class AgendaController extends Controller
      */
     public function index()
     {
-        $agendas = Agenda::latest()->get();
-        return view('agenda.index', compact('agendas'));
+        // PERBAIKAN: Menggunakan paginate() bukan get()
+        $agendas = Agenda::with('admin')->latest('tanggal')->paginate(10); // Anda bisa sesuaikan jumlah per halaman
+
+        // PENAMBAHAN: Menghitung jumlah untuk kartu status agar sesuai dengan view baru
+        $pendingAgendasCount = Agenda::menunggu()->count();
+        $ongoingAgendasCount = Agenda::berlangsung()->count();
+        $finishedAgendasCount = Agenda::berakhir()->count();
+
+        return view('agenda.index', compact(
+            'agendas',
+            'pendingAgendasCount',
+            'ongoingAgendasCount',
+            'finishedAgendasCount'
+        ));
     }
 
     /**
@@ -34,8 +46,9 @@ class AgendaController extends Controller
             'nama_agenda' => 'required|string|max:255',
             'tempat' => 'required|string|max:255',
             'tanggal' => 'required|date',
-            'jam_mulai' => 'required',
-            'jam_selesai' => 'required|after:jam_mulai',
+            'jam_mulai' => 'required|date_format:H:i',
+            'jam_selesai' => 'required|date_format:H:i', // Pertimbangkan validasi after:jam_mulai jika perlu
+            'dihadiri' => 'nullable|string|max:255',
         ]);
 
         if ($validator->fails()) {
@@ -44,7 +57,11 @@ class AgendaController extends Controller
                 ->withInput();
         }
 
-        Agenda::create($request->all());
+        // Menambahkan admin_id yang sedang login secara otomatis
+        $data = $request->all();
+        $data['admin_id'] = auth('admin')->id();
+
+        Agenda::create($data);
 
         return redirect()->route('agenda.index')
             ->with('success', 'Agenda berhasil ditambahkan!');
@@ -55,9 +72,7 @@ class AgendaController extends Controller
      */
     public function show(Agenda $agenda)
     {
-        // Memuat relasi notulen dan tamu
-        $agenda->load(['notulen', 'tamu']);
-        
+        $agenda->load(['admin', 'notulen', 'tamu']);
         return view('agenda.show', compact('agenda'));
     }
 
@@ -78,8 +93,9 @@ class AgendaController extends Controller
             'nama_agenda' => 'required|string|max:255',
             'tempat' => 'required|string|max:255',
             'tanggal' => 'required|date',
-            'jam_mulai' => 'required',
-            'jam_selesai' => 'required|after:jam_mulai',
+            'jam_mulai' => 'required|date_format:H:i',
+            'jam_selesai' => 'required|date_format:H:i',
+            'dihadiri' => 'nullable|string|max:255',
         ]);
 
         if ($validator->fails()) {
@@ -99,19 +115,9 @@ class AgendaController extends Controller
      */
     public function destroy(Agenda $agenda)
     {
-        // Hapus tamu dan notulen terkait melalui relasi cascade
         $agenda->delete();
 
         return redirect()->route('agenda.index')
             ->with('success', 'Agenda berhasil dihapus!');
-    }
-
-    /**
-     * Display a listing of the resource for public view.
-     */
-    public function publicIndex()
-    {
-        $agendas = Agenda::latest()->get();
-        return view('home', compact('agendas'));
     }
 }

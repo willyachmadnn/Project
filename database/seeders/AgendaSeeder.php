@@ -2,35 +2,43 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use App\Models\Agenda;
-use App\Models\User;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class AgendaSeeder extends Seeder
 {
     /**
      * Run the database seeds.
-     *
-     * @return void
      */
     public function run(): void
     {
-        // Langkah 1: Pastikan ada setidaknya satu user di database sebagai admin.
-        // Jika belum ada, seeder ini akan membuat satu user dummy.
-        if (User::count() === 0) {
-            User::factory()->create([
-                'name' => 'Admin Pemkab',
-                'email' => 'admin@mojokertokab.go.id',
-            ]);
+        // Ambil semua admin_id yang sudah ada di tabel 'admins'
+        $adminIds = DB::table('admins')->pluck('admin_id');
+
+        // Pastikan ada data di tabel admins sebelum seeding agenda
+        if ($adminIds->isEmpty()) {
+            $this->command->error("Tabel 'admins' kosong. Jalankan AdminSeeder terlebih dahulu!");
+            return;
         }
 
-        // Langkah 2: Panggil AgendaFactory untuk membuat 100 data dummy.
-        // Pesan ini akan muncul di terminal saat seeder berjalan.
-        $this->command->info('Membuat 100 data agenda dummy...');
+        // Array contoh untuk data agenda
+        $namaAgendas = ['Rapat Koordinasi', 'Musyawarah Warga', 'Sosialisasi Program', 'Pelatihan Teknis', 'Evaluasi Kinerja'];
+        $tempats = ['Aula Balai Kota', 'Ruang Rapat', 'Gedung Serbaguna', 'Lapangan Desa', 'Puskesmas'];
 
-        Agenda::factory()->count(100)->create();
-
-        $this->command->info('Seeding data agenda berhasil!');
+        // Looping untuk memasukkan 100 data agenda dummy
+        for ($i = 1; $i <= 10000; $i++) {
+            DB::table('agendas')->insert([
+                'nama_agenda' => $namaAgendas[array_rand($namaAgendas)] . ' ' . $i,
+                'tempat' => $tempats[array_rand($tempats)],
+                'tanggal' => now()->addDays(rand(1, 30))->toDateString(),
+                'jam_mulai' => now()->addHours(rand(8, 12))->toTimeString(),
+                'jam_selesai' => now()->addHours(rand(13, 17))->toTimeString(),
+                'dihadiri' => Str::random(10), // Contoh string random untuk dihadiri
+                'admin_id' => $adminIds->random(), // Pilih admin_id secara acak
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
+        }
     }
 }

@@ -13,10 +13,11 @@ class AuthController extends Controller
      */
     public function showLoginForm()
     {
-        if (Auth::check()) {
+        // Menggunakan guard 'admin' untuk memeriksa apakah sudah login
+        if (Auth::guard('admin')->check()) {
             return redirect()->route('dashboard');
         }
-        
+
         return view('auth.login');
     }
 
@@ -25,8 +26,9 @@ class AuthController extends Controller
      */
     public function login(Request $request)
     {
+        // PERUBAHAN: Validasi untuk 'admin_id' bukan 'email'
         $validator = Validator::make($request->all(), [
-            'email' => 'required|email',
+            'admin_id' => 'required|numeric',
             'password' => 'required',
         ]);
 
@@ -36,15 +38,16 @@ class AuthController extends Controller
                 ->withInput($request->except('password'));
         }
 
-        $credentials = $request->only('email', 'password');
+        $credentials = $request->only('admin_id', 'password');
 
-        if (Auth::attempt($credentials)) {
+        // PERUBAHAN: Menggunakan guard 'admin' untuk proses otentikasi
+        if (Auth::guard('admin')->attempt($credentials)) {
             $request->session()->regenerate();
             return redirect()->intended(route('dashboard'));
         }
 
         return back()->withErrors([
-            'email' => 'Kredensial yang diberikan tidak cocok dengan data kami.',
+            'admin_id' => 'Kredensial yang diberikan tidak cocok dengan data kami.',
         ])->withInput($request->except('password'));
     }
 
@@ -61,7 +64,8 @@ class AuthController extends Controller
      */
     public function logout(Request $request)
     {
-        Auth::logout();
+        // PERUBAHAN: Logout dari guard 'admin'
+        Auth::guard('admin')->logout();
 
         $request->session()->invalidate();
         $request->session()->regenerateToken();
