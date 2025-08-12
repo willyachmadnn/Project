@@ -5,13 +5,32 @@
     
     <main class="container mx-auto mt-4 px-4">
         {{-- Hero --}}
-        <section class="relative bg-cover bg-center py-40 rounded-lg overflow-hidden mb-12" style="background-image: url('/img/mokadbg.jpg');">
-            <div class="absolute inset-0 backdrop-filter backdrop-blur-sm" style="background-color: rgba(0, 0, 0, 0.3);"></div>
-            <div class="relative z-10 text-white text-center px-4">
-                <h2 class="text-4xl font-bold mb-4">Tentang Portal E-Agenda</h2>
-                <p class="text-lg max-w-2xl mx-auto">Portal E-Agenda ini merupakan platform digital resmi yang dikelola oleh Pemerintah Kabupaten Mojokerto. Sistem ini dirancang untuk menyajikan informasi jadwal kegiatan pimpinan dan pemerintah daerah secara terpusat, akurat, dan transparan kepada seluruh masyarakat dan pihak terkait</p>
-            </div>
-        </section>
+        <section
+  class="relative w-screen left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] overflow-hidden mb-12 py-40"
+>
+  {{-- gambar full-bleed --}}
+  <img
+    src="https://ppid.mojokertokab.go.id/images/sliders/1686640788-5985.jpg"
+    alt="Banner Mojokerto"
+    class="absolute inset-0 h-full w-full object-cover"
+    loading="lazy"
+    decoding="async"
+  />
+
+  {{-- overlay gelap + blur seperti sebelumnya --}}
+  <div class="absolute inset-0 backdrop-blur-sm bg-black/30"></div>
+
+  {{-- konten --}}
+  <div class="relative z-10 text-white text-center px-4">
+    <h2 class="text-4xl font-bold mb-4">Tentang Portal E-Agenda</h2>
+    <p class="text-lg max-w-2xl mx-auto">
+      Portal E-Agenda ini merupakan platform digital resmi yang dikelola oleh Pemerintah Kabupaten Mojokerto.
+      Sistem ini dirancang untuk menyajikan informasi jadwal kegiatan pimpinan dan pemerintah daerah secara
+      terpusat, akurat, dan transparan kepada seluruh masyarakat dan pihak terkait
+    </p>
+  </div>
+</section>
+
 
         {{-- Kartu Status --}}
         <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
