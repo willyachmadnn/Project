@@ -175,7 +175,7 @@
                                     $wSatu    = $agenda->waktu ?? $agenda->jam ?? $agenda->pukul ?? null;
                                     $waktuText = ($wMulai || $wSelesai) ? trim(($wMulai ?? '').(($wMulai && $wSelesai)?' - ':'').($wSelesai ?? '')) : ($wSatu ?? '-');
 
-                                    $picText = '-';
+                                    $picText = $agenda->admin->opd_admin ?? $agenda->admin_id;
                                     $picCandidates = ['pic','PIC','pic_name','pic_text','nama_pic','penanggung_jawab','penanggungJawab','penanggung_jawab_nama','pj','pj_nama','petugas','petugas_nama','koordinator','koordinator_nama','bagian','bidang','unit','opd','skpd','dinas','instansi','organisasi','pic.nama','pic.name','user_pic.name','user.name','creator.name','created_by_name','dibuat_oleh'];
                                     foreach ($picCandidates as $key) {
                                         $val = data_get($agenda, $key);
