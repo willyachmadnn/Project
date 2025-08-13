@@ -19,7 +19,6 @@ use Illuminate\Support\Facades\Route;
 */
 
 // --- RUTE PUBLIK ---
-
 Route::get('/', [PageController::class, 'index'])->name('landing');
 Route::get('/api/agenda-counts', [PageController::class, 'getAgendaCounts'])->name('api.agenda.counts');
 
@@ -31,32 +30,32 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 
 // --- RUTE ADMIN YANG DILINDUNGI ---
-// PERBAIKAN: Menggunakan middleware 'auth' dengan guard 'admin'
 Route::middleware('auth:admin')->group(function () {
     Route::get('/dashboard', [AuthController::class, 'dashboard'])->name('dashboard');
 
-    // Resourceful route untuk CRUD Agenda di dashboard admin
-    Route::resource('agenda', AgendaController::class);
+    // =====================================================================
+    // BEST PRACTICE: Definisikan rute yang lebih spesifik (nested) terlebih dahulu
+    // untuk menghindari potensi konflik dengan rute resource yang lebih umum.
+    // =====================================================================
 
-    // Rute untuk tamu yang berelasi dengan agenda
-    Route::prefix('agenda/{agendaId}/tamu')->name('agenda.tamu.')->group(function () {
+    // RUTE UNTUK TAMU (BERELASI DENGAN AGENDA)
+    Route::prefix('agenda/{agenda}/tamu')->name('agenda.tamu.')->group(function () {
         Route::get('/', [TamuController::class, 'index'])->name('index');
-        Route::get('/create', [TamuController::class, 'create'])->name('create');
         Route::post('/', [TamuController::class, 'store'])->name('store');
-        Route::get('/{id}', [TamuController::class, 'show'])->name('show');
-        Route::get('/{id}/edit', [TamuController::class, 'edit'])->name('edit');
-        Route::put('/{id}', [TamuController::class, 'update'])->name('update');
-        Route::delete('/{id}', [TamuController::class, 'destroy'])->name('destroy');
-        Route::patch('/{id}/kehadiran', [TamuController::class, 'updateKehadiran'])->name('updateKehadiran');
+        Route::put('/{tamu:NIP}', [TamuController::class, 'update'])->name('update');
+        Route::delete('/{tamu:NIP}', [TamuController::class, 'destroy'])->name('destroy');
     });
 
-    // Rute untuk notulen yang berelasi dengan agenda
-    Route::prefix('agenda/{agendaId}/notulen')->name('agenda.notulen.')->group(function () {
+    // RUTE UNTUK NOTULEN (BERELASI DENGAN AGENDA)
+    Route::prefix('agenda/{agenda}/notulen')->name('agenda.notulen.')->group(function () {
         Route::get('/create', [NotulenController::class, 'create'])->name('create');
         Route::post('/', [NotulenController::class, 'store'])->name('store');
-        Route::get('/{id}', [NotulenController::class, 'show'])->name('show');
-        Route::get('/{id}/edit', [NotulenController::class, 'edit'])->name('edit');
-        Route::put('/{id}', [NotulenController::class, 'update'])->name('update');
-        Route::delete('/{id}', [NotulenController::class, 'destroy'])->name('destroy');
+        Route::get('/{notulen}', [NotulenController::class, 'show'])->name('show');
+        Route::get('/{notulen}/edit', [NotulenController::class, 'edit'])->name('edit');
+        Route::put('/{notulen}', [NotulenController::class, 'update'])->name('update');
+        Route::delete('/{notulen}', [NotulenController::class, 'destroy'])->name('destroy');
     });
+
+    // Resourceful route untuk CRUD Agenda. Diletakkan setelah rute yang lebih spesifik.
+    Route::resource('agenda', AgendaController::class);
 });

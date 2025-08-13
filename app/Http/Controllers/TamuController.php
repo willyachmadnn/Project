@@ -6,119 +6,104 @@ use App\Models\Agenda;
 use App\Models\Tamu;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class TamuController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Menampilkan daftar tamu untuk agenda tertentu.
      */
     public function index(string $agendaId)
     {
         $agenda = Agenda::findOrFail($agendaId);
+        // Mengambil semua tamu yang berelasi dengan agenda_id
         $tamu = Tamu::where('agenda_id', $agendaId)->get();
 
+        // Mengirim data agenda dan tamu ke view
         return view('tamu.index', compact('agenda', 'tamu'));
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create(string $agendaId)
-    {
-        $agenda = Agenda::findOrFail($agendaId);
-        return view('tamu.create', compact('agenda'));
-    }
-
-    /**
-     * Store a newly created resource in storage.
+     * Menyimpan tamu baru ke dalam database.
+     * Method ini dipanggil dari modal "Tambah Tamu".
      */
     public function store(Request $request, string $agendaId)
     {
+        // Memastikan agenda yang dituju ada
         Agenda::findOrFail($agendaId);
 
+        // Validasi input dari form
         $validator = Validator::make($request->all(), [
-            'nama' => 'required|string|max:255',
+            // NIP wajib diisi, harus 8 karakter, dan unik di tabel tamu
+            'NIP' => 'required|string|size:8|unique:tamu,NIP',
+            'nama_tamu' => 'required|string|max:255',
             'instansi' => 'required|string|max:255',
-            'jabatan' => 'required|string|max:255',
-            'email' => 'nullable|email|max:255',
-            'telepon' => 'nullable|string|max:20',
+            // Jenis kelamin (jk) harus salah satu dari 'Laki-laki' atau 'Perempuan'
+            'jk' => ['required', Rule::in(['Laki-laki', 'Perempuan'])],
         ]);
 
         if ($validator->fails()) {
-            return redirect()->route('agenda.tamu.create', $agendaId)
+            // Jika validasi gagal, kembali ke halaman sebelumnya dengan error dan input lama
+            return redirect()->route('agenda.tamu.index', $agendaId)
                 ->withErrors($validator)
                 ->withInput();
         }
 
+        // Membuat instance Tamu baru dan mengisi data
         $tamu = new Tamu($request->all());
         $tamu->agenda_id = $agendaId;
         $tamu->save();
 
+        // Redirect kembali ke halaman index tamu dengan pesan sukses
         return redirect()->route('agenda.tamu.index', $agendaId)
-            ->with('success', 'Tamu berhasil ditambahkan');
+            ->with('success', 'Tamu berhasil ditambahkan.');
     }
 
     /**
-     * Show the form for editing the specified resource.
+     * Memperbarui data tamu yang sudah ada.
+     * Method ini dipanggil dari modal "Edit Tamu".
+     *
+     * @param string $agendaId ID dari agenda
+     * @param string $nip NIP dari tamu yang akan diupdate
      */
-    public function edit(string $agendaId, string $id)
+    public function update(Request $request, string $agendaId, string $nip)
     {
-        $agenda = Agenda::findOrFail($agendaId);
-        $tamu = Tamu::where('agenda_id', $agendaId)->findOrFail($id);
+        // Cari tamu berdasarkan NIP dan agenda_id
+        $tamu = Tamu::where('agenda_id', $agendaId)->findOrFail($nip);
 
-        return view('tamu.edit', compact('agenda', 'tamu'));
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $agendaId, string $id)
-    {
-        $tamu = Tamu::where('agenda_id', $agendaId)->findOrFail($id);
-
+        // Validasi input
         $validator = Validator::make($request->all(), [
-            'nama' => 'required|string|max:255',
+            'nama_tamu' => 'required|string|max:255',
             'instansi' => 'required|string|max:255',
-            'jabatan' => 'required|string|max:255',
-            'email' => 'nullable|email|max:255',
-            'telepon' => 'nullable|string|max:20',
+            'jk' => ['required', Rule::in(['Laki-laki', 'Perempuan'])],
         ]);
 
         if ($validator->fails()) {
-            // PERBAIKAN KECIL: Membuat parameter eksplisit dalam array asosiatif
-            return redirect()->route('agenda.tamu.edit', ['agendaId' => $agendaId, 'id' => $id])
+            return redirect()->route('agenda.tamu.index', $agendaId)
                 ->withErrors($validator)
                 ->withInput();
         }
 
-        $tamu->update($request->all());
+        // Update data tamu dengan data baru dari request
+        $tamu->update($request->only(['nama_tamu', 'instansi', 'jk']));
 
         return redirect()->route('agenda.tamu.index', $agendaId)
-            ->with('success', 'Tamu berhasil diperbarui');
+            ->with('success', 'Data tamu berhasil diperbarui.');
     }
 
     /**
-     * Remove the specified resource from storage.
+     * Menghapus data tamu dari database.
+     *
+     * @param string $agendaId ID dari agenda
+     * @param string $nip NIP dari tamu yang akan dihapus
      */
-    public function destroy(string $agendaId, string $id)
+    public function destroy(string $agendaId, string $nip)
     {
-        $tamu = Tamu::where('agenda_id', $agendaId)->findOrFail($id);
+        // Cari tamu berdasarkan NIP dan agenda_id, lalu hapus
+        $tamu = Tamu::where('agenda_id', $agendaId)->findOrFail($nip);
         $tamu->delete();
 
         return redirect()->route('agenda.tamu.index', $agendaId)
-            ->with('success', 'Tamu berhasil dihapus');
-    }
-
-    /**
-     * Update kehadiran tamu.
-     */
-    public function updateKehadiran(Request $request, string $agendaId, string $id)
-    {
-        $tamu = Tamu::where('agenda_id', $agendaId)->findOrFail($id);
-        $tamu->kehadiran = $request->input('kehadiran', false); // Default ke false jika tidak ada
-        $tamu->save();
-
-        return redirect()->route('agenda.tamu.index', $agendaId)
-            ->with('success', 'Status kehadiran berhasil diperbarui');
+            ->with('success', 'Tamu berhasil dihapus.');
     }
 }
