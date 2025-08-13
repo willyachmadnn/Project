@@ -26,30 +26,49 @@ class AuthController extends Controller
      */
     public function login(Request $request)
     {
-        // PERUBAHAN: Validasi untuk 'admin_id' bukan 'email'
-        $validator = Validator::make($request->all(), [
-            'admin_id' => 'required|numeric',
-            'password' => 'required',
+        // Tetap pakai nama field 'admin_id' di form, tapi izinkan angka atau teks
+        $data = $request->validate([
+            'admin_id' => ['required', 'string'],
+            'password' => ['required', 'string'],
+        ], [
+            'admin_id.required' => 'Admin ID / Nama wajib diisi.',
         ]);
 
-        if ($validator->fails()) {
-            return redirect()->back()
-                ->withErrors($validator)
+        $login = trim($data['admin_id']);
+        $password = $data['password'];
+        $remember = (bool) $request->boolean('remember', false);
+
+        $guard = Auth::guard('admin');
+
+        // 1) Jika input numerik → cek berdasarkan admin_id
+        $ok = false;
+        if (ctype_digit($login)) {
+            $ok = $guard->attempt([
+                'admin_id' => (int) $login,
+                'password' => $password,
+            ], $remember);
+        }
+
+        // 2) Jika gagal / bukan angka → cek berdasarkan nama_admin
+        if (!$ok) {
+            $ok = $guard->attempt([
+                'nama_admin' => $login,
+                'password' => $password,
+            ], $remember);
+        }
+
+        if (!$ok) {
+            return back()
+                ->withErrors(['admin_id' => 'Admin ID / Nama atau password tidak cocok.'])
                 ->withInput($request->except('password'));
         }
 
-        $credentials = $request->only('admin_id', 'password');
-
-        // PERUBAHAN: Menggunakan guard 'admin' untuk proses otentikasi
-        if (Auth::guard('admin')->attempt($credentials)) {
-            $request->session()->regenerate();
-            return redirect()->intended(route('dashboard'));
-        }
-
-        return back()->withErrors([
-            'admin_id' => 'Kredensial yang diberikan tidak cocok dengan data kami.',
-        ])->withInput($request->except('password'));
+        // Sukses
+        $request->session()->regenerate();
+        return redirect()->intended(route('dashboard')); // menampilkan index.blade (sesuai setup kamu)
     }
+
+
 
     /**
      * Show the dashboard page.

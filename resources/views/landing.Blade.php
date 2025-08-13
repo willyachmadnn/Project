@@ -1,48 +1,52 @@
 <x-layout>
     <x-slot:title>Agenda Pemerintah Kabupaten Mojokerto</x-slot:title>
 
-    <main class="container mx-auto mt-4 px-4">
-        {{-- Hero --}}
-        <section
-  class="relative w-screen left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] overflow-hidden mb-12 py-40"
->
-  {{-- gambar full-bleed --}}
+<main class="container mx-auto px-4">
+
+        {{-- gambar --}}
+<section id="hero"
+  class="relative w-screen left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] min-h-[calc(100vh-4rem)] overflow-hidden">
   <img
     src="https://ppid.mojokertokab.go.id/images/sliders/1686640788-5985.jpg"
-    alt="Banner Mojokerto"
-    class="absolute inset-0 h-full w-full object-cover"
-    loading="lazy"
-    decoding="async"
-  />
-
-  {{-- overlay gelap + blur seperti sebelumnya --}}
+    alt="Banner Mojokerto — Portal E-Agenda"
+    class="absolute inset-0 h-full w-full object-cover object-center
+           sm:object-[50%_40%] md:object-[50%_35%]"
+    loading="eager" fetchpriority="high" decoding="async" />
   <div class="absolute inset-0 bg-black/30"></div>
 
-  {{-- konten --}}
-  <div class="relative z-10 text-white text-center px-4">
-    <h2 class="text-4xl font-bold mb-4">Tentang Portal E-Agenda</h2>
-    <p class="text-lg max-w-2xl mx-auto">
-      Portal E-Agenda ini merupakan platform digital resmi yang dikelola oleh Pemerintah Kabupaten Mojokerto.
-      Sistem ini dirancang untuk menyajikan informasi jadwal kegiatan pimpinan dan pemerintah daerah secara
-      terpusat, akurat, dan transparan kepada seluruh masyarakat dan pihak terkait
-    </p>
+  <div class="relative z-10 flex h-full items-center justify-center text-center text-white px-4 pt-50">
+    <div>
+      <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold mb-4">Tentang Portal E-Agenda</h2>
+      <p class="text-base sm:text-lg md:text-xl max-w-5xl mx-auto">
+        Portal E-Agenda ini merupakan platform digital resmi yang dikelola oleh Pemerintah Kabupaten Mojokerto.
+        Sistem ini dirancang untuk menyajikan informasi jadwal kegiatan pimpinan dan pemerintah daerah secara
+        terpusat, akurat, dan transparan kepada seluruh masyarakat dan pihak terkait.
+      </p>
+    </div>
   </div>
 </section>
-        {{-- Kartu Status --}}
-        <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-            <div class="bg-white p-4 rounded-lg shadow-md border-l-4 border-blue-500">
-                <h3 class="text-lg font-medium text-gray-700">Agenda Menunggu</h3>
-                <p id="pendingCount" class="text-4xl font-bold text-blue-600 mt-2">{{ $pendingAgendasCount }}</p>
-            </div>
-            <div class="bg-white p-4 rounded-lg shadow-md border-l-4 border-green-500">
-                <h3 class="text-lg font-medium text-gray-700">Agenda Berlangsung</h3>
-                <p id="ongoingCount" class="text-4xl font-bold text-green-600 mt-2">{{ $ongoingAgendasCount }}</p>
-            </div>
-            <div class="bg-white p-4 rounded-lg shadow-md border-l-4 border-red-500">
-                <h3 class="text-lg font-medium text-gray-700">Agenda Berakhir</h3>
-                <p id="finishedCount" class="text-4xl font-bold text-red-600 mt-2">{{ $finishedAgendasCount }}</p>
-            </div>
-        </section>
+{{-- CARD KPI: template Tailwind + shadow, overlap ringan di desktop --}}
+<section id="kpis" class="relative z-20 px-4 mt-6 md:-mt-10 lg:-mt-14">
+  <div class="mx-auto max-w-7xl">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 sm:gap-6">
+      <div class="bg-white rounded-2xl p-6 shadow-2xl shadow-black/10 ring-1 ring-black/5">
+        <h3 class="text-sm font-medium text-slate-700">Agenda Menunggu</h3>
+        <p class="text-3xl sm:text-4xl font-bold text-blue-600 mt-2">{{ $pendingAgendasCount ?? 0 }}</p>
+      </div>
+
+      <div class="bg-white rounded-2xl p-6 shadow-2xl shadow-black/10 ring-1 ring-black/5">
+        <h3 class="text-sm font-medium text-slate-700">Agenda Berlangsung</h3>
+        <p class="text-3xl sm:text-4xl font-bold text-green-600 mt-2">{{ $ongoingAgendasCount ?? 0 }}</p>
+      </div>
+
+      <div class="bg-white rounded-2xl p-6 shadow-2xl shadow-black/10 ring-1 ring-black/5">
+        <h3 class="text-sm font-medium text-slate-700">Agenda Berakhir</h3>
+        <p class="text-3xl sm:text-4xl font-bold text-red-600 mt-2">{{ $finishedAgendasCount ?? 0 }}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
 
         {{-- Slider Filter Kartu Status --}}
         <section class="mb-8 p-6 bg-white rounded-lg shadow-sm border border-gray-200">
@@ -65,73 +69,93 @@
             <input type="hidden" id="pageHidden" name="page" value="{{ request('page', 1) }}">
 
             {{-- Controls --}}
-            <section class="mx-auto max-w-7xl px-2 sm:px-0">
-                <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                    {{-- SHOW (container ala wireframe) --}}
-                    <div id="showWrap"
-                      class="inline-flex h-11 items-center gap-2 rounded-lg border-1 border-red-700 bg-white px-3">
-                        <span class="text-base font-medium text-slate-700">Show:</span>
+<section class="mx-auto max-w-7xl px-2 sm:px-0">
+  <div id="controls" class="flex flex-wrap items-center gap-2 md:gap-3">
 
-                      <div class="relative">
-                        <select id="perPageSelect" name="per_page"
-                                class="appearance-none h-7 w-16 rounded-lg
-                                      border border-red-700 bg-transparent
-                                      pl-2 pr-6 text-lg font-semibold text-slate-700
-                                      focus:outline-none focus-visible:outline-none focus:ring-0 focus:shadow-none">
-                          @foreach ([10,25,50,100] as $n)
-                            <option value="{{ $n }}" @selected((int)request('per_page', request('perPage', 10)) === $n)>{{ $n }}</option>
-                          @endforeach
-                        </select>
+    <!-- SHOW -->
+    <div id="showWrap"
+         class="inline-flex items-center gap-2 rounded-lg bg-white px-2 py-1
+                ring-1 ring-inset ring-red-600/70 hover:ring-red-600/60
+                focus-within:ring-1 focus-within:ring-red-600 shrink-0">
+      <span class="text-sm font-medium text-slate-700">Show:</span>
+      <div class="relative">
+        <select id="perPageSelect" name="per_page"
+                class="appearance-none h-7 w-16 rounded-md
+                       border border-red-700/50 bg-transparent
+                       pl-3 pr-7 text-sm font-medium leading-tight text-slate-700
+                       focus:outline-none focus-visible:outline-none
+                       focus:ring-1 focus:ring-red-600 focus:border-red-600 focus:shadow-none">
+          @foreach ([10,25,50,100] as $n)
+            <option value="{{ $n }}" @selected((int)request('per_page', request('perPage', 10)) === $n)>{{ $n }}</option>
+          @endforeach
+        </select>
+        <svg class="pointer-events-none absolute right-1 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-600"
+             viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+          <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z" clip-rule="evenodd"/>
+        </svg>
+      </div>
+    </div>
 
-                        <!-- caret kecil -->
-                        <svg class="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 h-10 w-6 text-slate-700"
-                            viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                          <path fill-rule="evenodd"
-                                d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z"
-                                clip-rule="evenodd" />
-                        </svg>
-                      </div>
-                    </div>
+    <!-- SEARCH (FLEXIBLE) -->
+       <div class="relative flex-none ml-auto min-w-[18rem] md:min-w-[8rem]">
+  <!-- PENTING: w-full, BUKAN w-[28rem] -->
+  <input id="qInput" type="text" name="q"
+         value="{{ request('q', request('search')) }}"
+         placeholder="Cari Nama Agenda, Tempat"
+       class="w-[14rem] sm:w-[18rem] md:w-[22rem] lg:w-[24rem] max-w-full
+              rounded-md border border-red-700 pl-9 pr-3 py-2
+              text-sm text-slate-800 placeholder-slate-400
+              focus:outline-none focus-visible:outline-none
+              focus:ring-1 focus:ring-red-700 focus:border-red-700 focus:shadow-none">
+  <svg class="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-red-700"
+       fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+    <path stroke-linecap="round" stroke-linejoin="round"
+          d="m21 21-4.35-4.35m0 0A7.5 7.5 0 1 0 5.5 5.5a7.5 7.5 0 0 0 11.15 11.15z" />
+  </svg>
+</div>
 
-                    <div class="flex items-center gap-3">
-                        {{-- Search --}}
-                        <div class="relative">
-                            <input id="qInput" type="text" name="q"
-                                   value="{{ request('q', request('search')) }}"
-                                   placeholder="Cari Nama, Bulan, Tahun"
-                                   class="w-[28rem] rounded-md border border-red-700 pl-9 pr-3 py-2 text-sm placeholder-slate-400 focus:border-red-800 focus:ring-red-800" />
-                            <svg class="pointer-events-none absolute left-2.5 top-2.5 h-4 w-4 text-red-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m21 21-4.35-4.35m0 0A7.5 7.5 0 1 0 5.5 5.5a7.5 7.5 0 0 0 11.15 11.15z" />
-                            </svg>
-                        </div>
 
-                        {{-- Status (Add Filter) --}}
-                        @php $currentStatus = strtolower((string)request('status')); @endphp
-                        <div class="relative">
-                            <select id="statusSelect" name="status"
-                                    class="appearance-none cursor-pointer rounded-md bg-red-700 pl-8 pr-8 py-2 text-sm font-medium text-white shadow hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-red-800">
-                                <option value="" @selected($currentStatus==='')>Semua</option>
-                                <option value="berlangsung" @selected($currentStatus==='berlangsung')>Berlangsung</option>
-                                <option value="selesai" @selected(in_array($currentStatus,['selesai','berakhir']))>Berakhir</option>
-                                <option value="menunggu" @selected(in_array($currentStatus,['menunggu','pending']))>Menunggu</option>
-                            </select>
-                            <svg class="pointer-events-none absolute left-2.5 top-2.5 h-4 w-4 text-white" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                                <path d="M3 5h18v2H3V5zm4 6h10v2H7v-2zm-2 6h14v2H5v-2z"/>
-                            </svg>
-                            <span class="pointer-events-none absolute right-2 top-1.5 text-white">▾</span>
-                        </div>
-                    </div>
-                </div>
-            </section>
+    <!-- FILTER -->
+    @php $currentStatus = strtolower((string)request('status')); @endphp
+    <div class="relative shrink-0">
+      <select id="statusSelect" name="status"
+              class="appearance-none cursor-pointer rounded-md bg-red-700 pl-8 pr-8 py-2
+                     text-sm font-medium text-white shadow
+                     hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-red-800">
+        <option value="" @selected($currentStatus==='')>Semua</option>
+        <option value="berlangsung" @selected($currentStatus==='berlangsung')>Berlangsung</option>
+        <option value="selesai" @selected(in_array($currentStatus,['selesai','berakhir']))>Berakhir</option>
+        <option value="menunggu" @selected(in_array($currentStatus,['menunggu','pending']))>Menunggu</option>
+      </select>
+      <svg class="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-white"
+           viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+        <path d="M3 5h18v2H3V5zm4 6h10v2H7v-2zm-2 6h14v2H5v-2z"/>
+      </svg>
+      <span class="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-white">▾</span>
+    </div>
+
+  </div>
+</section>
+
 
             {{-- ============ TABLE + PAGINATION (dibungkus #tableWrap untuk AJAX) ============ --}}
 <section id="tableWrap" class="mx-auto mt-4 max-w-7xl px-2 sm:px-1">
   <div class="rounded-lg bg-white shadow">
-    <div class="overflow-x-hidden">
-      <table class="w-full table-fixed text-center [&_th]:text-center [&_td]:text-center [&_td]:align-middle">
-        {{-- Lebar kolom (sesuaikan kalau perlu) --}}
+    <!-- izinkan scroll saat sempit -->
+    <div class="overflow-x-auto">
+      <table
+        class="w-full table-fixed text-xs sm:text-sm
+               /* paksa rata tengah (override CSS lain) */
+               ![&_th]:text-center ![&_td]:text-center ![&_td]:align-middle
+               /* kalau isi td dibungkus div, tetap center */
+               [&_td>div]:flex [&_td>div]:items-center [&_td>div]:justify-center
+               /* link/badge juga center */
+               [&_td>a]:inline-flex [&_td>a]:items-center [&_td>a]:justify-center [&_td>a]:mx-auto
+               [&_td>span]:block [&_td>span]:mx-auto">
+
+        {{-- Lebar kolom --}}
         <colgroup>
-          <col class="w-12 sm:w-14 md:w-16" />   {{-- NO (sempit) --}}
+          <col class="w-12 sm:w-14 md:w-16" />   {{-- NO --}}
           <col class="w-[24%]" />                 {{-- Nama Agenda --}}
           <col class="w-[16%]" />                 {{-- Tempat --}}
           <col class="w-[16%]" />                 {{-- Tanggal --}}
@@ -153,8 +177,7 @@
             <th class="bg-red-800 px-4 py-3 text-center text-sm font-semibold uppercase tracking-wider text-white rounded-tr-md">Status</th>
           </tr>
         </thead>
-
-                            <tbody id="agendaBody">
+                    <tbody id="agendaBody">
                             @forelse($agendas as $agenda)
                                 @php
                                     $rowIndex = ($agendas->firstItem() ?? 1) + $loop->index;
@@ -265,19 +288,47 @@
                         </table>
                     </div>
 
-                    {{-- Pagination --}}
-@if(method_exists($agendas, 'links'))
-  <div class="flex items-center justify-between gap-4 border-t border-slate-200 px-2 py-12">
-    <p class="text-sm text-slate-600">
+{{-- Pagination --}}
+{{-- Pagination --}}
+@if (method_exists($agendas, 'links'))
+  <div class="flex flex-col items-center gap-3 border-t border-slate-200 px-2 py-6">
+
+    {{-- Info ringkas (sembunyikan di layar kecil) --}}
+    <p class="text-sm text-slate-600 hidden sm:block">
       Menampilkan <span class="font-medium">{{ $agendas->firstItem() }}</span> –
       <span class="font-medium">{{ $agendas->lastItem() }}</span> dari
       <span class="font-medium">{{ $agendas->total() }}</span> Data
     </p>
-    <div class="shrink-0">
-      {{ $agendas->onEachSide(1)->links() }}
+
+    {{-- NAV pagination: tengah + aktif maroon --}}
+    <div
+      class="pagination-ui
+        [&_nav]:flex [&_nav]:items-center [&_nav]:justify-center [&_nav]:gap-2
+
+        [&_a.relative.inline-flex.items-center]:rounded-lg
+        [&_a.relative.inline-flex.items-center]:border [&_a.relative.inline-flex.items-center]:border-slate-300
+        [&_a.relative.inline-flex.items-center]:px-3 [&_a.relative.inline-flex.items-center]:py-2
+        [&_a.relative.inline-flex.items-center]:text-slate-700
+        [&_a.relative.inline-flex.items-center:hover]:bg-slate-100
+
+        [&_[aria-current='page']>span]:!bg-[#800000]
+        [&_[aria-current='page']>span]:!text-white
+        [&_[aria-current='page']>span]:!border-transparent
+        [&_[aria-current='page']>span]:rounded-lg
+
+        [&_span[aria-disabled='true']>span]:rounded-lg
+        [&_span[aria-disabled='true']>span]:border [&_span[aria-disabled='true']>span]:border-slate-300
+        [&_span[aria-disabled='true']>span]:text-slate-400
+      "
+    >
+      {{ $agendas->onEachSide(0)->withQueryString()->links('pagination::tailwind') }}
+      {{-- Jika file view kamu ada di resources/views/pagination/tailwind.blade.php gunakan:
+           {{ $agendas->onEachSide(0)->withQueryString()->links('pagination.tailwind') }} --}}
     </div>
   </div>
 @endif
+
+
 
                 </div>
             </section>
