@@ -16,25 +16,23 @@ class AdminSeeder extends Seeder
     {
         // Array contoh untuk nama-nama orang Indonesia
         $namaAdmins = [
-            'Budi Santoso',
-            'Siti Rahayu',
-            'Joko Susanto',
-            'Ayu Lestari',
-            'Dewi Indah',
-            'Eko Prasetyo',
-            'Nurul Hidayah',
-            'Bayu Firmansyah',
-            'Nur Kholivah' // Menambahkan contoh nama
+            'Willy',
+            'Anindya',
+            'Zulfahmi',
+            'Nur Kholivah',
+            'Admin'  // Menambahkan contoh nama
         ];
 
         // Array contoh untuk nama OPD (Organisasi Perangkat Daerah)
         $opdAdmins = [
-            'Dinas Pendidikan',
-            'Dinas Kesehatan',
-            'Dinas Pertanian',
-            'Dinas Pariwisata',
-            'Dinas Perhubungan',
-            'Dinas PUPR'
+            'SUB BAGIAN UMUM DAN KEPEGAWAIAN',
+            'BIDANG PEREKONOMIAN, SUMBER DAYA ALAM, INFRASTRUKTUR, DAN KEWILAYAHAN',
+            'BADAN PERENCANAAN PEMBANGUNAN DAERAH',
+            'BAGIAN UMUM',
+            'BIDANG PENYULUHAN',
+            'SEKRETARIAT',
+            'BIDANG PELAYANAN MEDIS',
+            'DINAS KOMUNIKASI DAN INFORMATIKA'
         ];
 
         // Looping untuk memasukkan 100 data admin dummy
