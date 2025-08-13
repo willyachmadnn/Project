@@ -65,12 +65,12 @@
             <input type="hidden" id="pageHidden" name="page" value="{{ request('page', 1) }}">
 
             {{-- Controls --}}
-            <section class="mx-auto max-w-7xl px-2 sm:px-1">
+            <section class="mx-auto max-w-7xl px-2 sm:px-0">
                 <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                     {{-- SHOW (container ala wireframe) --}}
                     <div id="showWrap"
-     class="inline-flex h-11 items-center gap-2 rounded-lg border-1 border-red-700 bg-white px-3">
-  <span class="text-base font-medium text-slate-700">Show:</span>
+                      class="inline-flex h-11 items-center gap-2 rounded-lg border-1 border-red-700 bg-white px-3">
+                        <span class="text-base font-medium text-slate-700">Show:</span>
 
                       <div class="relative">
                         <select id="perPageSelect" name="per_page"
