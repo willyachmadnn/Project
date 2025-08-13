@@ -44,7 +44,7 @@ class AgendaSeeder extends Seeder
         ];
 
         // Looping untuk memasukkan 100 data agenda dummy
-        for ($i = 1; $i <= 10; $i++) {
+        for ($i = 1; $i <= 1000; $i++) {
             $dihadiri = collect($dihadiriOptions)
                 ->random(rand(1, 4))
                 ->implode(', ');

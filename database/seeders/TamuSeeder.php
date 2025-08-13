@@ -21,7 +21,7 @@ class TamuSeeder extends Seeder
             // Jika tidak ada, tampilkan pesan peringatan di konsol.
             // Seeder tidak akan berjalan untuk menghindari error.
             $this->command->warn('Tabel "agendas" masih kosong. Silakan isi data agenda terlebih dahulu sebelum menjalankan seeder tamu.');
-            
+
             // Anda bisa juga memanggil AgendaSeeder di sini jika sudah ada
             // $this->command->info('Menjalankan AgendaSeeder...');
             // $this->call(AgendaSeeder::class);

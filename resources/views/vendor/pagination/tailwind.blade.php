@@ -1,69 +1,105 @@
-{{-- resources/views/vendor/pagination/tailwind.blade.php --}}
 @if ($paginator->hasPages())
-    <nav role="navigation" aria-label="Pagination Navigation"
-         class="flex items-center justify-center gap-2 select-none">
+@php
+    $current = $paginator->currentPage();
+    $last    = $paginator->lastPage();
+    $WIN     = 5; // jumlah nomor yang ditampilkan
 
-        {{-- First + Previous --}}
-        @if ($paginator->onFirstPage())
-            <span aria-disabled="true" class="inline-flex items-center justify-center h-9 min-w-[2.25rem] rounded-lg border border-slate-300 text-slate-400">««</span>
-            <span aria-disabled="true" class="inline-flex items-center justify-center h-9 min-w-[2.25rem] rounded-lg border border-slate-300 text-slate-400">‹</span>
-        @else
-            <a href="{{ $paginator->url(1) }}"
-               class="inline-flex items-center justify-center h-9 min-w-[2.25rem] rounded-lg border border-slate-300 text-slate-700 hover:bg-slate-100 focus:outline-none">««</a>
-            <a href="{{ $paginator->previousPageUrl() }}" rel="prev"
-               class="inline-flex items-center justify-center h-9 min-w-[2.25rem] rounded-lg border border-slate-300 text-slate-700 hover:bg-slate-100 focus:outline-none">‹</a>
-        @endif
+    // Susun blok angka (dengan ellipsis)
+    if ($last <= $WIN) {
+        $blocks = [range(1, $last)];
+    } elseif ($current <= 3) {
+        $blocks = [range(1, 3), 'gap', [$last-1, $last]];
+    } elseif ($current >= $last - 2) {
+        $blocks = [[1, 2], 'gap', [$last-2, $last-1, $last]];
+    } else {
+        $blocks = [range($current - 2, $current + 2)];
+    }
+@endphp
 
-@foreach ($elements as $element)
-    @if (is_string($element))
-        <span class="inline-flex items-center h-9 px-2 text-slate-500">…</span>
+<nav class="flex items-center justify-center gap-2">
+
+    {{-- «« (ke awal) --}}
+    @if ($paginator->onFirstPage())
+        <span class="p-2 rounded-md opacity-40">
+            <svg class="w-6 h-6 md:w-7 md:h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 19l-7-7 7-7" />
+            </svg>
+        </span>
+    @else
+        <a href="{{ $paginator->url(1) }}" class="p-2 rounded-md hover:bg-gray-100" aria-label="First page">
+            <svg class="w-6 h-6 md:w-7 md:h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 19l-7-7 7-7" />
+            </svg>
+        </a>
     @endif
 
-    @if (is_array($element))
-        @php
-            $current = $paginator->currentPage();
-            $last    = $paginator->lastPage();
-            // Ambil daftar halaman dari blok ini
-            $pages   = array_keys($element);
+    {{-- ‹ (mundur 1) --}}
+    @if ($paginator->onFirstPage())
+        <span class="p-2 rounded-md opacity-40">
+            <svg class="w-6 h-6 md:w-7 md:h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+            </svg>
+        </span>
+    @else
+        <a href="{{ $paginator->previousPageUrl() }}" class="p-2 rounded-md hover:bg-gray-100" aria-label="Previous page">
+            <svg class="w-6 h-6 md:w-7 md:h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+            </svg>
+        </a>
+    @endif
 
-            if ($current <= 2) {
-                // Force 1..3
-                $pages = array_slice($pages, 0, 3);
-            } elseif ($current >= $last - 1) {
-                // Force last-2 .. last
-                $pages = array_slice($pages, -3);
-            } else {
-                // Tengah: current-1, current, current+1
-                $pages = [$current - 1, $current, $current + 1];
-            }
-        @endphp
-
-        @foreach ($pages as $page)
-            @if ($page == $current)
-                <span aria-current="page"
-                      class="inline-flex items-center justify-center h-9 min-w-[2.25rem] px-3 rounded-lg text-white bg-[#800000]">
-                    {{ $page }}
-                </span>
+    {{-- Nomor + ellipsis (5 angka) --}}
+    <ul class="flex items-center gap-1">
+        @foreach ($blocks as $blk)
+            @if ($blk === 'gap')
+                <li class="px-1 select-none">…</li>
             @else
-                <a href="{{ $element[$page] }}"
-                   class="inline-flex items-center justify-center h-9 min-w-[2.25rem] px-3 rounded-lg border border-slate-300 text-slate-700 hover:bg-slate-100 focus:outline-none">
-                    {{ $page }}
-                </a>
+                @foreach ($blk as $page)
+                    <li>
+                        @if ($page == $current)
+                            <span class="px-3 py-1 rounded-md bg-red-700 text-white font-semibold">{{ $page }}</span>
+                        @else
+                            <a href="{{ $paginator->url($page) }}" class="px-3 py-1 rounded-md hover:bg-gray-100">{{ $page }}</a>
+                        @endif
+                    </li>
+                @endforeach
             @endif
         @endforeach
+    </ul>
+
+    {{-- › (maju 1) --}}
+    @if ($paginator->hasMorePages())
+        <a href="{{ $paginator->nextPageUrl() }}" class="p-2 rounded-md hover:bg-gray-100" aria-label="Next page">
+            <svg class="w-6 h-6 md:w-7 md:h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+        </a>
+    @else
+        <span class="p-2 rounded-md opacity-40">
+            <svg class="w-6 h-6 md:w-7 md:h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+        </span>
     @endif
-@endforeach
 
+    {{-- »» (ke akhir) --}}
+    @if ($paginator->hasMorePages())
+        <a href="{{ $paginator->url($last) }}" class="p-2 rounded-md hover:bg-gray-100" aria-label="Last page">
+            <svg class="w-6 h-6 md:w-7 md:h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5l7 7-7 7" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7" />
+            </svg>
+        </a>
+    @else
+        <span class="p-2 rounded-md opacity-40">
+            <svg class="w-6 h-6 md:w-7 md:h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5l7 7-7 7" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7" />
+            </svg>
+        </span>
+    @endif
 
-        {{-- Next + Last --}}
-        @if ($paginator->hasMorePages())
-            <a href="{{ $paginator->nextPageUrl() }}" rel="next"
-               class="inline-flex items-center justify-center h-9 min-w-[2.25rem] rounded-lg border border-slate-300 text-slate-700 hover:bg-slate-100 focus:outline-none">›</a>
-            <a href="{{ $paginator->url($paginator->lastPage()) }}"
-               class="inline-flex items-center justify-center h-9 min-w-[2.25rem] rounded-lg border border-slate-300 text-slate-700 hover:bg-slate-100 focus:outline-none">»»</a>
-        @else
-            <span aria-disabled="true" class="inline-flex items-center justify-center h-9 min-w-[2.25rem] rounded-lg border border-slate-300 text-slate-400">›</span>
-            <span aria-disabled="true" class="inline-flex items-center justify-center h-9 min-w-[2.25rem] rounded-lg border border-slate-300 text-slate-400">»»</span>
-        @endif
-    </nav>
+</nav>
 @endif

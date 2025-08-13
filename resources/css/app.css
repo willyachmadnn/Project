@@ -1,3 +1,4 @@
+/* ==== app.css (GABUNGAN FINAL) ==== */
 @import 'tailwindcss';
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
@@ -6,6 +7,79 @@
 @source '../**/*.js';
 
 @theme {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
-        'Segoe UI Symbol', 'Noto Color Emoji';
+  --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji',
+               'Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji';
 }
+
+/* ====== GLOBAL RESET & ANTI-OVERFLOW ====== */
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; max-width: 100%; overflow-x: hidden; }
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+
+/* Media tidak boleh lebih lebar dari parent */
+img, video, canvas, svg, iframe { max-width: 100%; height: auto; display: block; }
+
+/* Teks panjang tidak memaksa melebar */
+p, li, td, th, a, code, pre { overflow-wrap: anywhere; word-break: break-word; }
+pre { white-space: pre-wrap; }
+
+/* Flex/Grid: biarkan anak menyusut */
+.flex > *, .grid > * { min-width: 0; }
+
+/* ====== NAVBAR (HEADER) ====== */
+/* tinggi logo header (aman untuk sumber URL) */
+#siteHeader img { height: 40px; width: auto; display: block; }
+@media (max-width: 640px) { #siteHeader img { height: 32px; } }
+
+/* Header fixed: beri ruang konten */
+main { min-height: calc(100vh - 64px); }
+
+/* ====== LANDING / KONTEN ====== */
+/* Hero/banner pada landing (opsional: pakai di wrapper .landing-hero jika ada) */
+.landing-hero img { width: 100%; max-height: min(70vh, 640px); object-fit: cover; border-radius: .5rem; }
+
+/* Tabel lebar tidak bikin halaman geser, scroll di dalamnya saja */
+.table-responsive { display: block; width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+table { width: 100%; border-collapse: collapse; }
+@media (max-width: 640px){
+  /* Jika lupa membungkus .table-responsive, amankan tabel di layar kecil */
+  table { display: block; overflow-x: auto; white-space: nowrap; }
+}
+
+/* === PENGAYAAN TABEL AGENDA (yang kamu minta) === */
+/* Pusatkan teks & tengah vertikal semua sel */
+.agenda-table th,
+.agenda-table td {
+  text-align: center;        /* rata tengah horizontal */
+  vertical-align: middle;    /* rata tengah vertikal */
+}
+
+/* Lebarkan area tabel agar tidak terlalu kosong kiri-kanan */
+.agenda-wrap {
+  max-width: min(95vw, 1600px); /* 95% viewport dibatasi 1600px */
+  margin-inline: auto;          /* center container */
+  padding-inline: 8px;          /* jarak aman sisi kiri/kanan */
+}
+
+/* Jika tabel sangat lebar, scroll terjadi di dalam wrapper ini saja */
+.agenda-wrap .table-responsive {
+  display: block;
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Pagination bisa turun baris di layar kecil */
+nav[role="navigation"] { display: flex; flex-wrap: wrap; gap: .5rem; justify-content: center; }
+nav[role="navigation"] ul { display: flex; flex-wrap: wrap; gap: .25rem; }
+
+/* ====== FOOTER ====== */
+/* Ukuran logo footer */
+footer img { height: 24px; width: auto; display: block; }
+@media (max-width: 640px){
+  footer .mx-auto { justify-content: center; text-align: center; }
+}
+
+/* ====== UTIL ====== */
+/* Hindari 100vw/w-screen yang sering memicu overflow */
+main .w-screen, main [style*="100vw"] { width: 100% !important; }
