@@ -44,6 +44,13 @@ Route::middleware('auth:admin')->group(function () {
         Route::post('/', [TamuController::class, 'store'])->name('store');
         Route::put('/{tamu:NIP}', [TamuController::class, 'update'])->name('update');
         Route::delete('/{tamu:NIP}', [TamuController::class, 'destroy'])->name('destroy');
+
+        // FIX: Menambahkan kembali route 'create' untuk mengatasi error "route not defined".
+        // Rute ini tidak akan menampilkan halaman, tetapi langsung mengarahkan (redirect)
+        // ke halaman index tamu, di mana pengguna bisa menggunakan modal untuk menambah data.
+        Route::get('/create', function (App\Models\Agenda $agenda) {
+            return redirect()->route('agenda.tamu.index', $agenda);
+        })->name('create');
     });
 
     // RUTE UNTUK NOTULEN (BERELASI DENGAN AGENDA)
