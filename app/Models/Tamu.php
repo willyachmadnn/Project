@@ -16,36 +16,50 @@ class Tamu extends Model
      * @var string
      */
     protected $table = 'tamu';
+
+    /**
+     * Menentukan primary key tabel.
+     *
+     * @var string
+     */
+    protected $primaryKey = 'NIP';
+
+    /**
+     * Menunjukkan bahwa primary key bukan auto-incrementing.
+     *
+     * @var bool
+     */
+    public $incrementing = false;
+
+    /**
+     * Menentukan tipe data dari primary key.
+     *
+     * @var string
+     */
+    protected $keyType = 'string';
     
     /**
-     * The attributes that are mass assignable.
+     * Atribut yang dapat diisi secara massal.
      *
      * @var array<int, string>
      */
     protected $fillable = [
-        'agenda_id',
-        'nama',
+        'NIP',
+        'nama_tamu',
         'instansi',
-        'jabatan',
-        'email',
-        'telepon',
-        'kehadiran',
+        'jk',
+        'agenda_id',
     ];
     
     /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
-    protected $casts = [
-        'kehadiran' => 'boolean',
-    ];
-    
-    /**
-     * Get the agenda that owns the tamu.
+     * Mendefinisikan relasi "belongsTo" ke model Agenda.
+     * Setiap tamu terhubung ke satu agenda.
      */
     public function agenda(): BelongsTo
     {
-        return $this->belongsTo(Agenda::class);
+        // Menghubungkan model Tamu dengan model Agenda
+        // Foreign key di tabel ini adalah 'agenda_id'
+        // Primary key di tabel agendas adalah 'agenda_id'
+        return $this->belongsTo(Agenda::class, 'agenda_id', 'agenda_id');
     }
 }
