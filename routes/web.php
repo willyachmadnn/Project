@@ -34,8 +34,8 @@ Route::middleware('auth:admin')->group(function () {
     Route::get('/dashboard', [AuthController::class, 'dashboard'])->name('dashboard');
 
     // =====================================================================
-    // BEST PRACTICE: Definisikan rute yang lebih spesifik (nested) terlebih dahulu
-    // untuk menghindari potensi konflik dengan rute resource yang lebih umum.
+    // RUTE-RUTE BERELASI (NESTED ROUTES)
+    // Didefinisikan terlebih dahulu sesuai best practice.
     // =====================================================================
 
     // RUTE UNTUK TAMU (BERELASI DENGAN AGENDA)
@@ -45,9 +45,8 @@ Route::middleware('auth:admin')->group(function () {
         Route::put('/{tamu:NIP}', [TamuController::class, 'update'])->name('update');
         Route::delete('/{tamu:NIP}', [TamuController::class, 'destroy'])->name('destroy');
 
-        // FIX: Menambahkan kembali route 'create' untuk mengatasi error "route not defined".
-        // Rute ini tidak akan menampilkan halaman, tetapi langsung mengarahkan (redirect)
-        // ke halaman index tamu, di mana pengguna bisa menggunakan modal untuk menambah data.
+        // FIX: Redirect untuk link 'create' yang mungkin masih ada,
+        // mengarahkan ke halaman index di mana modal berada.
         Route::get('/create', function (App\Models\Agenda $agenda) {
             return redirect()->route('agenda.tamu.index', $agenda);
         })->name('create');
@@ -63,6 +62,17 @@ Route::middleware('auth:admin')->group(function () {
         Route::delete('/{notulen}', [NotulenController::class, 'destroy'])->name('destroy');
     });
 
-    // Resourceful route untuk CRUD Agenda. Diletakkan setelah rute yang lebih spesifik.
+    // =====================================================================
+    // RUTE UTAMA UNTUK AGENDA
+    // =====================================================================
+
+    // FIX: Redirect untuk route 'agenda.create' agar mengarah ke halaman utama
+    // karena form sekarang menggunakan modal.
+    Route::get('/agenda/create', function () {
+        return redirect()->route('agenda.index');
+    })->name('agenda.create.redirect');
+
+    // Resourceful route untuk CRUD Agenda.
+    // Rute 'create' dan 'edit' secara teknis masih ada, tetapi tidak digunakan oleh UI.
     Route::resource('agenda', AgendaController::class);
 });
