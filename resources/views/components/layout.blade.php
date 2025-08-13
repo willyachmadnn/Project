@@ -1,4 +1,3 @@
-{{-- resources/views/components/layout.blade.php --}}
 @props(['title' => 'Agenda Pemerintah Kabupaten Mojokerto'])
 
 <!doctype html>

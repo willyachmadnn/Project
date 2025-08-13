@@ -1,4 +1,3 @@
-{{-- resources/views/components/table.blade.php --}}
 @props(['agendas'])
 
 <form action="{{ route('landing') }}" method="GET" id="filterForm" data-ajax="true">

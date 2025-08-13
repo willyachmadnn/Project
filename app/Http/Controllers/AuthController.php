@@ -65,7 +65,7 @@ class AuthController extends Controller
 
         // Sukses
         $request->session()->regenerate();
-        return redirect()->intended(route('dashboard')); // menampilkan index.blade (sesuai setup kamu)
+        return redirect()->intended(route('agenda.index')); // menampilkan index.blade (sesuai setup kamu)
     }
 
 

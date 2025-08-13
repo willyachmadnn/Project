@@ -1,4 +1,3 @@
-{{-- resources/views/components/page.blade.php --}}
 @props([
   'pendingAgendasCount' => 0,
   'ongoingAgendasCount' => 0,
