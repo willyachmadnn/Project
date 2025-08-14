@@ -1,47 +1,45 @@
-{{-- 
-    CATATAN PENTING:
-    Pastikan Anda telah menyertakan Alpine.js di dalam layout utama Anda (misal: app.blade.php).
-    Jika belum, tambahkan script berikut sebelum tag penutup </body>:
-    <script src="//unpkg.com/alpinejs" defer></script>
---}}
-
+{{-- resources/views/agenda/index.blade.php --}}
 <x-layout>
+    <style>[x-cloak]{ display:none!important }</style>
+    <script defer src="https://cdn.jsdelivr.net/npm/@alpinejs/focus@3.x.x/dist/cdn.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     <x-slot:title>Daftar Agenda</x-slot:title>
 
-    {{-- Container utama dengan state management dari Alpine.js --}}
-    <div x-data="{
-        isCreateModalOpen: false,
-        isEditModalOpen: false,
-        editAgenda: {},
-        openEditModal(agenda) {
-            this.editAgenda = {
-                ...agenda,
-                // Format tanggal dan waktu agar sesuai dengan input type="date" dan "time"
-                tanggal: new Date(agenda.tanggal).toISOString().split('T')[0],
-                jam_mulai: agenda.jam_mulai.substring(0, 5),
-                jam_selesai: agenda.jam_selesai.substring(0, 5)
-            };
-            const form = document.getElementById('editForm');
-            const actionUrl = '{{ route('agenda.update', ':id') }}';
-            form.action = actionUrl.replace(':id', agenda.agenda_id);
-            this.isEditModalOpen = true;
-        }
-    }">
+    <div
+        x-data="{
+            isCreateModalOpen: false,
+            isEditModalOpen: false,
+            editAgenda: {},
+            openEditModal(agenda) {
+                this.editAgenda = {
+                    ...agenda,
+                    tanggal: new Date(agenda.tanggal).toISOString().split('T')[0],
+                    jam_mulai: (agenda.jam_mulai || '').toString().substring(0,5),
+                    jam_selesai: (agenda.jam_selesai || '').toString().substring(0,5)
+                };
+                const form = document.getElementById('editForm');
+                if (form) {
+                    const actionUrl = '{{ route('agenda.update', ':id') }}';
+                    form.action = actionUrl.replace(':id', agenda.agenda_id);
+                }
+                this.isEditModalOpen = true;
+            }
+        }"
+    >
         <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-
-            {{-- Header --}}
             <div class="flex justify-between items-center mb-6">
                 <div>
                     <h1 class="text-2xl font-bold text-gray-800">Daftar Agenda</h1>
                     <p class="text-sm text-gray-500">SI-AGENDA Pemerintah Kota Mojokerto</p>
                 </div>
-                {{-- Tombol untuk membuka modal tambah agenda --}}
-                <button @click="isCreateModalOpen = true" class="inline-flex items-center px-4 py-2 bg-[#8A0303] border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-[#6e0202] focus:bg-[#6e0202] active:bg-[#9d0303] focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition ease-in-out duration-150">
+
+                <button type="button"
+                    @click="isCreateModalOpen = true"
+                    class="inline-flex items-center px-4 py-2 bg-[#8A0303] border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-[#6e0202] focus:bg-[#6e0202] active:bg-[#9d0303] focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition ease-in-out duration-150">
                     + Tambah Agenda
                 </button>
             </div>
 
-            {{-- Kartu Status --}}
             <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                 <div class="bg-white p-6 rounded-lg shadow-sm border-l-4 border-yellow-500">
                     <h3 class="text-sm font-medium text-gray-500">Agenda Menunggu</h3>
@@ -57,7 +55,6 @@
                 </div>
             </section>
 
-            {{-- Notifikasi --}}
             @if(session('success'))
                 <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-6 rounded-r-lg" role="alert">
                     <p>{{ session('success') }}</p>
@@ -73,16 +70,30 @@
                     </ul>
                 </div>
             @endif
-            {{-- Tabel Agenda --}}
+
             <x-table :agendas="$agendas" />
         </div>
-        <!-- Modal untuk Tambah Agenda -->
-        <div x-show="isCreateModalOpen" @keydown.escape.window="isCreateModalOpen = false" class="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true" style="display: none;">
-            <div class="flex items-end justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
-                <div x-show="isCreateModalOpen" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" @click="isCreateModalOpen = false" aria-hidden="true"></div>
-                <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-                <div x-show="isCreateModalOpen" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100" x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" class="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
-                    <h3 class="text-lg font-medium leading-6 text-gray-900" id="modal-title">Tambah Agenda Baru</h3>
+
+        {{-- ===== Modal Tambah (teleport to body, trap focus, no-scroll) ===== --}}
+        <template x-teleport="body">
+            <div
+                x-cloak
+                x-show="isCreateModalOpen"
+                x-trap.inert.noscroll="isCreateModalOpen"
+                @keydown.escape.window="isCreateModalOpen = false"
+                class="fixed inset-0 z-[999] flex items-center justify-center p-4"
+                x-transition.opacity
+            >
+                <div class="fixed inset-0 bg-gray-500 bg-opacity-75" @click="isCreateModalOpen = false"></div>
+
+                <div
+                    x-show="isCreateModalOpen"
+                    x-transition.scale.origin.center
+                    class="relative z-[1000] inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:align-middle sm:max-w-lg sm:w-full sm:p-6"
+                    @click.stop
+                >
+                    <h3 class="text-lg font-medium leading-6 text-gray-900">Tambah Agenda Baru</h3>
+
                     <form action="{{ route('agenda.store') }}" method="POST" class="mt-4 space-y-4">
                         @csrf
                         <div>
@@ -114,15 +125,28 @@
                     </form>
                 </div>
             </div>
-        </div>
+        </template>
 
-        <!-- Modal untuk Edit Agenda -->
-        <div x-show="isEditModalOpen" @keydown.escape.window="isEditModalOpen = false" class="fixed inset-0 z-50 overflow-y-auto" aria-labelledby="modal-title-edit" role="dialog" aria-modal="true" style="display: none;">
-            <div class="flex items-end justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
-                <div x-show="isEditModalOpen" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100" x-transition:leave-end="opacity-0" class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" @click="isEditModalOpen = false" aria-hidden="true"></div>
-                <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
-                <div x-show="isEditModalOpen" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100" x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" class="inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full sm:p-6">
+        {{-- ===== Modal Edit (teleport to body, trap focus, no-scroll) ===== --}}
+        <template x-teleport="body">
+            <div
+                x-cloak
+                x-show="isEditModalOpen"
+                x-trap.inert.noscroll="isEditModalOpen"
+                @keydown.escape.window="isEditModalOpen = false"
+                class="fixed inset-0 z-[999] flex items-center justify-center p-4"
+                x-transition.opacity
+            >
+                <div class="fixed inset-0 bg-gray-500 bg-opacity-75" @click="isEditModalOpen = false"></div>
+
+                <div
+                    x-show="isEditModalOpen"
+                    x-transition.scale.origin.center
+                    class="relative z-[1000] inline-block align-bottom bg-white rounded-lg px-4 pt-5 pb-4 text-left overflow-hidden shadow-xl transform transition-all sm:align-middle sm:max-w-lg sm:w-full sm:p-6"
+                    @click.stop
+                >
                     <h3 class="text-lg font-medium leading-6 text-gray-900" id="modal-title-edit">Edit Agenda</h3>
+
                     <form id="editForm" method="POST" class="mt-4 space-y-4">
                         @csrf
                         @method('PUT')
@@ -155,6 +179,6 @@
                     </form>
                 </div>
             </div>
-        </div>
+        </template>
     </div>
 </x-layout>
