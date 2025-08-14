@@ -1,70 +1,83 @@
 @props(['agendas'])
-
+<script src="//unpkg.com/alpinejs" defer></script>
 <form action="{{ route('landing') }}" method="GET" id="filterForm" data-ajax="true">
   {{-- hidden untuk sync via JS --}}
   <input type="hidden" name="timeRange" value="{{ request('timeRange', 5) }}">
-  <input type="hidden" name="perPage" value="{{ request('perPage', request('per_page', 10)) }}">
+  {{-- <input type="hidden" name="perPage" ...> TELAH DIHAPUS --}}
   <input type="hidden" id="qMirror" name="search" value="{{ request('search', request('q')) }}">
   <input type="hidden" id="pageHidden" name="page" value="{{ request('page', 1) }}">
 
   {{-- ================== CONTROLS (Show / Search / Filter) ================== --}}
-  <section class="mx-auto max-w-7xl px-2 sm:px-0">
-    <div id="controls" class="flex flex-wrap items-center gap-2 md:gap-3">
+  <section>
+    <div id="controls" class="flex flex-wrap items-center justify-between gap-4">
 
-      <!-- SHOW -->
-      <div id="showWrap"
-           class="inline-flex items-center gap-2 rounded-lg bg-white px-2 py-1
-                  ring-1 ring-inset ring-red-600/70 hover:ring-red-600/60
-                  focus-within:ring-1 focus-within:ring-red-600 shrink-0">
+      <div id="showWrap" class="inline-flex items-center gap-2 rounded-lg bg-white px-2 py-1 ring-1 ring-inset ring-red-600/70 hover:ring-red-600/60 focus-within:ring-1 focus-within:ring-red-600 shrink-0">
         <span class="text-sm font-medium text-slate-700">Show:</span>
         <div class="relative">
-          <select id="perPageSelect" name="per_page"
-                  class="appearance-none h-7 w-16 rounded-md
-                         border border-red-700/50 bg-transparent
-                         pl-3 pr-7 text-sm font-medium leading-tight text-slate-700
-                         focus:outline-none focus:ring-1 focus:ring-red-600">
+          {{-- NAMA DIUBAH MENJADI perPage --}}
+          <select id="perPageSelect" name="perPage" class="appearance-none h-7 w-16 rounded-md border border-red-700/50 bg-transparent pl-3 pr-7 text-sm font-medium leading-tight text-slate-700 focus:outline-none focus:ring-1 focus:ring-red-600">
             @foreach ([10,25,50,100] as $n)
-              <option value="{{ $n }}" @selected((int)request('per_page', request('perPage', 10)) === $n)>{{ $n }}</option>
+              <option value="{{ $n }}" @selected((int)request('perPage', 10) === $n)>{{ $n }}</option>
             @endforeach
           </select>
-          <svg class="pointer-events-none absolute right-1 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-600"
-               viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-            <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.19l3.71-3.96a.75.75 0 111.08 1.04l-4.25 4.53a.75.75 0 01-1.08 0L5.21 8.27a.75.75 0 01.02-1.06z" clip-rule="evenodd"/>
-          </svg>
+          <svg class="pointer-events-none absolute right-1 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-600" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.19l3.71-3.96a.75.75 0 111.08 1.04l-4.25 4.53a.75.75 0 01-1.08 0L5.21 8.27a.75.75 0 01.02-1.06z" clip-rule="evenodd"/></svg>
         </div>
       </div>
 
-      <!-- SEARCH -->
-      <div class="relative flex-1 min-w-[220px]">
-        <input id="searchInput" name="search" value="{{ request('search', request('q')) }}"
-               type="search" autocomplete="off" placeholder="Cari agenda, tempat, PIC, tanggal…"
-               class="w-full rounded-md border border-red-700/50 bg-white pl-9 pr-3 py-2
-                      text-sm text-slate-700 focus:outline-none focus:ring-1 focus:ring-red-700">
-        <svg class="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-red-700"
-             fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-          <path stroke-linecap="round" stroke-linejoin="round"
-                d="m21 21-4.35-4.35m0 0A7.5 7.5 0 1 0 5.5 5.5a7.5 7.5 0 0 0 11.15 11.15z" />
-        </svg>
-      </div>
+      <div class="flex items-center gap-2 md:gap-3">
+        <div class="group relative flex items-center w-96 rounded-md bg-white ring-1 ring-inset ring-red-700/50 hover:ring-red-700/80 focus-within:ring-2 focus-within:ring-red-600">
+          <svg class="ml-3 mr-2 h-4 w-4 stroke-slate-400" fill="none" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+          <input id="searchInput" name="search" value="{{ request('search', request('q')) }}" type="search" autocomplete="off" placeholder="Cari Nama Agenda, Tempat, Dihadiri" class="block w-full appearance-none bg-transparent py-2 pr-3 text-base text-gray-700 placeholder:text-gray-400 focus:outline-none sm:text-sm sm:leading-6"/>
+        </div>
+            @php
+            $currentStatus = strtolower((string)request('status'));
+            $statusLabel = match ($currentStatus) {
+                'berlangsung' => 'Berlangsung',
+                'selesai', 'berakhir' => 'Berakhir',
+                'menunggu', 'pending' => 'Menunggu',
+                default => 'Add Filter',
+            };
+              @endphp
+        
+        <div x-data="{ 
+                open: false, 
+                status: '{{ $currentStatus }}', 
+                label: '{{ $statusLabel }}' 
+             }" 
+             class="relative inline-block text-left shrink-0">
+            
+            <input type="hidden" name="status" x-model="status">
 
-      <!-- FILTER STATUS -->
-      @php $currentStatus = strtolower((string)request('status')); @endphp
-      <div class="relative inline-flex shrink-0">
-        <select id="statusSelect" name="status"
-                class="appearance-none cursor-pointer rounded-md bg-red-700 pl-8 pr-8 py-2
-                       text-sm font-medium text-white shadow-sm hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-red-800">
-          <option value="" @selected($currentStatus==='')>Semua</option>
-          <option value="berlangsung" @selected($currentStatus==='berlangsung')>Berlangsung</option>
-          <option value="selesai" @selected(in_array($currentStatus,['selesai','berakhir']))>Berakhir</option>
-          <option value="menunggu" @selected(in_array($currentStatus,['menunggu','pending']))>Menunggu</option>
-        </select>
-        <svg class="pointer-events-none absolute left-2.5 top-1/2 -translate-y-1/2 h-4 w-4 text-white"
-             viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-          <path d="M3 5h18v2H3V5zm4 6h10v2H7v-2zm-2 6h14v2H5v-2z"/>
-        </svg>
-        <span class="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-white">▾</span>
-      </div>
+            <button @click="open = !open" @click.away="open = false" type="button" class="inline-flex w-40 justify-center items-center gap-x-2 rounded-md bg-red-700 px-3 py-2 text-sm font-medium text-white shadow-sm hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-red-800">
+                {{-- PERUBAHAN: Mengganti ikon filter dengan ikon "sort" --}}
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                  <path d="M3 3a1 1 0 000 2h14a1 1 0 000-2H3zm0 4a1 1 0 000 2h10a1 1 0 000-2H3zm0 4a1 1 0 000 2h6a1 1 0 000-2H3z" />
+                </svg>
+                <span x-text="label"></span>
+                <svg class="-mr-1 h-5 w-5 text-gray-300" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                    <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.19l3.71-3.96a.75.75 0 111.08 1.04l-4.25 4.53a.75.75 0 01-1.08 0L5.21 8.27a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+                </svg>
+            </button>
 
+            <div x-show="open" 
+                 x-transition:enter="transition ease-out duration-100" 
+                 x-transition:enter-start="transform opacity-0 scale-95" 
+                 x-transition:enter-end="transform opacity-100 scale-100" 
+                 x-transition:leave="transition ease-in duration-75" 
+                 x-transition:leave-start="transform opacity-100 scale-100" 
+                 x-transition:leave-end="transform opacity-0 scale-95" 
+                 class="absolute right-0 z-10 mt-2 w-full origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+                 style="display: none;">
+                <div class="py-1" role="menu" aria-orientation="vertical">
+                    <a href="#" @click.prevent="status=''; label='Add Filter'; open=false; $nextTick(() => { $el.closest('form').dispatchEvent(new Event('change', { bubbles: true })) })" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Semua</a>
+                    <a href="#" @click.prevent="status='berlangsung'; label='Berlangsung'; open=false; $nextTick(() => { $el.closest('form').dispatchEvent(new Event('change', { bubbles: true })) })" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Berlangsung</a>
+                    <a href="#" @click.prevent="status='selesai'; label='Berakhir'; open=false; $nextTick(() => { $el.closest('form').dispatchEvent(new Event('change', { bubbles: true })) })" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Berakhir</a>
+                    <a href="#" @click.prevent="status='menunggu'; label='Menunggu'; open=false; $nextTick(() => { $el.closest('form').dispatchEvent(new Event('change', { bubbles: true })) })" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Menunggu</a>
+                </div>
+            </div>
+        </div>
+
+      </div>
     </div>
   </section>
 
@@ -90,14 +103,14 @@
             <col class="w-[12%]" />                 {{-- Status --}}
           </colgroup>
 
-          <thead class="bg-slate-50/60 text-slate-700">
+          <thead class="bg-red-700 text-white">
             <tr>
               <th class="px-4 py-3 font-semibold">No</th>
               <th class="px-4 py-3 font-semibold">Nama Agenda</th>
               <th class="px-4 py-3 font-semibold">Tempat</th>
               <th class="px-4 py-3 font-semibold">Tanggal</th>
               <th class="px-4 py-3 font-semibold">Waktu</th>
-              <th class="px-4 py-3 font-semibold">OPD</th>
+              <th class="px-4 py-3 font-semibold">OPD Pembuat</th>
               <th class="px-4 py-3 font-semibold">Dihadiri</th>
               <th class="px-4 py-3 font-semibold">Status</th>
             </tr>
@@ -184,15 +197,15 @@
               $searchIndex = mb_strtolower(implode(' ', array_filter($indexParts)));
             @endphp
 
-            <tr class="odd:bg-white even:bg-slate-50" data-index="{{ $searchIndex }}" data-status="{{ $labelStatus }}">
-              <td class="border-y border-slate-200 px-4 py-3 text-sm text-slate-800 align-middle">{{ $rowIndex }}.</td>
-              <td class="border-y border-slate-200 px-4 py-3 text-sm font-semibold text-slate-900">{{ $agenda->nama_agenda ?? $agenda->title ?? '-' }}</td>
-              <td class="border-y border-slate-200 px-4 py-3 text-sm text-slate-800">{{ $agenda->tempat ?? $agenda->lokasi ?? '-' }}</td>
-              <td class="border-y border-slate-200 px-4 py-3 text-sm text-slate-800">{{ $tglText }}</td>
-              <td class="border-y border-slate-200 px-4 py-3 text-sm text-slate-800">{{ $waktuText }}</td>
-              <td class="border-y border-slate-200 px-4 py-3 text-sm text-slate-800">{{ $picText }}</td>
-              <td class="border-y border-slate-200 px-4 py-3 text-sm text-slate-800">{{ $dihadiriText }}</td>
-              <td class="border-y border-slate-200 px-4 py-3">
+            <tr class="odd:bg-white hover:bg-red-100/90 transition-colors duration-3">
+              <td class="border-b border-slate-400 px-4 py-3 text-sm text-slate-800 align-middle">{{ $rowIndex }}.</td>
+              <td class="border-b border-slate-400 px-4 py-3 text-sm font-semibold text-slate-900">{{ $agenda->nama_agenda ?? '-' }}</td>
+              <td class="border-b border-slate-400 px-4 py-3 text-sm text-slate-800">{{ $agenda->tempat ?? '-' }}</td>
+              <td class="border-b border-slate-400 px-4 py-3 text-sm text-slate-800">{{ $tglText }}</td>
+              <td class="border-b border-slate-400 px-4 py-3 text-sm text-slate-800">{{ $waktuText ?: '-' }}</td>
+              <td class="border-b border-slate-400 px-4 py-3 text-sm text-slate-800">{{ $picText }}</td>
+              <td class="border-b border-slate-400 px-4 py-3 text-sm text-slate-800">{{ $dihadiriText }}</td>
+              <td class="border-b border-slate-400 px-4 py-3">
                 <span class="inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset {{ $badgeClass }}">
                   {{ ucfirst($labelStatus) }}
                 </span>

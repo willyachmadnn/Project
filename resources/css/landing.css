@@ -1,0 +1,87 @@
+/* File: resources/css/landing.css */
+
+:root {
+    --radius-xl: 1.5rem;
+    --shadow-text: 0 2px 8px rgba(0,0,0,.6);
+    --shadow-content: 0 -10px 25px -5px rgb(0 0 0 / 0.1), 0 -8px 10px -6px rgb(0 0 0 / 0.1);
+}
+
+/* Latar Belakang & Selubung */
+.hero-bg, .hero-veil {
+    position: fixed; inset: 0;
+    width: 100vw; height: 100svh;
+}
+.hero-bg {
+    z-index: -2;
+    background-image: url('https://ppid.mojokertokab.go.id/images/sliders/1686640788-5985.jpg');
+    background-size: cover; background-position: center;
+}
+.hero-veil {
+    z-index: -1;
+    background: linear-gradient(to bottom, rgba(17,24,39,.75) 5%, rgba(17,24,39,.40) 50%, transparent);
+    backdrop-filter: blur(0.5px);
+}
+
+/* Teks Hero Fixed */
+.hero-text-content {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    max-width: 68rem;
+    padding: 1rem;
+    text-align: center;
+    z-index: 1;
+}
+.text-shadow { text-shadow: var(--shadow-text); }
+#hero-description {
+    max-width: 86rem;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.2;
+}
+
+/* Pemberi Jarak & Trigger Animasi */
+.hero-spacer {
+    height: 100vh;
+}
+
+/* Area Konten Putih */
+.content-body {
+    position: relative;
+    z-index: 2;
+    background-color: white;
+    border-top-left-radius: var(--radius-xl);
+    border-top-right-radius: var(--radius-xl);
+    box-shadow: var(--shadow-content);
+    min-height: 100vh;
+}
+
+body { overflow-x: hidden; }
+
+/* ================================================================== */
+/* CSS UNTUK ANIMASI DUA ARAH (FINAL) */
+/* ================================================================== */
+.slide-in-wrapper {
+    overflow: hidden;
+    margin-bottom: 1rem;
+}
+
+.animate-item {
+    opacity: 0;
+    transition: transform 1s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.7s ease-out;
+}
+
+.slide-from-top {
+    transform: translateY(-110%);
+}
+
+.slide-from-bottom {
+    transform: translateY(110%);
+}
+
+.animate-item.is-visible {
+    transform: translateY(0);
+    opacity: 1;
+}
