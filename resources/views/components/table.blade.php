@@ -49,10 +49,10 @@
 
       <!-- FILTER STATUS -->
       @php $currentStatus = strtolower((string)request('status')); @endphp
-      <div class="relative shrink-0">
+      <div class="relative inline-flex shrink-0">
         <select id="statusSelect" name="status"
                 class="appearance-none cursor-pointer rounded-md bg-red-700 pl-8 pr-8 py-2
-                       text-sm font-medium text-white shadow hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-red-800">
+                       text-sm font-medium text-white shadow-sm hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-red-800">
           <option value="" @selected($currentStatus==='')>Semua</option>
           <option value="berlangsung" @selected($currentStatus==='berlangsung')>Berlangsung</option>
           <option value="selesai" @selected(in_array($currentStatus,['selesai','berakhir']))>Berakhir</option>
@@ -72,7 +72,7 @@
   <section id="tableWrap" class="mx-auto mt-4 max-w-7xl px-2 sm:px-1">
     <div class="rounded-lg bg-white shadow">
       <div class="overflow-x-auto">
-        <table class="w-full table-fixed text-xs sm:text-sm
+        <table class="agenda-table w-full table-fixed text-xs sm:text-sm
                ![&_th]:text-center ![&_td]:text-center ![&_td]:align-middle
                [&_td>div]:flex [&_td>div]:items-center [&_td>div]:justify-center
                [&_td>a]:inline-flex [&_td>a]:items-center [&_td>a]:justify-center [&_td>a]:mx-auto
@@ -185,7 +185,7 @@
             @endphp
 
             <tr class="odd:bg-white even:bg-slate-50" data-index="{{ $searchIndex }}" data-status="{{ $labelStatus }}">
-              <td class="border-y border-slate-200 px-4 py-3 text-sm text-slate-800 align-top">{{ $rowIndex }}.</td>
+              <td class="border-y border-slate-200 px-4 py-3 text-sm text-slate-800 align-middle">{{ $rowIndex }}.</td>
               <td class="border-y border-slate-200 px-4 py-3 text-sm font-semibold text-slate-900">{{ $agenda->nama_agenda ?? $agenda->title ?? '-' }}</td>
               <td class="border-y border-slate-200 px-4 py-3 text-sm text-slate-800">{{ $agenda->tempat ?? $agenda->lokasi ?? '-' }}</td>
               <td class="border-y border-slate-200 px-4 py-3 text-sm text-slate-800">{{ $tglText }}</td>
