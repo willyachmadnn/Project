@@ -75,63 +75,7 @@
             @endif
 
             {{-- Tabel Agenda --}}
-            <div class="bg-white shadow-sm rounded-lg overflow-hidden">
-                <div class="overflow-x-auto">
-                    <table class="min-w-full divide-y divide-gray-200">
-                        <thead class="bg-[#8A0303]">
-                            <tr>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">No</th>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Nama Agenda</th>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Tempat</th>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Tanggal</th>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Status</th>
-                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-white uppercase tracking-wider">Aksi</th>
-                            </tr>
-                        </thead>
-                        <tbody class="bg-white divide-y divide-gray-200">
-                            @forelse($agendas as $index => $agenda)
-                                <tr>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $agendas->firstItem() + $index }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                        <a href="{{ route('agenda.tamu.index', ['agenda' => $agenda->agenda_id]) }}" class="text-gray-800 hover:text-[#8A0303] hover:underline">
-                                            {{ $agenda->nama_agenda }}
-                                        </a>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $agenda->tempat }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ $agenda->tanggal->format('d F Y') }}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                        <span @class(['px-2 inline-flex text-xs leading-5 font-semibold rounded-full', 'bg-yellow-100 text-yellow-800' => $agenda->status === 'Menunggu', 'bg-green-100 text-green-800' => $agenda->status === 'Berlangsung', 'bg-red-100 text-red-800' => $agenda->status === 'Selesai'])>
-                                            {{ $agenda->status }}
-                                        </span>
-                                    </td>
-                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                        <div class="flex space-x-4">
-                                            {{-- Tombol untuk membuka modal edit --}}
-                                            <button @click="openEditModal({{ json_encode($agenda) }})" class="text-gray-600 hover:text-gray-900">Edit</button>
-                                            <form action="{{ route('agenda.destroy', ['agenda' => $agenda->agenda_id]) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus agenda ini?');">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="text-red-600 hover:text-red-900">Hapus</button>
-                                            </form>
-                                        </div>
-                                    </td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="6" class="px-6 py-4 text-center text-sm text-gray-500">
-                                        Tidak ada agenda yang tersedia.
-                                    </td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                    </table>
-                </div>
-                @if ($agendas->hasPages())
-                    <div class="p-4 border-t border-gray-200">
-                        {{ $agendas->links() }}
-                    </div>
-                @endif
-            </div>
+            <x-table :agendas="$agendas" />
         </div>
 
         <!-- Modal untuk Tambah Agenda -->

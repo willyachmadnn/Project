@@ -97,7 +97,7 @@
               <th class="px-4 py-3 font-semibold">Tempat</th>
               <th class="px-4 py-3 font-semibold">Tanggal</th>
               <th class="px-4 py-3 font-semibold">Waktu</th>
-              <th class="px-4 py-3 font-semibold">Penanggung Jawab</th>
+              <th class="px-4 py-3 font-semibold">OPD</th>
               <th class="px-4 py-3 font-semibold">Dihadiri</th>
               <th class="px-4 py-3 font-semibold">Status</th>
             </tr>
