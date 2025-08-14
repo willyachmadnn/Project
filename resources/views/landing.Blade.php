@@ -58,7 +58,6 @@
           padding: clamp(16px, 4vw, 32px); 
           color:white; 
           text-shadow: 0 1px 2px rgba(0,0,0,.35);
-          margin-top: 5%;
         }
       </style>
 
@@ -78,7 +77,7 @@
       </div>
     </section>
   </main>
-
+  <div class="rounded-lg shadow-md p-4 pt-8 sm:p-6 sm:pt-12 bg-[linear-gradient(to_bottom,transparent_4%,white_4%)]">
     {{-- sorotan kartu aktif diambil dari query ?status= --}}
     @php $kpiActive = request('status'); @endphp
 
@@ -89,7 +88,7 @@
       :finished-agendas-count="$finishedAgendasCount ?? 0"
       :kpi-active="$kpiActive" />
     {{-- Form + Kontrol + Tabel + Pagination (komponen) --}}
-    <div class="bg-gray-50 rounded-lg shadow-md p-4 sm:p-6 mt-8">
+    
       <x-table :agendas="$agendas" />
     </div>
 
