@@ -177,7 +177,7 @@
 
   {{-- ===== FOOTER: hanya di landing ===== --}}
   @if ($isLanding)
-    <footer class="mt-12 border-t border-white/10 bg-gradient-to-r from-[#ac1616] to-[#7e0f0f] text-white">
+    <footer class=" border-t border-white/10 bg-gradient-to-r from-[#ac1616] to-[#7e0f0f] text-white">
       <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-4 text-sm text-white flex items-center gap-2">
         &copy; {{ now()->year }}
         <div class="flex items-center gap-1">
