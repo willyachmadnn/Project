@@ -11,16 +11,57 @@ class AgendaController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        // PERBAIKAN: Menggunakan paginate() bukan get()
-        $agendas = Agenda::with('admin')->latest('tanggal')->paginate(10); // Anda bisa sesuaikan jumlah per halaman
+        $query = Agenda::query();
 
-        // PENAMBAHAN: Menghitung jumlah untuk kartu status agar sesuai dengan view baru
+        // ==================================================================
+        // PERBAIKAN 1: Menangani filter berdasarkan status
+        // ==================================================================
+        if ($request->filled('status')) {
+            switch ($request->status) {
+                case 'menunggu':
+                    $query->menunggu();
+                    break;
+                case 'berlangsung':
+                    $query->berlangsung();
+                    break;
+                case 'berakhir':
+                    $query->berakhir();
+                    break;
+                // Jika status 'semua' atau lainnya, tidak perlu filter status
+            }
+        }
+
+        // ==================================================================
+        // PERBAIKAN 2: Logika pencarian multi-kolom
+        // ==================================================================
+        if ($request->filled('search')) {
+            $searchTerm = $request->search;
+
+            $query->where(function ($q) use ($searchTerm) {
+                $q->where('nama_agenda', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('tempat', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('dihadiri', 'like', '%' . $searchTerm . '%');
+                // Jika Anda punya kolom 'opd' di database, uncomment baris di bawah
+                // ->orWhere('opd', 'like', '%' . $searchTerm . '%');
+            });
+        }
+
+        // Mengambil data setelah difilter, diurutkan, dan dipaginasi
+        // Menambahkan appends() agar parameter filter & search tetap ada saat pindah halaman
+        $agendas = $query->with('admin')
+            ->latest('tanggal')
+            ->paginate(10)
+            ->appends($request->query());
+
+        // Menghitung jumlah untuk kartu status
         $pendingAgendasCount = Agenda::menunggu()->count();
         $ongoingAgendasCount = Agenda::berlangsung()->count();
         $finishedAgendasCount = Agenda::berakhir()->count();
 
+        // Mengirim data ke view yang benar (agenda.index atau landing)
+        // Sesuaikan nama view di bawah ini jika perlu
         return view('agenda.index', compact(
             'agendas',
             'pendingAgendasCount',
@@ -28,6 +69,8 @@ class AgendaController extends Controller
             'finishedAgendasCount'
         ));
     }
+
+    // ... sisa method lainnya tidak perlu diubah ...
 
     /**
      * Show the form for creating a new resource.
@@ -47,7 +90,7 @@ class AgendaController extends Controller
             'tempat' => 'required|string|max:255',
             'tanggal' => 'required|date',
             'jam_mulai' => 'required|date_format:H:i',
-            'jam_selesai' => 'required|date_format:H:i', // Pertimbangkan validasi after:jam_mulai jika perlu
+            'jam_selesai' => 'required|date_format:H:i',
             'dihadiri' => 'nullable|string|max:255',
         ]);
 
@@ -57,7 +100,6 @@ class AgendaController extends Controller
                 ->withInput();
         }
 
-        // Menambahkan admin_id yang sedang login secara otomatis
         $data = $request->all();
         $data['admin_id'] = auth('admin')->id();
 

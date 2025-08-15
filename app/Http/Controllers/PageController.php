@@ -15,7 +15,7 @@ class PageController extends Controller
      */
     public function index(Request $request): View
     {
-        // --- 1. PENGHITUNGAN UNTUK KARTU STATUS (DIPENGARUHI SLIDER) ---
+        // --- 1. PENGHITUNGAN UNTUK KARTU STATUS (Tidak ada perubahan) ---
         $countQuery = Agenda::query();
         $timeRange = $request->input('timeRange', '5');
 
@@ -44,27 +44,30 @@ class PageController extends Controller
         $finishedAgendasCount = (clone $countQuery)->berakhir()->count();
 
         // --- 2. QUERY UNTUK TABEL DAFTAR AGENDA ---
-        // PERBAIKAN 1: Tambahkan with('admin') untuk Eager Loading
-        $agendasQuery = Agenda::with('admin');
+        $agendasQuery = Agenda::query(); // Menggunakan query baru, bukan yang dari count
 
+        // ==================================================================
+        // PERBAIKAN UTAMA: Menambahkan kolom OPD dan Dihadiri ke dalam pencarian
+        // ==================================================================
         if ($request->filled('search')) {
             $search = $request->input('search');
             $agendasQuery->where(function ($q) use ($search) {
                 $q->where('nama_agenda', 'like', '%' . $search . '%')
                     ->orWhere('tempat', 'like', '%' . $search . '%')
-                    // PERBAIKAN 2: Tambahkan pencarian berdasarkan nama admin (PIC)
-                    ->orWhereHas('admin', function ($adminQuery) use ($search) {
-                        $adminQuery->where('nama_admin', 'like', '%' . $search . '%');
-                    });
+                    ->orWhere('tanggal', 'like', '%' . $search . '%')
+                    ->orWhere('waktu', 'like', '%' . $search . '%')
+                    ->orWhere('opd', 'like', '%' . $search . '%')
+                    ->orWhere('dihadiri', 'like', '%' . $search . '%');
             });
         }
 
+        // Filter berdasarkan status (Tidak ada perubahan)
         if ($request->filled('status')) {
             $status = $request->input('status');
             match ($status) {
-                'menunggu' => $agendasQuery->menunggu(),
+                'menunggu', 'pending' => $agendasQuery->menunggu(),
                 'berlangsung' => $agendasQuery->berlangsung(),
-                'berakhir' => $agendasQuery->berakhir(),
+                'selesai', 'berakhir' => $agendasQuery->berakhir(),
                 default => null,
             };
         }
@@ -81,10 +84,11 @@ class PageController extends Controller
     }
 
     /**
-     * Menangani permintaan API untuk slider.
+     * Menangani permintaan API untuk slider (jika masih digunakan).
      */
     public function getAgendaCounts(Request $request): JsonResponse
     {
+        // ... (Tidak ada perubahan di method ini)
         $countQuery = Agenda::query();
         $timeRange = $request->input('timeRange', '5');
 
