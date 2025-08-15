@@ -22,8 +22,7 @@
             <div id="hero-description"
                  class="text-base sm:text-lg md:text-xl leading-relaxed opacity-95 text-white text-shadow space-y-3">
                 <p class="animate-item">
-                    Portal E-Agenda ini merupakan platform digital resmi yang dikelola oleh Pemerintah Kabupaten Mojokerto.
-                    Sistem ini dirancang untuk menyajikan informasi jadwal kegiatan pimpinan dan pemerintah daerah secara terpusat, akurat, dan transparan kepada seluruh masyarakat dan pihak terkait.
+                    Portal E-Agenda ini merupakan platform digital resmi yang dikelola oleh Pemerintah Kabupaten Mojokerto. Sistem ini dirancang untuk menyajikan informasi jadwal kegiatan pimpinan dan pemerintah daerah secara terpusat, akurat, dan transparan kepada seluruh masyarakat dan pihak terkait.
                 </p>
             </div>
         </div>
@@ -39,7 +38,13 @@
                         :finished-agendas-count="$finishedAgendasCount ?? 0"
                         :kpi-active="$kpiActive" />
                 </div>
-                <x-table :agendas="$agendas" />
+                @auth('admin')
+        {{-- Tampilan untuk pengguna yang sudah login --}}
+                <x-dashboard :agendas="$agendas" />
+                    @else
+                        {{-- Tampilan untuk pengguna yang belum login (tamu) --}}
+                        <x-table :agendas="$agendas"/>
+                @endauth
             </div>
         </section>
     </main>
