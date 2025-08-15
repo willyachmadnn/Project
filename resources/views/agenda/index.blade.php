@@ -40,20 +40,12 @@
                 </button>
             </div>
 
-            <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <div class="bg-white p-6 rounded-lg shadow-sm border-l-4 border-yellow-500">
-                    <h3 class="text-sm font-medium text-gray-500">Agenda Menunggu</h3>
-                    <p class="text-3xl font-bold text-gray-800 mt-2">{{ $pendingAgendasCount ?? '0' }}</p>
+                <div id="kpi-cards" class="mb-8 pt-28">
+                    <x-page
+                        :pending-agendas-count="$pendingAgendasCount ?? 0"
+                        :ongoing-agendas-count="$ongoingAgendasCount ?? 0"
+                        :finished-agendas-count="$finishedAgendasCount ?? 0"/>
                 </div>
-                <div class="bg-white p-6 rounded-lg shadow-sm border-l-4 border-green-500">
-                    <h3 class="text-sm font-medium text-gray-500">Agenda Berlangsung</h3>
-                    <p class="text-3xl font-bold text-gray-800 mt-2">{{ $ongoingAgendasCount ?? '0' }}</p>
-                </div>
-                <div class="bg-white p-6 rounded-lg shadow-sm border-l-4 border-red-500">
-                    <h3 class="text-sm font-medium text-gray-500">Agenda Berakhir</h3>
-                    <p class="text-3xl font-bold text-gray-800 mt-2">{{ $finishedAgendasCount ?? '0' }}</p>
-                </div>
-            </section>
 
             @if(session('success'))
                 <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-6 rounded-r-lg" role="alert">
@@ -71,7 +63,8 @@
                 </div>
             @endif
 
-            <x-table :agendas="$agendas" />
+            <x-dashboard :agendas="$agendas" class="shadow-sm" />
+            
         </div>
 
         {{-- ===== Modal Tambah (teleport to body, trap focus, no-scroll) ===== --}}
@@ -181,4 +174,7 @@
             </div>
         </template>
     </div>
+        @push('scripts')
+        @vite('resources/js/landing.js')
+    @endpush
 </x-layout>
