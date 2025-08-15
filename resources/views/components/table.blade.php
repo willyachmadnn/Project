@@ -48,13 +48,13 @@
             
             <input type="hidden" name="status" x-model="status">
 
-            <button @click="open = !open" @click.away="open = false" type="button" class="inline-flex w-40 justify-center items-center gap-x-2 rounded-md bg-red-700 px-3 py-2 text-sm font-medium text-white shadow-sm hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-red-800">
+            <button @click="open = !open" @click.away="open = false" type="button" class="inline-flex w-40 items-center rounded-md bg-red-700 px-3 py-2 text-sm font-medium text-white shadow-sm hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-red-800">
                 {{-- PERUBAHAN: Mengganti ikon filter dengan ikon "sort" --}}
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
                   <path d="M3 3a1 1 0 000 2h14a1 1 0 000-2H3zm0 4a1 1 0 000 2h10a1 1 0 000-2H3zm0 4a1 1 0 000 2h6a1 1 0 000-2H3z" />
                 </svg>
-                <span x-text="label"></span>
-                <svg class="-mr-1 h-5 w-5 text-gray-300" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                <span x-text="label" class="flex-grow text-center mx-2"></span>
+                <svg class="-mr-1 h-5 w-5 text-gray-300 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                     <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.19l3.71-3.96a.75.75 0 111.08 1.04l-4.25 4.53a.75.75 0 01-1.08 0L5.21 8.27a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
                 </svg>
             </button>
@@ -66,13 +66,13 @@
                  x-transition:leave="transition ease-in duration-75" 
                  x-transition:leave-start="transform opacity-100 scale-100" 
                  x-transition:leave-end="transform opacity-0 scale-95" 
-                 class="absolute right-0 z-10 mt-2 w-full origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+                 class="absolute right-0 z-10 mt-2 w-full origin-top-right rounded-md bg-white shadow-lg border border-slate-300 focus:outline-none"
                  style="display: none;">
                 <div class="py-1" role="menu" aria-orientation="vertical">
-                    <a href="#" @click.prevent="status=''; label='Add Filter'; open=false; $nextTick(() => { $el.closest('form').dispatchEvent(new Event('change', { bubbles: true })) })" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Semua</a>
-                    <a href="#" @click.prevent="status='berlangsung'; label='Berlangsung'; open=false; $nextTick(() => { $el.closest('form').dispatchEvent(new Event('change', { bubbles: true })) })" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Berlangsung</a>
-                    <a href="#" @click.prevent="status='selesai'; label='Berakhir'; open=false; $nextTick(() => { $el.closest('form').dispatchEvent(new Event('change', { bubbles: true })) })" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Berakhir</a>
-                    <a href="#" @click.prevent="status='menunggu'; label='Menunggu'; open=false; $nextTick(() => { $el.closest('form').dispatchEvent(new Event('change', { bubbles: true })) })" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Menunggu</a>
+                    <a href="#" @click.prevent="status=''; label='Add Filter'; open=false; $nextTick(() => { $el.closest('form').dispatchEvent(new Event('change', { bubbles: true })) })" class="block px-4 py-2 text-sm text-gray-700 hover:bg-red-100 hover:text-red-900" role="menuitem">Semua</a>
+                    <a href="#" @click.prevent="status='berlangsung'; label='Berlangsung'; open=false; $nextTick(() => { $el.closest('form').dispatchEvent(new Event('change', { bubbles: true })) })" class="block px-4 py-2 text-sm text-gray-700 hover:bg-red-100 hover:text-red-900" role="menuitem">Berlangsung</a>
+                    <a href="#" @click.prevent="status='selesai'; label='Berakhir'; open=false; $nextTick(() => { $el.closest('form').dispatchEvent(new Event('change', { bubbles: true })) })" class="block px-4 py-2 text-sm text-gray-700 hover:bg-red-100 hover:text-red-900" role="menuitem">Berakhir</a>
+                    <a href="#" @click.prevent="status='menunggu'; label='Menunggu'; open=false; $nextTick(() => { $el.closest('form').dispatchEvent(new Event('change', { bubbles: true })) })" class="block px-4 py-2 text-sm text-gray-700 hover:bg-red-100 hover:text-red-900" role="menuitem">Menunggu</a>
                 </div>
             </div>
         </div>
@@ -83,7 +83,7 @@
 
   {{-- ==================== TABLE + PAGINATION (dibungkus #tableWrap untuk AJAX) ==================== --}}
   <section id="tableWrap" class="mx-auto mt-4 max-w-7xl px-2 sm:px-1">
-    <div class="rounded-lg bg-white shadow">
+    <div class="rounded-lg  bg-white shadow-xl">
       <div class="overflow-x-auto">
         <table class="agenda-table w-full table-fixed text-xs sm:text-sm
                ![&_th]:text-center ![&_td]:text-center ![&_td]:align-middle
@@ -105,14 +105,14 @@
 
           <thead class="bg-red-700 text-white">
             <tr>
-              <th class="px-4 py-3 font-semibold">No</th>
+              <th class="px-4 py-3 font-semibold rounded-tl-lg">No</th>
               <th class="px-4 py-3 font-semibold">Nama Agenda</th>
               <th class="px-4 py-3 font-semibold">Tempat</th>
               <th class="px-4 py-3 font-semibold">Tanggal</th>
               <th class="px-4 py-3 font-semibold">Waktu</th>
               <th class="px-4 py-3 font-semibold">OPD Pembuat</th>
               <th class="px-4 py-3 font-semibold">Dihadiri</th>
-              <th class="px-4 py-3 font-semibold">Status</th>
+              <th class="px-4 py-3 font-semibold rounded-tr-lg">Status</th>
             </tr>
           </thead>
 
