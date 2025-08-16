@@ -10,7 +10,6 @@
         <section class="hero-spacer"></section>
 
         <div class="hero-text-content">
-            {{-- PERUBAHAN: Menambahkan class 'animate-item' untuk target JS --}}
             <div class="slide-in-wrapper">
                 <h1 id="hero-title"
                     class="animate-item text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight mb-4 text-white text-shadow">
@@ -18,7 +17,6 @@
                 </h1>
             </div>
             
-            {{-- PERUBAHAN: Memisahkan paragraf dan memberi kelas 'animate-item' --}}
             <div id="hero-description"
                  class="text-base sm:text-lg md:text-xl leading-relaxed opacity-95 text-white text-shadow space-y-3">
                 <p class="animate-item">
@@ -28,7 +26,9 @@
         </div>
 
         <section class="content-body">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            {{-- PERUBAHAN: Menambahkan div pembungkus dengan ID untuk target AJAX --}}
+            <div id="ajax-content-wrapper" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                
                 @php $kpiActive = request('status'); @endphp
                 
                 <div id="kpi-cards" class="mb-8"> 
@@ -38,14 +38,16 @@
                         :finished-agendas-count="$finishedAgendasCount ?? 0"
                         :kpi-active="$kpiActive" />
                 </div>
+
                 @auth('admin')
-        {{-- Tampilan untuk pengguna yang sudah login --}}
-                <x-dashboard :agendas="$agendas" />
-                    @else
-                        {{-- Tampilan untuk pengguna yang belum login (tamu) --}}
-                        <x-table :agendas="$agendas"/>
+                    {{-- Tampilan untuk pengguna yang sudah login --}}
+                    <x-dashboard :agendas="$agendas" />
+                @else
+                    {{-- Tampilan untuk pengguna yang belum login (tamu) --}}
+                    <x-table :agendas="$agendas"/>
                 @endauth
-            </div>
+
+            </div> {{-- Akhir dari #ajax-content-wrapper --}}
         </section>
     </main>
     

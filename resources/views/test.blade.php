@@ -699,7 +699,7 @@
                               </div>
                           </div>
                       </div>
-                                            <div class="col-lg-4 col-md-6 col-sm-6">
+                      <div class="col-lg-4 col-md-6 col-sm-6">
                           <div class="dez-box">
                               <div class="dez-media dez-img-overlay11 dez-img-effect zoom"> 
                                 <img src="https://ppid.mojokertokab.go.id//images/photos/1631077062-4398.jpg" alt="" width="700" height="400"> 

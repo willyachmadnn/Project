@@ -56,7 +56,13 @@ class PageController extends Controller
                     ->orWhere('tempat', 'like', '%' . $search . '%')
                     ->orWhere('tanggal', 'like', '%' . $search . '%')
                     ->orWhere('waktu', 'like', '%' . $search . '%')
-                    ->orWhere('opd', 'like', '%' . $search . '%')
+                    ->orWhere('jam_mulai', 'like', '%' . $search . '%')
+                    ->orWhere('jam_selesai', 'like', '%' . $search . '%')
+                    ->orWhereRaw("jam_mulai || ' - ' || jam_selesai LIKE ?",["%" . $search . "%"])
+                    ->orWhereHas('admin', function($adminQuery) use ($search) {
+                        $adminQuery->where('nama_admin', 'like', '%' . $search . '%')
+                                  ->orWhere('opd_admin', 'like', '%' . $search . '%');
+                    })
                     ->orWhere('dihadiri', 'like', '%' . $search . '%');
             });
         }

@@ -65,7 +65,15 @@ class AuthController extends Controller
 
         // Sukses
         $request->session()->regenerate();
-        return redirect()->intended(route('agenda.index')); // menampilkan index.blade (sesuai setup kamu)
+        
+        // Dapatkan informasi admin yang login
+        $admin = $guard->user();
+        $adminName = $admin->nama_admin ?? 'Admin';
+        $adminOpd = $admin->opd_admin ?? '';
+        
+        // Tambahkan pesan selamat datang
+        return redirect()->intended(route('agenda.index'))
+            ->with('success', "Selamat datang di SI-Agenda Kabupaten Mojokerto, {$adminName} dari {$adminOpd}"); // menampilkan index.blade dengan pesan selamat datang
     }
 
 

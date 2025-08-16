@@ -15,53 +15,99 @@ class AgendaController extends Controller
     {
         $query = Agenda::query();
 
+        // === SHOW/PER PAGE ===
+        $perPage = (int) $request->input('perPage', 10);
+        $allowed = [10, 25, 50, 100];
+        if (!in_array($perPage, $allowed, true)) {
+            $perPage = 10;
+        }
+
         // ==================================================================
         // PERBAIKAN 1: Menangani filter berdasarkan status
         // ==================================================================
+// PERBAIKAN 1: Menangani filter berdasarkan status (terima sinonim & angka)
         if ($request->filled('status')) {
-            switch ($request->status) {
-                case 'menunggu':
-                    $query->menunggu();
-                    break;
-                case 'berlangsung':
-                    $query->berlangsung();
-                    break;
-                case 'berakhir':
-                    $query->berakhir();
-                    break;
-                // Jika status 'semua' atau lainnya, tidak perlu filter status
+            $s = strtolower((string) $request->status);
+
+            // Jika angka 0/1/2
+            if (is_numeric($s)) {
+                switch ((int) $s) {
+                    case 0:
+                        $query->menunggu();
+                        break;
+                    case 1:
+                        $query->berlangsung();
+                        break;
+                    case 2:
+                        $query->berakhir();
+                        break;
+                }
+            } else {
+                // Jika teks: terima sinonim umum
+                switch ($s) {
+                    case 'menunggu':
+                    case 'pending':
+                    case 'menanti':
+                        $query->menunggu();
+                        break;
+
+                    case 'berlangsung':
+                    case 'ongoing':
+                    case 'proses':
+                        $query->berlangsung();
+                        break;
+
+                    case 'berakhir':
+                    case 'selesai':   // ⟵ inilah kasus Anda
+                    case 'done':
+                        $query->berakhir();
+                        break;
+
+                    // selain itu: tidak difilter
+                }
             }
         }
 
+
         // ==================================================================
-        // PERBAIKAN 2: Logika pencarian multi-kolom
+        // PERBAIKAN 2: Logika pencarian multi-kolom termasuk admin dan tamu
         // ==================================================================
         if ($request->filled('search')) {
             $searchTerm = $request->search;
-
             $query->where(function ($q) use ($searchTerm) {
+                // Pencarian di tabel agenda
                 $q->where('nama_agenda', 'like', '%' . $searchTerm . '%')
                     ->orWhere('tempat', 'like', '%' . $searchTerm . '%')
-                    ->orWhere('dihadiri', 'like', '%' . $searchTerm . '%');
-                // Jika Anda punya kolom 'opd' di database, uncomment baris di bawah
-                // ->orWhere('opd', 'like', '%' . $searchTerm . '%');
+                    ->orWhere('dihadiri', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('tanggal', 'like', '%' . $searchTerm . '%')
+                    // Pencarian berdasarkan waktu (jam_mulai dan jam_selesai)
+                    ->orWhereRaw("jam_mulai || ' - ' || jam_selesai LIKE ?",["%" . $searchTerm . "%"])
+                    ->orWhere('jam_mulai', 'like', '%' . $searchTerm . '%')
+                    ->orWhere('jam_selesai', 'like', '%' . $searchTerm . '%')
+                    // Pencarian di tabel admin (relasi)
+                    ->orWhereHas('admin', function($adminQuery) use ($searchTerm) {
+                        $adminQuery->where('nama_admin', 'like', '%' . $searchTerm . '%')
+                                  ->orWhere('opd_admin', 'like', '%' . $searchTerm . '%');
+                    })
+                    // Pencarian di tabel tamu (relasi)
+                    ->orWhereHas('tamu', function($tamuQuery) use ($searchTerm) {
+                        $tamuQuery->where('nama_tamu', 'like', '%' . $searchTerm . '%')
+                                 ->orWhere('instansi', 'like', '%' . $searchTerm . '%');
+                    });
             });
         }
 
-        // Mengambil data setelah difilter, diurutkan, dan dipaginasi
-        // Menambahkan appends() agar parameter filter & search tetap ada saat pindah halaman
+        // Data + paginate sesuai Show
         $agendas = $query->with('admin')
             ->latest('tanggal')
-            ->paginate(10)
-            ->appends($request->query());
+            ->paginate($perPage)   // ← gunakan nilai dari Show
+            ->withQueryString();   // ← jaga query filter
 
-        // Menghitung jumlah untuk kartu status
+        // Kartu status (biarkan seperti semula)
         $pendingAgendasCount = Agenda::menunggu()->count();
         $ongoingAgendasCount = Agenda::berlangsung()->count();
         $finishedAgendasCount = Agenda::berakhir()->count();
 
-        // Mengirim data ke view yang benar (agenda.index atau landing)
-        // Sesuaikan nama view di bawah ini jika perlu
         return view('agenda.index', compact(
             'agendas',
             'pendingAgendasCount',

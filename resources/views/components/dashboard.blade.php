@@ -1,6 +1,7 @@
 @props(['agendas'])
 <script src="//unpkg.com/alpinejs" defer></script>
-<form action="{{ route('landing') }}" method="GET" id="filterForm" data-ajax="true">
+<form action="{{ auth('admin')->check() ? route('agenda.index') : route('landing') }}"
+      method="GET" id="filterForm" data-ajax="true">
   {{-- hidden untuk sync via JS --}}
   <input type="hidden" name="timeRange" value="{{ request('timeRange', 5) }}">
   {{-- <input type="hidden" name="perPage" ...> TELAH DIHAPUS --}}
@@ -27,7 +28,7 @@
       <div class="flex items-center gap-2 md:gap-3">
         <div class="group relative flex items-center w-96 rounded-md bg-white ring-1 ring-inset ring-red-700/50 hover:ring-red-700/80 focus-within:ring-2 focus-within:ring-red-600">
           <svg class="ml-3 mr-2 h-4 w-4 stroke-slate-400" fill="none" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-          <input id="searchInput" name="search" value="{{ request('search', request('q')) }}" type="search" autocomplete="off" placeholder="Cari Nama Agenda, Tempat, Dihadiri" class="block w-full appearance-none bg-transparent py-2 pr-3 text-base text-gray-700 placeholder:text-gray-400 focus:outline-none sm:text-sm sm:leading-6"/>
+          <input id="searchInput" name="search" value="{{ request('search', request('q')) }}" type="search" autocomplete="off" placeholder="Kegiatan, Tempat, Tanggal, Waktu, Admin OPD, Dihadiri" class="block w-full appearance-none bg-transparent py-2 pr-3 text-base text-gray-700 placeholder:text-gray-400 focus:outline-none sm:text-sm sm:leading-6"/>
         </div>
             @php
             $currentStatus = strtolower((string)request('status'));
@@ -83,8 +84,8 @@
 
   {{-- ==================== TABLE + PAGINATION (dibungkus #tableWrap untuk AJAX) ==================== --}}
   <section id="tableWrap" class="mx-auto mt-4 max-w-7xl px-2 sm:px-1">
-    <div class="rounded-lg bg-white shadow-xl">
-      <div class="overflow-x-auto">
+    <div class="rounded-lg bg-white shadow-xl transition-all duration-300">
+      <div class="overflow-x-auto rounded-t-lg">
         <table class="agenda-table w-full table-fixed text-xs sm:text-sm
                ![&_th]:text-center ![&_td]:text-center ![&_td]:align-middle
                [&_td>div]:flex [&_td>div]:items-center [&_td>div]:justify-center
@@ -218,9 +219,9 @@
         </table>
       </div>
 
-      {{-- Pagination --}}
+      {{-- Pagination - Improved styling to appear integrated but separate --}}
       @if (method_exists($agendas, 'links'))
-        <div class="flex flex-col gap-3 border-t border-slate-200 px-2 py-6">
+        <div class="flex flex-col gap-3 border-t border-slate-200 px-2 py-4 bg-gray-50 rounded-b-lg">
           <p class="text-sm text-slate-600 self-start">
             Menampilkan <span class="font-medium">{{ $agendas->firstItem() }}</span> –
             <span class="font-medium">{{ $agendas->lastItem() }}</span> dari
