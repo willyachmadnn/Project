@@ -98,15 +98,23 @@ class AgendaController extends Controller
         }
 
         // Data + paginate sesuai Show
-        $agendas = $query->with('admin')
-            ->latest('tanggal')
+        // PERBAIKAN: Urutkan berdasarkan created_at agar agenda baru muncul di atas
+        // OPTIMASI: Eager load semua relasi yang diperlukan untuk menghindari N+1 queries
+        $agendas = $query->with(['admin', 'tamu'])
+            ->latest() // Mengurutkan berdasarkan created_at (terbaru di atas)
             ->paginate($perPage)   // ← gunakan nilai dari Show
             ->withQueryString();   // ← jaga query filter
 
-        // Kartu status (biarkan seperti semula)
-        $pendingAgendasCount = Agenda::menunggu()->count();
-        $ongoingAgendasCount = Agenda::berlangsung()->count();
-        $finishedAgendasCount = Agenda::berakhir()->count();
+        // Kartu status dengan caching untuk mengurangi beban database
+        $pendingAgendasCount = cache()->remember('agenda_pending_count', 300, function () {
+            return Agenda::menunggu()->count();
+        });
+        $ongoingAgendasCount = cache()->remember('agenda_ongoing_count', 300, function () {
+            return Agenda::berlangsung()->count();
+        });
+        $finishedAgendasCount = cache()->remember('agenda_finished_count', 300, function () {
+            return Agenda::berakhir()->count();
+        });
 
         return view('agenda.index', compact(
             'agendas',
@@ -177,6 +185,12 @@ class AgendaController extends Controller
      */
     public function update(Request $request, Agenda $agenda)
     {
+        // Verifikasi apakah user yang login adalah pembuat agenda
+        if ($agenda->admin_id !== auth('admin')->id()) {
+            return redirect()->route('agenda.show', $agenda)
+                ->with('error', 'Tidak dapat mengubah agenda karena anda bukan pembuat agenda.');
+        }
+
         $validator = Validator::make($request->all(), [
             'nama_agenda' => 'required|string|max:255',
             'tempat' => 'required|string|max:255',
@@ -194,8 +208,8 @@ class AgendaController extends Controller
 
         $agenda->update($request->all());
 
-        return redirect()->route('agenda.index')
-            ->with('success', 'Agenda berhasil diperbarui!');
+        return redirect()->route('agenda.show', $agenda)
+            ->with('success', 'Agenda berhasil diubah.');
     }
 
     /**
@@ -203,6 +217,12 @@ class AgendaController extends Controller
      */
     public function destroy(Agenda $agenda)
     {
+        // Verifikasi apakah user yang login adalah pembuat agenda
+        if ($agenda->admin_id !== auth('admin')->id()) {
+            return redirect()->route('agenda.show', $agenda)
+                ->with('error', 'Agenda tidak dapat dihapus karena anda bukan pembuat agenda.');
+        }
+
         $agenda->delete();
 
         return redirect()->route('agenda.index')

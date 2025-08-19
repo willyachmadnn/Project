@@ -39,9 +39,19 @@ class PageController extends Controller
                 $countQuery->where('tanggal', '>=', $startDate);
             }
         }
-        $pendingAgendasCount = (clone $countQuery)->menunggu()->count();
-        $ongoingAgendasCount = (clone $countQuery)->berlangsung()->count();
-        $finishedAgendasCount = (clone $countQuery)->berakhir()->count();
+        // Cache status counts dengan key yang berbeda berdasarkan timeRange
+        $cacheKey = "landing_counts_{$timeRange}";
+        $counts = cache()->remember($cacheKey, 300, function () use ($countQuery) {
+            return [
+                'pending' => (clone $countQuery)->menunggu()->count(),
+                'ongoing' => (clone $countQuery)->berlangsung()->count(),
+                'finished' => (clone $countQuery)->berakhir()->count(),
+            ];
+        });
+        
+        $pendingAgendasCount = $counts['pending'];
+        $ongoingAgendasCount = $counts['ongoing'];
+        $finishedAgendasCount = $counts['finished'];
 
         // --- 2. QUERY UNTUK TABEL DAFTAR AGENDA ---
         $agendasQuery = Agenda::query(); // Menggunakan query baru, bukan yang dari count
@@ -79,7 +89,9 @@ class PageController extends Controller
         }
 
         $perPage = $request->input('perPage', 10);
-        $agendas = $agendasQuery->latest('tanggal')->paginate($perPage)->withQueryString();
+        // PERBAIKAN: Urutkan berdasarkan created_at agar agenda baru muncul di atas
+        // OPTIMASI: Eager load relasi untuk menghindari N+1 queries
+        $agendas = $agendasQuery->with(['admin', 'tamu'])->latest()->paginate($perPage)->withQueryString();
 
         return view('landing', [
             'agendas' => $agendas,
