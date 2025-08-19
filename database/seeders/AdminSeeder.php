@@ -36,7 +36,7 @@ class AdminSeeder extends Seeder
         ];
 
         // Looping untuk memasukkan 100 data admin dummy
-        for ($i = 1; $i <= 100; $i++) {
+        for ($i = 1; $i <= 5; $i++) {
             $nama = $namaAdmins[array_rand($namaAdmins)];
 
             // PERUBAHAN: Membuat password dari nama admin
