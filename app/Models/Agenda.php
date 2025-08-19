@@ -8,11 +8,27 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Facades\Cache;
 use Carbon\Carbon;
 
 class Agenda extends Model
 {
     use HasFactory;
+    
+    /**
+     * The "booted" method of the model.
+     */
+    protected static function booted(): void
+    {
+        // Clear cache when agenda is created, updated, or deleted
+        static::saved(function () {
+            self::clearAgendaCache();
+        });
+        
+        static::deleted(function () {
+            self::clearAgendaCache();
+        });
+    }
 
     /**
      * PERBAIKAN: Menggunakan nama tabel 'agendas' (plural)
@@ -107,5 +123,23 @@ class Agenda extends Model
     public function notulen(): HasOne
     {
         return $this->hasOne(Notulen::class, 'agenda_id', 'agenda_id');
+    }
+    
+    /**
+     * Clear agenda-related cache
+     */
+    public static function clearAgendaCache(): void
+    {
+        Cache::forget('agenda_counts_menunggu');
+        Cache::forget('agenda_counts_berlangsung');
+        Cache::forget('agenda_counts_berakhir');
+        
+        // Clear cache with different prefixes if any
+        $prefix = config('cache.prefix');
+        if ($prefix) {
+            Cache::forget($prefix . 'agenda_counts_menunggu');
+            Cache::forget($prefix . 'agenda_counts_berlangsung');
+            Cache::forget($prefix . 'agenda_counts_berakhir');
+        }
     }
 }
