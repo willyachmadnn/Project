@@ -109,7 +109,7 @@
           <thead class="bg-red-700 text-white">
             <tr>
               <th class="px-4 py-3 font-semibold rounded-tl-lg">No</th>
-              <th class="px-4 py-3 font-semibold">Kegiatan</th>
+              <th class="px-4 py-3 font-semibold">Nama Agenda</th>
               <th class="px-4 py-3 font-semibold">Tempat</th>
               <th class="px-4 py-3 font-semibold">Tanggal</th>
               <th class="px-4 py-3 font-semibold">Waktu</th>
