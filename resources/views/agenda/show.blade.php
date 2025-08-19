@@ -277,20 +277,15 @@
                             
                             <!-- Status Badge -->
                             <div class="mt-6 flex justify-center">
-                                @php
-                                    $now = now();
-                                    $startTime = \Carbon\Carbon::parse($agenda->tanggal->format('Y-m-d') . ' ' . $agenda->jam_mulai);
-                                    $endTime = \Carbon\Carbon::parse($agenda->tanggal->format('Y-m-d') . ' ' . $agenda->jam_selesai);
-                                @endphp
                                 
-                                @if($now < $startTime)
+                                @if($agenda->status === 'Menunggu')
                                     <span class="inline-flex items-center px-6 py-3 rounded-full text-sm font-semibold bg-gradient-to-r from-cyan-500 to-blue-500 text-white shadow-lg">
                                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                         </svg>
                                         Agenda Menunggu
                                     </span>
-                                @elseif($now >= $startTime && $now <= $endTime)
+                                @elseif($agenda->status === 'Berlangsung')
                                     <span class="inline-flex items-center px-6 py-3 rounded-full text-sm font-semibold bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-lg animate-pulse">
                                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.636 18.364a9 9 0 010-12.728m12.728 0a9 9 0 010 12.728m-9.9-2.829a5 5 0 010-7.07m7.072 0a5 5 0 010 7.07M13 12a1 1 0 11-2 0 1 1 0 012 0z"></path>
