@@ -60,14 +60,14 @@
         <div class="animate-slide-in-left bg-transparent border-b border-gray-100">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 bg-transparent">
                 <div class="flex justify-between items-center">
-                    <div>
-                        <h1 class="text-3xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent animate-float">
+                    <div class="flex-1">
+                        <h1 class="text-3xl font-bold bg-gradient-to-r from-red-700 to-orange-700 bg-clip-text text-transparent animate-float break-words">
                             Detail Agenda: {{ $agenda->nama_agenda }}
                         </h1>
                         <p class="text-gray-600 mt-1">Informasi lengkap agenda dan peserta</p>
                     </div>
                     <a href="{{ route('agenda.index') }}" 
-                       class="btn-smooth group inline-flex items-center px-4 py-2 bg-gradient-to-r from-blue-500 to-purple-600 text-white font-medium rounded-lg shadow-md hover:shadow-lg transform hover:-translate-y-1 hover:scale-105">
+                       class="btn-smooth group inline-flex items-center px-4 py-2 bg-gradient-to-l from-orange-500 to-red-600 text-white font-medium rounded-lg shadow-md hover:shadow-lg transform hover:-translate-y-1 hover:scale-105 ml-34">
                         <svg class="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
                         </svg>
@@ -234,37 +234,46 @@
                                 </div>
                             </div>
                             
-                            <div class="space-y-4">
-                                <div class="text-lg">
-                                    <span class="font-semibold text-gray-700">Tempat:</span>
-                                    <span class="text-gray-900 ml-2">{{ $agenda->tempat }}</span>
-                                </div>
-                                
-                                <div class="text-lg">
-                                    <span class="font-semibold text-gray-700">Tanggal:</span>
-                                    <span class="text-gray-900 ml-2">{{ $agenda->tanggal->format('d F Y') }}</span>
-                                </div>
-                                
-                                <div class="text-lg">
-                                    <span class="font-semibold text-gray-700">Waktu:</span>
-                                    <span class="text-gray-900 ml-2">{{ \Carbon\Carbon::parse($agenda->jam_mulai)->format('H:i') }} - {{ \Carbon\Carbon::parse($agenda->jam_selesai)->format('H:i') }}</span>
-                                </div>
-                                
-                                <div class="text-lg">
-                                    <span class="font-semibold text-gray-700">Nama Admin:</span>
-                                    <span class="text-gray-900 ml-2">{{ $agenda->admin->nama_admin ?? 'Tidak tersedia' }}</span>
-                                </div>
-                                
-                                <div class="text-lg">
-                                    <span class="font-semibold text-gray-700">OPD Admin:</span>
-                                    <span class="text-gray-900 ml-2">{{ $agenda->admin->opd_admin ?? 'Tidak tersedia' }}</span>
-                                </div>
-                                
-                                <div class="text-lg">
-                                    <span class="font-semibold text-gray-700">Dihadiri:</span>
-                                    <span class="text-gray-900 ml-2">{{ $agenda->dihadiri ?? 'Tidak ada informasi' }}</span>
-                                </div>
-                            </div>
+                <div class="text-sm border border-rose-200 rounded-lg overflow-hidden">
+                    <!-- Baris 1: Tempat -->
+                    <div class="flex bg-rose-100">
+                        <div class="w-40 flex-shrink-0 px-4 py-3 font-bold text-gray-800 border-r border-rose-200">Tempat</div>
+                        <div class="flex-1 px-4 py-3 text-gray-700 break-words">{{ $agenda->tempat }}</div>
+                    </div>
+                    <!-- Baris 2: Tanggal -->
+                    <div class="flex bg-white border-t border-rose-200">
+                        <div class="w-40 flex-shrink-0 px-4 py-3 font-bold text-gray-800 border-r border-rose-200">Tanggal</div>
+                        <div class="flex-1 px-4 py-3 text-gray-700 break-words">{{ $agenda->tanggal->format('d F Y') }}</div>
+                    </div>
+                    <!-- Baris 3: Waktu -->
+                    <div class="flex bg-rose-100 border-t border-rose-200">
+                        <div class="w-40 flex-shrink-0 px-4 py-3 font-bold text-gray-800 border-r border-rose-200">Waktu</div>
+                        <div class="flex-1 px-4 py-3 text-gray-700 break-words">{{ \Carbon\Carbon::parse($agenda->jam_mulai)->format('H:i') }} - {{ \Carbon\Carbon::parse($agenda->jam_selesai)->format('H:i') }}</div>
+                    </div>
+                    <!-- Baris 4: Nama Admin -->
+                    <div class="flex bg-white border-t border-rose-200">
+                        <div class="w-40 flex-shrink-0 px-4 py-3 font-bold text-gray-800 border-r border-rose-200">Nama Admin</div>
+                        <div class="flex-1 px-4 py-3 text-gray-700 break-words">
+                            {{-- Ganti variabel ini dengan relasi yang benar, contoh: $agenda->user->name --}}
+                            {{ $agenda->admin->nama_admin ?? 'Data belum diisi' }}
+                        </div>
+                    </div>
+                    <!-- Baris 5: OPD Admin -->
+                    <div class="flex bg-rose-100 border-t border-rose-200">
+                        <div class="w-40 flex-shrink-0 px-4 py-3 font-bold text-gray-800 border-r border-rose-200">OPD Admin</div>
+                        <div class="flex-1 px-4 py-3 text-gray-700 break-words">
+                            {{-- Ganti variabel ini dengan relasi yang benar, contoh: $agenda->user->opd->nama_opd --}}
+                            {{ $agenda->admin->opd_admin ?? 'Data belum diisi' }}
+                        </div>
+                    </div>
+                    <!-- Baris 6: Dihadiri -->
+                    <div class="flex bg-white border-t border-rose-200">
+                        <div class="w-40 flex-shrink-0 px-4 py-3 font-bold text-gray-800 border-r border-rose-200">Dihadiri</div>
+                        <div class="flex-1 px-4 py-3 text-gray-700 break-words">
+                            {{ $agenda->dihadiri ?? 'Data belum diisi' }}
+                        </div>
+                    </div>
+                </div>
                             
                             <!-- Status Badge -->
                             <div class="mt-6 flex justify-center">
@@ -516,7 +525,7 @@
                     @click.stop
                 >
                     {{-- Kontainer Form (Kotak Putih) --}}
-                    <div class="bg-white/95 backdrop-blur-md rounded-md px-4 pt-3 pb-3 overflow-y-auto shadow-2xl border border-black/30 mb-2 mt-2" style="max-height: 88vh;">
+                    <div class="bg-white/95 backdrop-blur-md rounded-md px-4 pt-3 pb-3 overflow-y-auto shadow-2xl border border-black/30 mb-2 mt-2" style="max-height: 80vh;">
                         <div class="flex items-center justify-between mb-6 pb-2 pt-2">
                             <h3 class="text-2xl font-bold text-gray-900 flex items-center">
                                 <svg class="w-6 h-6 mr-3 text-red-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -558,7 +567,7 @@
                             </div>
                             <div>
                                 <label for="edit_dihadiri" class="block text-sm font-semibold text-gray-800 mb-2">Dihadiri</label>
-                                <textarea name="dihadiri" id="edit_dihadiri" rows="2" x-model="editAgenda.dihadiri" class="block w-full rounded-md border-2 border-gray-200 bg-white/60 backdrop-blur-sm px-4 py-3 text-gray-900 placeholder-gray-500 focus:border-gray-300 focus:outline-none transition-all duration-200 resize-none" placeholder="Masukkan daftar yang hadir dalam agenda ini" required></textarea>
+                                <textarea name="dihadiri" id="edit_dihadiri" rows="5" x-model="editAgenda.dihadiri" class="block w-full rounded-md border-2 border-gray-200 bg-white/60 backdrop-blur-sm px-4 py-3 text-gray-900 placeholder-gray-500 focus:border-gray-300 focus:outline-none transition-all duration-200 resize-none" placeholder="Masukkan daftar yang hadir dalam agenda ini" required></textarea>
                             </div>
                         </form>
                     </div>
