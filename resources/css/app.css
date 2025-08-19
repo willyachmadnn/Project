@@ -47,6 +47,43 @@ table { width: 100%; border-collapse: collapse; }
 nav[role="navigation"] { display: flex; flex-wrap: wrap; gap: .5rem; justify-content: center; }
 nav[role="navigation"] ul { display: flex; flex-wrap: wrap; gap: .25rem; }
 
+/* ====== POPUP ALERT ANIMATIONS ====== */
+.popup-alert {
+  transform: translate(-50%, 0);
+}
+
+@keyframes fade-in-down {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+.animate-fade-in-down {
+  animation: fade-in-down 0.3s ease-out;
+}
+
+/* Auto-hide popup alert after 5 seconds */
+.popup-alert {
+  animation: fade-in-down 0.3s ease-out, fade-out-up 0.3s ease-in 4.7s forwards;
+  transform: translate(-50%, 0);
+}
+
+@keyframes fade-out-up {
+  0% {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -20px);
+  }
+}
+
 /* ====== FOOTER ====== */
 footer img { height: 24px; width: auto; display: block; }
 @media (max-width: 640px){

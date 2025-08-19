@@ -13,8 +13,13 @@
 }
 .hero-bg {
     z-index: -2;
-    background-image: url('https://ppid.mojokertokab.go.id/images/sliders/1686640788-5985.jpg');
-    background-size: cover; background-position: center;
+    background-image: url('/img/hero-bg.jpg');
+    background-size: cover; 
+    background-position: center;
+    background-repeat: no-repeat;
+    /* Optimize for better performance */
+    will-change: transform;
+    transform: translateZ(0);
 }
 .hero-veil {
     z-index: -1;
@@ -51,7 +56,7 @@
 .content-body {
     position: relative;
     z-index: 2;
-    background-color: white;
+    background: linear-gradient(to bottom, transparent 2%, white 2%);
     border-top-left-radius: var(--radius-xl);
     border-top-right-radius: var(--radius-xl);
     box-shadow: var(--shadow-content);
@@ -61,7 +66,7 @@
 body { overflow-x: hidden; }
 
 /* ================================================================== */
-/* CSS UNTUK ANIMASI DUA ARAH (FINAL) */
+/* CSS UNTUK ANIMASI DUA ARAH (DIPERBAIKI UNTUK LEBIH SMOOTH) */
 /* ================================================================== */
 .slide-in-wrapper {
     overflow: hidden;
@@ -70,18 +75,40 @@ body { overflow-x: hidden; }
 
 .animate-item {
     opacity: 0;
-    transition: transform 1s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.7s ease-out;
+    transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.6s ease-out;
+    will-change: transform, opacity;
 }
 
 .slide-from-top {
-    transform: translateY(-110%);
+    transform: translateY(-120%) scale(0.95);
 }
 
 .slide-from-bottom {
-    transform: translateY(110%);
+    transform: translateY(120%) scale(0.95);
 }
 
 .animate-item.is-visible {
-    transform: translateY(0);
+    transform: translateY(0) scale(1);
     opacity: 1;
+}
+
+/* Animasi khusus untuk elemen yang berbeda */
+#hero-title.animate-item {
+    transition: transform 1s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.8s ease-out;
+}
+
+#hero-description.animate-item {
+    transition: transform 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.7s ease-out;
+}
+
+/* Efek blur saat transisi untuk smoothness */
+.animate-item:not(.is-visible) {
+    filter: blur(1px);
+}
+
+.animate-item.is-visible {
+    filter: blur(0);
+    transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), 
+                opacity 0.6s ease-out, 
+                filter 0.4s ease-out;
 }
