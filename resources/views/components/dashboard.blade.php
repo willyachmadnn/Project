@@ -1,5 +1,48 @@
 @props(['agendas'])
 <script src="//unpkg.com/alpinejs" defer></script>
+
+<style>
+    /* Modern Show Button Styles */
+    .modern-show-btn {
+      position: relative;
+      overflow: hidden;
+      backdrop-filter: blur(10px);
+    }
+    
+    .modern-show-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+      transition: left 0.6s ease;
+    }
+    
+    .modern-show-btn:hover::before {
+      left: 100%;
+    }
+    
+    .modern-show-btn:active {
+      transform: translateY(0) scale(0.98);
+    }
+    
+    @keyframes pulse-glow {
+      0%, 100% {
+        box-shadow: 0 4px 15px rgba(59, 130, 246, 0.3);
+      }
+      50% {
+        box-shadow: 0 6px 20px rgba(147, 51, 234, 0.4);
+      }
+    }
+    
+    .modern-show-btn:hover {
+      animation: pulse-glow 2s infinite;
+    }
+    
+
+  </style>
 <form action="{{ auth('admin')->check() ? route('agenda.index') : route('landing') }}"
       method="GET" id="filterForm" data-ajax="true">
   {{-- hidden untuk sync via JS --}}
@@ -9,20 +52,23 @@
   <input type="hidden" id="pageHidden" name="page" value="{{ request('page', 1) }}">
 
   {{-- ================== CONTROLS (Show / Search / Filter) ================== --}}
-  <section>
-    <div id="controls" class="flex flex-wrap items-center justify-between gap-4">
+  <section class="mx-auto mt-4 max-w-7xl px-2 sm:px-1">
+    <div id="controls" class="flex flex-wrap items-center justify-between gap-4 mb-4">
 
-      <div id="showWrap" class="inline-flex items-center gap-2 rounded-lg bg-white px-2 py-1 ring-1 ring-inset ring-red-600/70 hover:ring-red-600/60 focus-within:ring-1 focus-within:ring-red-600 shrink-0">
-        <span class="text-sm font-medium text-slate-700">Show:</span>
+      <div id="showWrap" class="inline-flex items-center gap-2 text-sm text-gray-700">
+        <span>Show:</span>
         <div class="relative">
           {{-- NAMA DIUBAH MENJADI perPage --}}
-          <select id="perPageSelect" name="perPage" class="appearance-none h-7 w-16 rounded-md border border-red-700/50 bg-transparent pl-3 pr-7 text-sm font-medium leading-tight text-slate-700 focus:outline-none focus:ring-1 focus:ring-red-600">
+          <select id="perPageSelect" name="perPage" class="appearance-none h-8 w-20 rounded border border-gray-300 bg-white pl-3 pr-8 text-sm focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500">
             @foreach ([10,25,50,100] as $n)
               <option value="{{ $n }}" @selected((int)request('perPage', 10) === $n)>{{ $n }}</option>
             @endforeach
           </select>
-          <svg class="pointer-events-none absolute right-1 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-600" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.19l3.71-3.96a.75.75 0 111.08 1.04l-4.25 4.53a.75.75 0 01-1.08 0L5.21 8.27a.75.75 0 01.02-1.06z" clip-rule="evenodd"/></svg>
+          <svg class="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+            <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.19l3.71-3.96a.75.75 0 111.08 1.04l-4.25 4.53a.75.75 0 01-1.08 0L5.21 8.27a.75.75 0 01.02-1.06z" clip-rule="evenodd"/>
+          </svg>
         </div>
+        <span>entries</span>
       </div>
 
       <div class="flex items-center gap-2 md:gap-3">
@@ -80,10 +126,9 @@
 
       </div>
     </div>
-  </section>
 
-  {{-- ==================== TABLE + PAGINATION (dibungkus #tableWrap untuk AJAX) ==================== --}}
-  <section id="tableWrap" class="mx-auto mt-4 max-w-7xl px-2 sm:px-1">
+    {{-- ==================== TABLE + PAGINATION (dibungkus #tableWrap untuk AJAX) ==================== --}}
+    <div id="tableWrap">
     <div class="rounded-lg bg-white shadow-xl transition-all duration-300">
       <div class="overflow-x-auto rounded-t-lg">
         <table class="agenda-table w-full table-fixed text-xs sm:text-sm
@@ -95,12 +140,12 @@
           {{-- Lebar kolom --}}
           <colgroup>
             <col class="w-12 sm:w-14 md:w-16" />   {{-- NO --}}
-            <col class="w-[24%]" />                 {{-- Nama Agenda --}}
-            <col class="w-[16%]" />                 {{-- Tempat --}}
-            <col class="w-[16%]" />                 {{-- Tanggal --}}
-            <col class="w-[12%]" />                 {{-- Waktu --}}
-            <col class="w-[14%]" />                 {{-- Penanggung Jawab --}}
-            <col class="w-[14%]" />                 {{-- Kehadiran --}}
+            <col class="w-[18%]" />                 {{-- Nama Agenda --}}
+            <col class="w-[10%]" />                 {{-- Tempat --}}
+            <col class="w-[10%]" />                 {{-- Tanggal --}}
+            <col class="w-[10%]" />                 {{-- Waktu --}}
+            <col class="w-[10%]" />                 {{-- Penanggung Jawab --}}
+            <col class="w-[16%]" />                 {{-- Dihadiri --}}
             <col class="w-[12%]" />                 {{-- Status --}}
           </colgroup>
 
@@ -120,7 +165,9 @@
           <tbody id="agendaBody">
           @forelse($agendas as $agenda)
             @php
-              $rowIndex = ($agendas->firstItem() ?? 1) + $loop->index;
+              // Penomoran yang benar untuk data yang diurutkan terbaru di atas
+              // Jika total 100 agenda dan ada di halaman 1, agenda terbaru harus nomor 100
+              $rowIndex = $agendas->total() - ($agendas->firstItem() - 1) - $loop->index;
 
               // STATUS -> label + badge
               $rawStatus = strtolower(trim((string)($agenda->status ?? '')));
@@ -174,14 +221,19 @@
               $waktuText = ($wMulai || $wSelesai) ? collect([$wMulai, $wSelesai])->filter()->implode(' - ') : ($wSatu ?? '-');
 
               // PIC
-              $picText = data_get($agenda, 'admin.opd_admin') ?? $agenda->admin_id ?? null;
-              foreach (['pic','PIC','nama_pic','penanggung_jawab','petugas','user.name','creator.name','created_by_name','dibuat_oleh'] as $key) {
-                $val = data_get($agenda, $key);
-                if (is_string($val) && trim($val)!=='') { $picText = trim($val); break; }
-                if (is_object($val))   { $n = data_get($val,'name') ?? data_get($val,'nama') ?? data_get($val,'title'); if (is_string($n) && trim($n)!=='') { $picText = trim($n); break; } }
-                if (is_array($val))    { $n = $val['name'] ?? $val['nama'] ?? $val['title'] ?? null; if (is_string($n) && trim($n)!=='') { $picText = trim($n); break; } }
+              $namaAdmin = data_get($agenda, 'admin.nama_admin') ?? '-';
+              $opdAdmin = data_get($agenda, 'admin.opd_admin') ?? '-';
+              
+              // Format: <nama_admin> (hitam bold) - <opd_admin> (abu-abu)
+              if ($namaAdmin !== '-' && $opdAdmin !== '-') {
+                $picText = '<span class="font-bold text-black">' . e($namaAdmin) . '</span>  <span class="text-gray-500">' . e($opdAdmin) . '</span>';
+              } elseif ($namaAdmin !== '-') {
+                $picText = '<span class="font-bold text-black">' . e($namaAdmin) . '</span>';
+              } elseif ($opdAdmin !== '-') {
+                $picText = '<span class="text-gray-500">' . e($opdAdmin) . '</span>';
+              } else {
+                $picText = '-';
               }
-              if (is_numeric($picText)) $picText = '-';
 
               // DIHADIRI
               $dihadiriText = data_get($agenda,'dihadiri') ?? data_get($agenda,'dihadiri_oleh') ?? data_get($agenda,'dihadiri_oleh_text') ?? '-';
@@ -200,11 +252,15 @@
 
             <tr class="odd:bg-white hover:bg-red-100/90 transition-colors duration-3">
               <td class="border-b border-slate-400 px-4 py-3 text-sm text-slate-800 align-middle">{{ $rowIndex }}.</td>
-              <td class="border-b border-slate-400 px-4 py-3 text-sm font-semibold text-slate-900">{{ $agenda->nama_agenda ?? '-' }}</td>
+              <td class="border-b border-slate-400 px-4 py-3 text-sm font-semibold text-slate-900">
+                <a href="{{ route('agenda.show', ['agenda' => $agenda->agenda_id]) }}" class="text-blue-600 hover:text-blue-800 font-medium hover:underline cursor-pointer transition-colors duration-200">
+                  {{ $agenda->nama_agenda ?? '-' }}
+                </a>
+              </td>
               <td class="border-b border-slate-400 px-4 py-3 text-sm text-slate-800">{{ $agenda->tempat ?? '-' }}</td>
               <td class="border-b border-slate-400 px-4 py-3 text-sm text-slate-800">{{ $tglText }}</td>
               <td class="border-b border-slate-400 px-4 py-3 text-sm text-slate-800">{{ $waktuText ?: '-' }}</td>
-              <td class="border-b border-slate-400 px-4 py-3 text-sm text-slate-800">{{ $picText }}</td>
+              <td class="border-b border-slate-400 px-4 py-3 text-sm text-slate-800">{!! $picText !!}</td>
               <td class="border-b border-slate-400 px-4 py-3 text-sm text-slate-800">{{ $dihadiriText }}</td>
               <td class="border-b border-slate-400 px-4 py-3">
                 <span class="inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset {{ $badgeClass }}">
@@ -232,6 +288,7 @@
           </div>
         </div>
       @endif
+    </div>
     </div>
   </section>
 </form>

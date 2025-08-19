@@ -8,6 +8,69 @@
 <x-layout>
     <x-slot:title>Daftar Tamu Agenda: {{ $agenda->nama_agenda }}</x-slot:title>
 
+    <style>
+        /* Modern Button Animations */
+        .modern-btn {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .modern-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .modern-btn:hover::before {
+            left: 100%;
+        }
+        
+        .modern-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+        
+        .modern-btn:active {
+            transform: translateY(0);
+        }
+        
+        .back-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 20px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .back-btn:hover {
+            color: white;
+            text-decoration: none;
+        }
+        
+        .add-btn {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 20px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+    </style>
+
     {{-- 
         =====================================================================
         CONTAINER UTAMA DENGAN STATE MANAGEMENT ALPINE.JS
@@ -40,7 +103,10 @@
                 <div class="flex justify-between items-center mb-6">
                     <h2 class="text-2xl font-bold text-gray-800">Daftar Tamu Agenda: {{ $agenda->nama_agenda }}</h2>
                     {{-- Tombol ini, saat diklik (@click), akan mengubah state 'isCreateModalOpen' menjadi true untuk menampilkan modal tambah tamu. --}}
-                    <button @click="isCreateModalOpen = true" class="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2">
+                    <button @click="isCreateModalOpen = true" class="modern-btn add-btn">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                        </svg>
                         Tambah Tamu
                     </button>
                 </div>
@@ -112,8 +178,11 @@
 
                 {{-- Tombol navigasi kembali ke detail agenda --}}
                 <div class="mt-6">
-                    <a href="{{ route('agenda.show', $agenda->agenda_id) }}" class="text-indigo-600 hover:text-indigo-900">
-                        &larr; Kembali ke Detail Agenda
+                    <a href="{{ route('agenda.show', $agenda->agenda_id) }}" class="modern-btn back-btn">
+                        <svg class="w-4 h-4 transition-transform duration-300 hover:-translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                        </svg>
+                        Kembali ke Detail Agenda
                     </a>
                 </div>
             </div>
@@ -139,19 +208,19 @@
                     <form action="{{ route('agenda.tamu.store', $agenda->agenda_id) }}" method="POST" class="mt-4 space-y-4">
                         @csrf
                         <div>
-                            <label for="create_NIP" class="block text-sm font-medium text-gray-700">NIP <span class="text-red-500">*</span></label>
+                            <label for="create_NIP" class="block text-sm font-medium text-gray-700">NIP <span class="text-red-400">*</span></label>
                             <input type="text" name="NIP" id="create_NIP" value="{{ old('NIP') }}" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" required maxlength="8">
                         </div>
                         <div>
-                            <label for="create_nama_tamu" class="block text-sm font-medium text-gray-700">Nama Tamu <span class="text-red-500">*</span></label>
+                            <label for="create_nama_tamu" class="block text-sm font-medium text-gray-700">Nama Tamu <span class="text-red-400">*</span></label>
                             <input type="text" name="nama_tamu" id="create_nama_tamu" value="{{ old('nama_tamu') }}" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" required>
                         </div>
                         <div>
-                            <label for="create_instansi" class="block text-sm font-medium text-gray-700">Instansi <span class="text-red-500">*</span></label>
+                            <label for="create_instansi" class="block text-sm font-medium text-gray-700">Instansi <span class="text-red-400">*</span></label>
                             <input type="text" name="instansi" id="create_instansi" value="{{ old('instansi') }}" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" required>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700">Jenis Kelamin <span class="text-red-500">*</span></label>
+                            <label class="block text-sm font-medium text-gray-700">Jenis Kelamin <span class="text-red-400">*</span></label>
                             <div class="mt-2 space-y-2">
                                 <div class="flex items-center">
                                     <input id="jk_laki" name="jk" type="radio" value="Laki-laki" class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300" required>
@@ -196,15 +265,15 @@
                             <input type="text" name="NIP" id="edit_NIP" x-model="editTamu.NIP" class="mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md bg-gray-100" readonly>
                         </div>
                         <div>
-                            <label for="edit_nama_tamu" class="block text-sm font-medium text-gray-700">Nama Tamu <span class="text-red-500">*</span></label>
+                            <label for="edit_nama_tamu" class="block text-sm font-medium text-gray-700">Nama Tamu <span class="text-red-400">*</span></label>
                             <input type="text" name="nama_tamu" id="edit_nama_tamu" x-model="editTamu.nama_tamu" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" required>
                         </div>
                         <div>
-                            <label for="edit_instansi" class="block text-sm font-medium text-gray-700">Instansi <span class="text-red-500">*</span></label>
+                            <label for="edit_instansi" class="block text-sm font-medium text-gray-700">Instansi <span class="text-red-400">*</span></label>
                             <input type="text" name="instansi" id="edit_instansi" x-model="editTamu.instansi" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" required>
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700">Jenis Kelamin <span class="text-red-500">*</span></label>
+                            <label class="block text-sm font-medium text-gray-700">Jenis Kelamin <span class="text-red-400">*</span></label>
                             <div class="mt-2 space-y-2">
                                 <div class="flex items-center">
                                     {{-- 'x-bind:checked' akan memilih radio button ini jika properti 'jk' dari 'editTamu' cocok dengan value. --}}

@@ -6,11 +6,33 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Sistem Manajemen Agenda Pemerintah Kabupaten Mojokerto">
     <title>{{ $title }}</title>
 
+    {{-- Preload critical resources --}}
+    <link rel="preconnect" href="https://rsms.me">
+    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="dns-prefetch" href="https://rsms.me">
+    <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+    
+    {{-- Preload critical assets --}}
+    <link rel="preload" href="{{ Vite::asset('resources/css/app.css') }}" as="style">
+    <link rel="preload" href="{{ Vite::asset('resources/js/app.js') }}" as="script">
+    <link rel="preload" href="{{ asset('img/hero-bg.jpg') }}" as="image" fetchpriority="high">
+    
+    {{-- Critical CSS first --}}
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
+    
+    {{-- Non-critical CSS with preload --}}
+    <link rel="preload" href="https://rsms.me/inter/inter.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://rsms.me/inter/inter.css"></noscript>
+    
+    {{-- Alpine.js with defer for better performance --}}
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    
+    {{-- Performance optimizations --}}
+    <meta name="theme-color" content="#ac1616">
+    <link rel="manifest" href="/manifest.json">
 </head>
 
 @php
@@ -28,7 +50,7 @@
 
     {{-- ===== HEADER / NAV ===== --}}
     <header id="siteHeader" data-scrolled="0"
-        class="{{ $isLanding ? 'fixed inset-x-0 top-0 z-50 transition-all duration-300' : 'relative bg-[#ac1616] shadow-sm' }}">
+        class="{{ $isLanding ? 'fixed inset-x-0 top-0 z-50 transition-all duration-300' : 'fixed inset-x-0 top-0 z-50 bg-[#ac1616] shadow-sm' }}">
         <style>
             /* ===== Warna navbar ===== */
             html {
@@ -215,7 +237,7 @@
     </header>
 
     {{-- ===== KONTEN ===== --}}
-    <main id="app" class="{{ $isLanding ? 'min-h-[calc(100vh-4rem)]' : 'min-h-screen' }} w-full">
+    <main id="app" class="{{ $isLanding ? 'min-h-[calc(100vh-4rem)]' : 'min-h-screen pt-16' }} w-full">
         {{ $slot }}
     </main>
 

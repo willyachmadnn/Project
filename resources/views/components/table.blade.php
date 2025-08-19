@@ -11,17 +11,20 @@
   <section>
     <div id="controls" class="flex flex-wrap items-center justify-between gap-4">
 
-      <div id="showWrap" class="inline-flex items-center gap-2 rounded-lg bg-white px-2 py-1 ring-1 ring-inset ring-red-600/70 hover:ring-red-600/60 focus-within:ring-1 focus-within:ring-red-600 shrink-0">
-        <span class="text-sm font-medium text-slate-700">Show:</span>
+      <div id="showWrap" class="inline-flex items-center gap-2 text-sm text-gray-700">
+        <span>Show:</span>
         <div class="relative">
           {{-- NAMA DIUBAH MENJADI perPage --}}
-          <select id="perPageSelect" name="perPage" class="appearance-none h-7 w-16 rounded-md border border-red-700/50 bg-transparent pl-3 pr-7 text-sm font-medium leading-tight text-slate-700 focus:outline-none focus:ring-1 focus:ring-red-600">
+          <select id="perPageSelect" name="perPage" class="appearance-none h-8 w-20 rounded border border-gray-300 bg-white pl-3 pr-8 text-sm focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500">
             @foreach ([10,25,50,100] as $n)
               <option value="{{ $n }}" @selected((int)request('perPage', 10) === $n)>{{ $n }}</option>
             @endforeach
           </select>
-          <svg class="pointer-events-none absolute right-1 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-600" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.19l3.71-3.96a.75.75 0 111.08 1.04l-4.25 4.53a.75.75 0 01-1.08 0L5.21 8.27a.75.75 0 01.02-1.06z" clip-rule="evenodd"/></svg>
+          <svg class="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+            <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.19l3.71-3.96a.75.75 0 111.08 1.04l-4.25 4.53a.75.75 0 01-1.08 0L5.21 8.27a.75.75 0 01.02-1.06z" clip-rule="evenodd"/>
+          </svg>
         </div>
+        <span>entries</span>
       </div>
 
       <div class="flex items-center gap-2 md:gap-3">
@@ -94,23 +97,23 @@
           {{-- Lebar kolom --}}
           <colgroup>
             <col class="w-12 sm:w-14 md:w-16" />   {{-- NO --}}
-            <col class="w-[24%]" />                 {{-- Nama Agenda --}}
-            <col class="w-[16%]" />                 {{-- Tempat --}}
-            <col class="w-[16%]" />                 {{-- Tanggal --}}
-            <col class="w-[12%]" />                 {{-- Waktu --}}
-            <col class="w-[14%]" />                 {{-- Penanggung Jawab --}}
-            <col class="w-[14%]" />                 {{-- Kehadiran --}}
+            <col class="w-[18%]" />                 {{-- Nama Agenda --}}
+            <col class="w-[10%]" />                 {{-- Tempat --}}
+            <col class="w-[10%]" />                 {{-- Tanggal --}}
+            <col class="w-[10%]" />                 {{-- Waktu --}}
+            <col class="w-[10%]" />                 {{-- Penanggung Jawab --}}
+            <col class="w-[16%]" />                 {{-- Dihadiri --}}
             <col class="w-[12%]" />                 {{-- Status --}}
           </colgroup>
 
           <thead class="bg-red-700 text-white">
             <tr>
               <th class="px-4 py-3 font-semibold rounded-tl-lg">No</th>
-              <th class="px-4 py-3 font-semibold">Nama Agenda</th>
+              <th class="px-4 py-3 font-semibold">Kegiatan</th>
               <th class="px-4 py-3 font-semibold">Tempat</th>
               <th class="px-4 py-3 font-semibold">Tanggal</th>
               <th class="px-4 py-3 font-semibold">Waktu</th>
-              <th class="px-4 py-3 font-semibold">OPD Pembuat</th>
+              <th class="px-4 py-3 font-semibold">Admin OPD</th>
               <th class="px-4 py-3 font-semibold">Dihadiri</th>
               <th class="px-4 py-3 font-semibold rounded-tr-lg">Status</th>
             </tr>
@@ -119,7 +122,9 @@
           <tbody id="agendaBody">
           @forelse($agendas as $agenda)
             @php
-              $rowIndex = ($agendas->firstItem() ?? 1) + $loop->index;
+              // Penomoran yang benar untuk data yang diurutkan terbaru di atas
+              // Jika total 100 agenda dan ada di halaman 1, agenda terbaru harus nomor 100
+              $rowIndex = $agendas->total() - ($agendas->firstItem() - 1) - $loop->index;
 
               // STATUS -> label + badge
               $rawStatus = strtolower(trim((string)($agenda->status ?? '')));
@@ -199,7 +204,11 @@
 
             <tr class="odd:bg-white hover:bg-red-100/90 transition-colors duration-3">
               <td class="border-b border-slate-400 px-4 py-3 text-sm text-slate-800 align-middle">{{ $rowIndex }}.</td>
-              <td class="border-b border-slate-400 px-4 py-3 text-sm font-semibold text-slate-900">{{ $agenda->nama_agenda ?? '-' }}</td>
+              <td class="border-b border-slate-400 px-4 py-3 text-sm font-semibold text-slate-900">
+                <span class="font-medium">
+                  {{ $agenda->nama_agenda ?? '-' }}
+                </span>
+              </td>
               <td class="border-b border-slate-400 px-4 py-3 text-sm text-slate-800">{{ $agenda->tempat ?? '-' }}</td>
               <td class="border-b border-slate-400 px-4 py-3 text-sm text-slate-800">{{ $tglText }}</td>
               <td class="border-b border-slate-400 px-4 py-3 text-sm text-slate-800">{{ $waktuText ?: '-' }}</td>
@@ -218,9 +227,9 @@
         </table>
       </div>
 
-      {{-- Pagination --}}
+      {{-- Pagination - Improved styling to appear integrated but separate --}}
       @if (method_exists($agendas, 'links'))
-        <div class="flex flex-col gap-3 border-t border-slate-200 px-2 py-6">
+        <div class="flex flex-col gap-3 border-t border-slate-200 px-2 py-4 bg-gray-50 rounded-b-lg">
           <p class="text-sm text-slate-600 self-start">
             Menampilkan <span class="font-medium">{{ $agendas->firstItem() }}</span> –
             <span class="font-medium">{{ $agendas->lastItem() }}</span> dari

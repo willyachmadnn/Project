@@ -1,6 +1,57 @@
 <x-layout>
     <x-slot:title>Detail Notulen Agenda: {{ $agenda->nama_agenda }}</x-slot:title>
 
+    <style>
+        /* Modern Button Animations */
+        .modern-btn {
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .modern-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s ease;
+        }
+        
+        .modern-btn:hover::before {
+            left: 100%;
+        }
+        
+        .modern-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+        
+        .modern-btn:active {
+            transform: translateY(0);
+        }
+        
+        .back-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 20px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .back-btn:hover {
+            color: white;
+            text-decoration: none;
+        }
+    </style>
+
     <div class="bg-white shadow-sm rounded-lg overflow-hidden">
         <div class="p-6">
             <h2 class="text-2xl font-bold text-gray-800 mb-6">Detail Notulen Agenda</h2>
@@ -23,9 +74,12 @@
 
             <div class="flex justify-between items-center mt-8 pt-4 border-t">
                 {{-- PERBAIKAN: Menggunakan array asosiatif dan agenda_id --}}
-                <a href="{{ route('agenda.show', ['agenda' => $agenda->agenda_id]) }}" class="text-indigo-600 hover:text-indigo-900 font-medium">
-                    &larr; Kembali ke Detail Agenda
-                </a>
+                <a href="{{ route('agenda.show', ['agenda' => $agenda->agenda_id]) }}" class="modern-btn back-btn">
+                     <svg class="w-4 h-4 transition-transform duration-300 hover:-translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                     </svg>
+                     Kembali ke Detail Agenda
+                 </a>
 
                 <div class="flex space-x-3">
                     <a href="{{ route('agenda.notulen.edit', ['agendaId' => $agenda->agenda_id, 'id' => $notulen->id]) }}" class="inline-flex items-center px-4 py-2 bg-yellow-500 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-yellow-600 active:bg-yellow-700 focus:outline-none focus:border-yellow-700 focus:ring ring-yellow-300 disabled:opacity-25 transition ease-in-out duration-150">
