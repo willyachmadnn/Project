@@ -1,0 +1,19 @@
+{
+  "name": "Agenda Pemerintah Kabupaten Mojokerto",
+  "short_name": "Agenda Mojokerto",
+  "description": "Sistem Manajemen Agenda Pemerintah Kabupaten Mojokerto",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ac1616",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "48x48",
+      "type": "image/x-icon"
+    }
+  ],
+  "categories": ["government", "productivity"],
+  "lang": "id"
+}
