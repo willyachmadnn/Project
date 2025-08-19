@@ -12,8 +12,8 @@ use App\Http\Controllers\{
 //
 // PUBLIC
 //
-Route::get('/', [PageController::class, 'index'])->name('landing');
-Route::get('/api/agenda-counts', [PageController::class, 'getAgendaCounts'])->name('api.agenda.counts');
+Route::get('/', [PageController::class, 'index'])->middleware('cache.headers:1800')->name('landing');
+Route::get('/api/agenda-counts', [PageController::class, 'getAgendaCounts'])->middleware('cache.headers:300')->name('api.agenda.counts');
 
 // Auth (admin)
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
