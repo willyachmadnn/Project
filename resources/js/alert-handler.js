@@ -35,6 +35,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const containerPadding = window.getComputedStyle(document.querySelector('.container')).paddingLeft;
             alertSection.style.padding = `0 ${containerPadding}`;
             alertSection.style.pointerEvents = 'none'; // Memungkinkan interaksi dengan elemen di bawahnya
+        }
         
         // Tambahkan class untuk animasi fade-in
         alerts.forEach((alert, index) => {

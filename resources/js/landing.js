@@ -3,46 +3,98 @@ import '../css/landing.css';
 
 document.addEventListener('DOMContentLoaded', () => {
   // ==================================================================
-  // BAGIAN 1: LOGIKA ANIMASI DUA ARAH (dipertahankan)
+  // BAGIAN 1: LOGIKA ANIMASI DUA ARAH (diperbaiki untuk lebih smooth)
   // ==================================================================
-  const REFLOW_DELAY = 100;
-  const STAGGER_DELAY = 200;
+  const REFLOW_DELAY = 200;
+  const STAGGER_DELAY = 400;
 
   const animatedItems = document.querySelectorAll('.animate-item');
   const heroSpacer = document.querySelector('.hero-spacer');
   let isInitialLoad = true;
+  let lastScrollY = 0;
+  let isScrollingUp = false;
+  let animationInProgress = false;
 
-  const runAnimation = (direction) => {
+  // Deteksi arah scroll untuk animasi yang lebih smooth
+  const handleScroll = () => {
+    const currentScrollY = window.scrollY;
+    isScrollingUp = currentScrollY < lastScrollY;
+    lastScrollY = currentScrollY;
+  };
+
+  window.addEventListener('scroll', handleScroll, { passive: true });
+
+  const runAnimation = (direction, smooth = true) => {
+    if (animationInProgress) return;
+    animationInProgress = true;
+
+    // Reset semua animasi dengan durasi 2 detik
     animatedItems.forEach(item => {
       item.classList.remove('is-visible', 'slide-from-top', 'slide-from-bottom');
+      item.style.transition = 'transform 2s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 2s ease-out';
       item.classList.add(direction);
     });
 
     setTimeout(() => {
       animatedItems.forEach((item, index) => {
-        setTimeout(() => { item.classList.add('is-visible'); }, index * STAGGER_DELAY);
+        setTimeout(() => { 
+          item.classList.add('is-visible');
+          if (index === animatedItems.length - 1) {
+            setTimeout(() => { animationInProgress = false; }, 800);
+          }
+        }, index * STAGGER_DELAY);
       });
     }, REFLOW_DELAY);
   };
 
   const resetAnimation = () => {
-    animatedItems.forEach(item => item.classList.remove('is-visible'));
+    if (animationInProgress) return;
+    animatedItems.forEach(item => {
+      item.classList.remove('is-visible');
+      item.style.transition = 'transform 1.0s ease-out, opacity 0.8s ease-out';
+    });
   };
 
-  runAnimation('slide-from-top');
+  // Delay 1 detik untuk memastikan DOM siap, lalu jalankan animasi awal
+  setTimeout(() => {
+    runAnimation('slide-from-top', false);
+  }, 1000);
 
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
-        if (!isInitialLoad) runAnimation('slide-from-bottom');
+        // Jika bukan load pertama, gunakan animasi berdasarkan arah scroll
+        if (!isInitialLoad) {
+          const direction = isScrollingUp ? 'slide-from-bottom' : 'slide-from-top';
+          runAnimation(direction, true);
+        } else {
+          // Untuk load pertama, pastikan animasi berjalan dengan delay 1 detik
+          setTimeout(() => {
+            runAnimation('slide-from-top', false);
+          }, 1000);
+        }
       } else {
         resetAnimation();
         isInitialLoad = false;
       }
     });
-  }, { root: null, threshold: 0.1 });
+  }, { root: null, threshold: 0.1, rootMargin: '100px' });
 
   if (heroSpacer) observer.observe(heroSpacer);
+
+  // Deteksi klik pada link untuk memaksa animasi dari atas
+  document.addEventListener('click', (e) => {
+    const link = e.target.closest('a[href*="#"], a[href="/"], a[href*="landing"]');
+    if (link) {
+      isInitialLoad = true; // Reset flag untuk memaksa animasi dari atas
+      // Trigger animasi setelah navigasi dengan delay 1 detik
+      setTimeout(() => {
+        if (heroSpacer && heroSpacer.getBoundingClientRect().top < window.innerHeight) {
+          runAnimation('slide-from-top', false);
+        }
+      }, 1000);
+    }
+  });
 
   // ==================================================================
   // BAGIAN 2: AJAX FILTER & PAGINATION (diperbaiki)
