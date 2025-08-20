@@ -43,20 +43,42 @@ class AgendaSeeder extends Seeder
             'Staf/Undangan Lainnya'
         ];
 
-        // Looping untuk memasukkan 100 data agenda dummy
+        // Looping untuk memasukkan 1000 data agenda dummy dengan status bervariasi
         for ($i = 1; $i <= 1000; $i++) {
             $dihadiri = collect($dihadiriOptions)
                 ->random(rand(1, 4))
                 ->implode(', ');
 
+            // Buat status acak: 40% Selesai, 30% Menunggu, 30% Berlangsung
+            $statusRandom = rand(1, 100);
+            
+            if ($statusRandom <= 40) {
+                // Status 'Selesai' - agenda di masa lalu
+                $tanggal = now()->subDays(rand(1, 90))->toDateString();
+                $jamMulai = sprintf('%02d:%02d', rand(8, 14), rand(0, 59));
+                $jamSelesai = sprintf('%02d:%02d', rand(15, 18), rand(0, 59));
+            } elseif ($statusRandom <= 70) {
+                // Status 'Menunggu' - agenda di masa depan
+                $tanggal = now()->addDays(rand(1, 60))->toDateString();
+                $jamMulai = sprintf('%02d:%02d', rand(8, 14), rand(0, 59));
+                $jamSelesai = sprintf('%02d:%02d', rand(15, 18), rand(0, 59));
+            } else {
+                // Status 'Berlangsung' - agenda hari ini dengan waktu sedang berlangsung
+                $tanggal = now()->toDateString();
+                $currentHour = now()->hour;
+                // Pastikan agenda sedang berlangsung (mulai sebelum sekarang, selesai setelah sekarang)
+                $jamMulai = sprintf('%02d:%02d', max(8, $currentHour - rand(1, 3)), rand(0, 59));
+                $jamSelesai = sprintf('%02d:%02d', min(18, $currentHour + rand(1, 4)), rand(0, 59));
+            }
+
             DB::table('agendas')->insert([
                 'nama_agenda' => $namaAgendas[array_rand($namaAgendas)] . ' ' . $i,
                 'tempat' => $tempats[array_rand($tempats)],
-                'tanggal' => now()->addDays(rand(1, 30))->toDateString(),
-                'jam_mulai' => now()->addHours(rand(8, 12))->toTimeString(),
-                'jam_selesai' => now()->addHours(rand(13, 16))->toTimeString(),
-                'dihadiri' => $dihadiri, // Contoh string random untuk dihadiri
-                'admin_id' => $adminIds->random(), // Pilih admin_id secara acak
+                'tanggal' => $tanggal,
+                'jam_mulai' => $jamMulai,
+                'jam_selesai' => $jamSelesai,
+                'dihadiri' => $dihadiri,
+                'admin_id' => $adminIds->random(),
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
