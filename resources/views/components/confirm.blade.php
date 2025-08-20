@@ -44,14 +44,14 @@
                 {{-- Cancel Button --}}
                 <button type="button" 
                         @click="$dispatch('cancel')"
-                        class="flex-1 px-4 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded-xl transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-gray-300/50">
+                        class="flex-1 px-4 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded-md transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-gray-300/50">
                     {{ $cancelText }}
                 </button>
                 
                 {{-- Confirm Button --}}
                 <button type="button" 
                         @click="$dispatch('confirm')"
-                        class="flex-1 px-4 py-3 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-semibold rounded-xl transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-red-500/30 shadow-lg hover:shadow-xl transform hover:scale-105">
+                        class="flex-1 px-4 py-3 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-semibold rounded-md transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-red-500/30 shadow-lg hover:shadow-xl transform hover:scale-105">
                     {{ $confirmText }}
                 </button>
             </div>

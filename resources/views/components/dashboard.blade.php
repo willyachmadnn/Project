@@ -59,7 +59,7 @@
         <span>Show:</span>
         <div class="relative">
           {{-- NAMA DIUBAH MENJADI perPage --}}
-          <select id="perPageSelect" name="perPage" class="appearance-none h-8 w-20 rounded border border-gray-300 bg-white pl-3 pr-8 text-sm focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500">
+          <select id="perPageSelect" name="perPage" class="appearance-none h-8 w-20 rounded border border-gray-300 bg-white pl-3 pr-8 text-sm focus:outline-none focus:ring-1 focus:ring-red-500 focus:border-red-500">
             @foreach ([10,25,50,100] as $n)
               <option value="{{ $n }}" @selected((int)request('perPage', 10) === $n)>{{ $n }}</option>
             @endforeach
@@ -72,7 +72,7 @@
       </div>
 
       <div class="flex items-center gap-2 md:gap-3">
-        <div class="group relative flex items-center w-96 rounded-md bg-white ring-1 ring-inset ring-red-700/50 hover:ring-red-700/80 focus-within:ring-2 focus-within:ring-red-600">
+        <div class="group relative flex items-center w-96 rounded-md bg-white ring-1 ring-inset ring-red-700/50 hover:ring-red-700/80 focus-within:ring-1 focus-within:ring-red-600">
           <svg class="ml-3 mr-2 h-4 w-4 stroke-slate-400" fill="none" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
           <input id="searchInput" name="search" value="{{ request('search', request('q')) }}" type="search" autocomplete="off" placeholder="Kegiatan, Tempat, Tanggal, Waktu, Admin OPD, Dihadiri" class="block w-full appearance-none bg-transparent py-2 pr-3 text-base text-gray-700 placeholder:text-gray-400 focus:outline-none sm:text-sm sm:leading-6"/>
         </div>
@@ -116,10 +116,10 @@
                  class="absolute right-0 z-10 mt-2 w-full origin-top-right rounded-md bg-white shadow-lg border border-slate-300 focus:outline-none"
                  style="display: none;">
                 <div class="py-1" role="menu" aria-orientation="vertical">
-                    <a href="#" @click.prevent="status=''; label='Add Filter'; open=false; $nextTick(() => { $el.closest('form').dispatchEvent(new Event('change', { bubbles: true })) })" class="block px-4 py-2 text-sm text-gray-700 hover:bg-red-100 hover:text-red-900" role="menuitem">Semua</a>
-                    <a href="#" @click.prevent="status='berlangsung'; label='Berlangsung'; open=false; $nextTick(() => { $el.closest('form').dispatchEvent(new Event('change', { bubbles: true })) })" class="block px-4 py-2 text-sm text-gray-700 hover:bg-red-100 hover:text-red-900" role="menuitem">Berlangsung</a>
-                    <a href="#" @click.prevent="status='selesai'; label='Berakhir'; open=false; $nextTick(() => { $el.closest('form').dispatchEvent(new Event('change', { bubbles: true })) })" class="block px-4 py-2 text-sm text-gray-700 hover:bg-red-100 hover:text-red-900" role="menuitem">Berakhir</a>
-                    <a href="#" @click.prevent="status='menunggu'; label='Menunggu'; open=false; $nextTick(() => { $el.closest('form').dispatchEvent(new Event('change', { bubbles: true })) })" class="block px-4 py-2 text-sm text-gray-700 hover:bg-red-100 hover:text-red-900" role="menuitem">Menunggu</a>
+                    <a href="#" @click.prevent="status=''; label='Add Filter'; open=false; $nextTick(() => { $el.closest('form').dispatchEvent(new Event('change', { bubbles: true })) })" class="block px-4 py-2 text-sm text-gray-700 hover:bg-red-100 hover:text-red-900 hover:border-l-4 hover:border-red-500 transition-all duration-200" role="menuitem">Semua</a>
+                    <a href="#" @click.prevent="status='berlangsung'; label='Berlangsung'; open=false; $nextTick(() => { $el.closest('form').dispatchEvent(new Event('change', { bubbles: true })) })" class="block px-4 py-2 text-sm text-gray-700 hover:bg-red-100 hover:text-red-900 hover:border-l-4 hover:border-red-500 transition-all duration-200" role="menuitem">Berlangsung</a>
+                    <a href="#" @click.prevent="status='selesai'; label='Berakhir'; open=false; $nextTick(() => { $el.closest('form').dispatchEvent(new Event('change', { bubbles: true })) })" class="block px-4 py-2 text-sm text-gray-700 hover:bg-red-100 hover:text-red-900 hover:border-l-4 hover:border-red-500 transition-all duration-200" role="menuitem">Berakhir</a>
+                    <a href="#" @click.prevent="status='menunggu'; label='Menunggu'; open=false; $nextTick(() => { $el.closest('form').dispatchEvent(new Event('change', { bubbles: true })) })" class="block px-4 py-2 text-sm text-gray-700 hover:bg-red-100 hover:text-red-900 hover:border-l-4 hover:border-red-500 transition-all duration-200" role="menuitem">Menunggu</a>
                 </div>
             </div>
         </div>

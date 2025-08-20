@@ -55,9 +55,9 @@
         }
     </style>
     
-    <div x-data="{ loaded: false }" x-init="setTimeout(() => loaded = true, 100)" class="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+    <div x-data="{ loaded: false }" x-init="setTimeout(() => loaded = true, 100)" class="h-screen flex flex-col overflow-hidden bg-gradient-to-br from-blue-50 via-white to-purple-50">
         <!-- Header dengan animasi slide in -->
-        <div class="animate-slide-in-left bg-transparent border-b border-gray-100">
+        <div class="animate-slide-in-left bg-transparent border-b border-gray-100 flex-shrink-0">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 bg-transparent">
                 <div class="flex justify-between items-center">
                     <div class="flex-1">
@@ -67,7 +67,7 @@
                         <p class="text-gray-600 mt-1">Informasi lengkap agenda dan peserta</p>
                     </div>
                     <a href="{{ route('agenda.index') }}" 
-                       class="btn-smooth group inline-flex items-center px-4 py-2 bg-gradient-to-l from-orange-500 to-red-600 text-white font-medium rounded-lg shadow-md hover:shadow-lg transform hover:-translate-y-1 hover:scale-105 ml-34">
+                       class="btn-smooth group inline-flex items-center px-4 py-2 bg-gradient-to-l from-orange-500 to-red-600 text-white font-medium rounded-md shadow-md hover:shadow-lg transform hover:-translate-y-1 hover:scale-105 ml-34">
                         <svg class="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
                         </svg>
@@ -80,7 +80,7 @@
         {{-- Alert Messages --}}
         @if(session('success'))
             <div id="popup-alert" class="fixed top-[10%] left-1/2 z-50 popup-alert">
-                <div class="flex items-center border-l-4 border-green-500 bg-white p-4 rounded-lg shadow-lg transition-all duration-300 ease-in-out transform" role="alert">
+                <div class="flex items-center border-l-4 border-green-500 bg-white p-4 rounded-md shadow-lg transition-all duration-300 ease-in-out transform" role="alert">
                     <div class="flex-shrink-0 mr-3">
                         <svg class="h-6 w-6 text-green-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -100,7 +100,7 @@
         
         @if(session('error'))
             <div id="popup-alert-error" class="fixed top-[10%] left-1/2 z-50 popup-alert">
-                <div class="flex items-center border-l-4 border-red-500 bg-white p-4 rounded-lg shadow-lg transition-all duration-300 ease-in-out transform" role="alert">
+                <div class="flex items-center border-l-4 border-red-500 bg-white p-4 rounded-md shadow-lg transition-all duration-300 ease-in-out transform" role="alert">
                     <div class="flex-shrink-0 mr-3">
                         <svg class="h-6 w-6 text-red-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -118,7 +118,8 @@
             </div>
         @endif
         
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8" x-data="{
+        <div class="flex-1 overflow-y-auto">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 py-2" x-data="{
             isEditModalOpen: false,
             editAgenda: {},
             showEditConfirm: false,
@@ -169,33 +170,71 @@
                 form.submit();
             },
         }">        
-            {{-- Tab Navigation --}}
-            <div x-data="{ activeTab: 'detail' }" class="mb-8">
-                <div class="border-b border-gray-200">
-                    <nav class="-mb-px flex space-x-8">
+            {{-- Enhanced Tab Navigation with Accessibility & Performance Optimizations --}}
+            <div x-data="{ activeTab: 'detail' }" class="mb-10" role="tablist" aria-label="Informasi Agenda">
+                <div class="border-b border-gray-200 dark:border-gray-700">
+                    <nav class="-mb-px flex space-x-8" role="presentation">
                         <button @click="activeTab = 'detail'" 
-                                :class="activeTab === 'detail' ? 'border-black text-black' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
-                                class="whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm transition-colors duration-200">
-                            Detail Agenda
+                                :class="activeTab === 'detail' ? 'border-blue-600 text-blue-600 bg-blue-50 border-l-4 border-l-blue-600' : 'border-transparent text-gray-500 hover:text-blue-600 hover:border-blue-300 hover:bg-blue-50 hover:border-l-4 hover:border-l-blue-500 dark:text-gray-400 dark:hover:text-blue-300'"
+                                :aria-selected="activeTab === 'detail'"
+                                class="whitespace-nowrap py-2 px-3 border-b-2 font-semibold text-sm transition-all duration-200 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                                role="tab"
+                                aria-controls="detail-panel"
+                                id="detail-tab">
+                            <span class="flex items-center">
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                </svg>
+                                Detail Agenda
+                            </span>
                         </button>
                         <button @click="activeTab = 'tamu'" 
-                                :class="activeTab === 'tamu' ? 'border-black text-black' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
-                                class="whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm transition-colors duration-200">
-                            Daftar Tamu
+                                :class="activeTab === 'tamu' ? 'border-green-600 text-green-600 bg-green-50 border-l-4 border-l-green-600' : 'border-transparent text-gray-500 hover:text-green-600 hover:border-green-300 hover:bg-green-50 hover:border-l-4 hover:border-l-green-500 dark:text-gray-400 dark:hover:text-green-300'"
+                                :aria-selected="activeTab === 'tamu'"
+                                class="whitespace-nowrap py-2 px-3 border-b-2 font-semibold text-sm transition-all duration-200 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2"
+                                role="tab"
+                                aria-controls="tamu-panel"
+                                id="tamu-tab">
+                            <span class="flex items-center">
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                                </svg>
+                                Daftar Tamu
+                            </span>
                         </button>
                         <button @click="activeTab = 'notulen'" 
-                                :class="activeTab === 'notulen' ? 'border-black text-black' : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'"
-                                class="whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm transition-colors duration-200">
-                            Notulen
+                                :class="activeTab === 'notulen' ? 'border-purple-600 text-purple-600 bg-purple-50 border-l-4 border-l-purple-600' : 'border-transparent text-gray-500 hover:text-purple-600 hover:border-purple-300 hover:bg-purple-50 hover:border-l-4 hover:border-l-purple-500 dark:text-gray-400 dark:hover:text-purple-300'"
+                                :aria-selected="activeTab === 'notulen'"
+                                class="whitespace-nowrap py-2 px-3 border-b-2 font-semibold text-sm transition-all duration-200 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2"
+                                role="tab"
+                                aria-controls="notulen-panel"
+                                id="notulen-tab">
+                            <span class="flex items-center">
+                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                </svg>
+                                Notulen
+                            </span>
                         </button>
                     </nav>
                 </div>
 
-                {{-- Tab Content --}}
-                <div class="mt-6">
+                {{-- Enhanced Tab Content with Accessibility --}}
+                <div class="mt-6 h-[calc(100vh-280px)] overflow-hidden">
                     {{-- Detail Agenda Tab --}}
-                    <div x-show="activeTab === 'detail'" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100">
-                        <div class="glass-effect rounded-2xl p-8 shadow-xl">
+                    <div x-show="activeTab === 'detail'" 
+                         x-transition:enter="transition ease-out duration-200" 
+                         x-transition:enter-start="opacity-0 transform translate-y-2" 
+                         x-transition:enter-end="opacity-100 transform translate-y-0"
+                         x-transition:leave="transition ease-in duration-150"
+                         x-transition:leave-start="opacity-100 transform translate-y-0"
+                         x-transition:leave-end="opacity-0 transform translate-y-2"
+                         class="h-full overflow-hidden"
+                         role="tabpanel"
+                         aria-labelledby="detail-tab"
+                         id="detail-panel"
+                         tabindex="0">
+                        <div class="glass-effect bg-gray-500 border-black rounded-2xl p-8 h-full overflow-hidden">
                             <div class="flex items-center justify-between mb-6">
                                 <div class="flex items-center">
                                     <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center mr-4">
@@ -209,7 +248,7 @@
                                 <!-- Action Buttons -->
                                 <div class="flex space-x-3">
                                     <!-- QR Button -->
-                                    <button class="flex items-center px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg">
+                                    <button class="flex items-center px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-md transition-colors duration-200 shadow-md hover:shadow-lg">
                                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M12 12h-4.01M12 12v4m6-4h.01M12 8h.01M12 8h4.01M12 8H7.99M12 8V4m0 0H7.99M12 4h4.01"></path>
                                         </svg>
@@ -217,7 +256,7 @@
                                     </button>
                                     
                                     <!-- Edit Button -->
-                                    <button @click="openEditModal()" class="flex items-center px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg">
+                                    <button @click="openEditModal()" class="flex items-center px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-md transition-colors duration-200 shadow-md hover:shadow-lg">
                                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
                                         </svg>
@@ -225,7 +264,7 @@
                                     </button>
                                     
                                     <!-- Delete Button -->
-                                    <button @click="confirmDeleteAgenda()" class="flex items-center px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors duration-200 shadow-md hover:shadow-lg">
+                                    <button @click="confirmDeleteAgenda()" class="flex items-center px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-md transition-colors duration-200 shadow-md hover:shadow-lg">
                                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
                                         </svg>
@@ -234,7 +273,7 @@
                                 </div>
                             </div>
                             
-                <div class="text-sm border border-rose-200 rounded-lg overflow-hidden">
+                <div class="text-sm border border-rose-200 rounded-md overflow-hidden bg-white">
                     <!-- Baris 1: Tempat -->
                     <div class="flex bg-rose-100">
                         <div class="w-40 flex-shrink-0 px-4 py-3 font-bold text-gray-800 border-r border-rose-200">Tempat</div>
@@ -279,21 +318,21 @@
                             <div class="mt-6 flex justify-center">
                                 
                                 @if($agenda->status === 'Menunggu')
-                                    <span class="inline-flex items-center px-6 py-3 rounded-full text-sm font-semibold bg-gradient-to-r from-cyan-500 to-blue-500 text-white shadow-lg">
+                                    <span class="inline-flex items-center px-6 py-3 rounded-md  text-sm font-semibold bg-gradient-to-r from-cyan-500 to-blue-500 text-white shadow-lg">
                                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                         </svg>
                                         Agenda Menunggu
                                     </span>
                                 @elseif($agenda->status === 'Berlangsung')
-                                    <span class="inline-flex items-center px-6 py-3 rounded-full text-sm font-semibold bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-lg animate-pulse">
+                                    <span class="inline-flex items-center px-6 py-3 rounded-md text-sm font-semibold bg-gradient-to-r from-green-500 to-emerald-500 text-white shadow-lg animate-pulse">
                                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.636 18.364a9 9 0 010-12.728m12.728 0a9 9 0 010 12.728m-9.9-2.829a5 5 0 010-7.07m7.072 0a5 5 0 010 7.07M13 12a1 1 0 11-2 0 1 1 0 012 0z"></path>
                                         </svg>
                                         Sedang Berlangsung
                                     </span>
                                 @else
-                                    <span class="inline-flex items-center px-6 py-3 rounded-full text-sm font-semibold bg-gradient-to-r from-red-500 to-pink-500 text-white shadow-lg">
+                                    <span class="inline-flex items-center px-6 py-3 rounded-md text-sm font-semibold bg-gradient-to-r from-red-500 to-pink-500 text-white shadow-lg">
                                         <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                                         </svg>
@@ -306,11 +345,22 @@
                     </div>
 
                     {{-- Daftar Tamu Tab --}}
-                    <div x-show="activeTab === 'tamu'" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100">
+                    <div x-show="activeTab === 'tamu'" 
+                         x-transition:enter="transition ease-out duration-200" 
+                         x-transition:enter-start="opacity-0 transform translate-y-2" 
+                         x-transition:enter-end="opacity-100 transform translate-y-0"
+                         x-transition:leave="transition ease-in duration-150"
+                         x-transition:leave-start="opacity-100 transform translate-y-0"
+                         x-transition:leave-end="opacity-0 transform translate-y-2"
+                         class="h-full overflow-hidden"
+                         role="tabpanel"
+                         aria-labelledby="tamu-tab"
+                         id="tamu-panel"
+                         tabindex="0">
 
                         {{-- Bagian Tamu --}}
-                        <div class="mb-8">
-                <div class="glass-effect rounded-2xl p-8 shadow-xl">
+                        <div class="h-full overflow-hidden">
+                <div class="glass-effect rounded-2xl p-8 shadow-xl h-full overflow-hidden">
                     <div class="flex justify-between items-center mb-6">
                         <div class="flex items-center">
                             <div class="w-10 h-10 bg-gradient-to-r from-green-500 to-teal-500 rounded-full flex items-center justify-center mr-4">
@@ -405,10 +455,21 @@
                     </div>
 
                     {{-- Notulen Tab --}}
-                    <div x-show="activeTab === 'notulen'" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100">
+                    <div x-show="activeTab === 'notulen'" 
+                         x-transition:enter="transition ease-out duration-200" 
+                         x-transition:enter-start="opacity-0 transform translate-y-2" 
+                         x-transition:enter-end="opacity-100 transform translate-y-0"
+                         x-transition:leave="transition ease-in duration-150"
+                         x-transition:leave-start="opacity-100 transform translate-y-0"
+                         x-transition:leave-end="opacity-0 transform translate-y-2"
+                         class="h-full overflow-hidden"
+                         role="tabpanel"
+                         aria-labelledby="notulen-tab"
+                         id="notulen-panel"
+                         tabindex="0">
                         {{-- Bagian Notulen --}}
-                        <div>
-                <div class="glass-effect rounded-2xl p-8 shadow-xl">
+                        <div class="h-full overflow-hidden">
+                <div class="glass-effect rounded-2xl p-8 shadow-xl h-full overflow-hidden">
                     <div class="flex justify-between items-center mb-6">
                         <div class="flex items-center">
                             <div class="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center mr-4">
@@ -595,6 +656,7 @@
         x-show="showDeleteConfirm" 
         @confirm="deleteAgenda(); showDeleteConfirm = false" 
         @cancel="showDeleteConfirm = false" />
+            </div>
         </div>
     
     {{-- JavaScript untuk Alert --}}

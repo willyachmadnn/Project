@@ -75,11 +75,11 @@
                             </svg>
                         </div>
                         <div>
-                            <p class="font-medium text-green-700">{{ session('success') }}</p>
+                            <p class="font-medium text-green-700 text-center">{{ session('success') }}</p>
                         </div>
-                        <button type="button" class="ml-4 text-green-500 hover:text-green-700 transition-colors duration-200" onclick="hideAlert()">
-                            <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        <button type="button" class="group ml-4" onclick="hideAlert()">
+                            <svg class="h-5 w-5 stroke-green-500 group-hover:stroke-green-700 transition-colors duration-200" fill="none" viewBox="0 0 24 24" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
                             </svg>
                         </button>
                     </div>
@@ -110,7 +110,7 @@
 
                 <button type="button"
                     @click="isCreateModalOpen = true"
-                    class="group inline-flex w-40 items-center rounded-md bg-red-700 px-3 py-2 text-sm font-medium text-white shadow-sm hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-red-800 transition-all duration-300 ease-in-out">
+                    class="group inline-flex w-40 items-center rounded-md  bg-red-700 px-3 py-2 text-sm font-medium text-white shadow-sm hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-red-800 transition-all duration-300 ease-in-out">
                     <span class="mr-1 transition-transform duration-300 transform group-hover:rotate-90">+</span>
                     <span class="flex-grow text-center mx-2">Tambah Agenda</span>
                 </button>
@@ -120,7 +120,7 @@
                 <section class="relative z-20 mx-auto mb-10">
                   <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
                     {{-- 1. Kartu Agenda Menunggu --}}
-                    <div class="modern-card relative bg-white p-6 rounded-lg overflow-hidden transition-all duration-300 [box-shadow:0_4px_12px_-5px_rgba(0,0,0,0.4)] hover:shadow-2xl">
+                    <div class="modern-card relative bg-white p-6 rounded-md overflow-hidden transition-all duration-300 [box-shadow:0_4px_12px_-5px_rgba(0,0,0,0.4)] hover:shadow-2xl">
                       {{-- Garis warna samping --}}
                       <div class="absolute left-0 top-0 bottom-0 w-4 rounded-l-lg bg-cyan-500"></div>
                       
@@ -134,7 +134,7 @@
                     </div>
 
                     {{-- 2. Kartu Agenda Berlangsung --}}
-                    <div class="modern-card relative bg-white p-6 rounded-lg overflow-hidden transition-all duration-300 [box-shadow:0_4px_12px_-5px_rgba(0,0,0,0.4)] hover:shadow-2xl">
+                    <div class="modern-card relative bg-white p-6 rounded-md overflow-hidden transition-all duration-300 [box-shadow:0_4px_12px_-5px_rgba(0,0,0,0.4)] hover:shadow-2xl">
                       {{-- Garis warna samping --}}
                       <div class="absolute left-0 top-0 bottom-0 w-4 rounded-l-lg bg-green-600"></div>
 
@@ -148,7 +148,7 @@
                     </div>
 
                     {{-- 3. Kartu Agenda Berakhir --}}
-                    <div class="modern-card relative bg-white p-6 rounded-lg overflow-hidden transition-all duration-300 [box-shadow:0_4px_12px_-5px_rgba(0,0,0,0.4)] hover:shadow-2xl">
+                    <div class="modern-card relative bg-white p-6 rounded-md overflow-hidden transition-all duration-300 [box-shadow:0_4px_12px_-5px_rgba(0,0,0,0.4)] hover:shadow-2xl">
                       {{-- Garis warna samping --}}
                       <div class="absolute left-0 top-0 bottom-0 w-4 rounded-l-lg bg-red-700"></div>
                       
@@ -202,14 +202,14 @@
                 >
                     {{-- Kontainer Form (Kotak Putih) --}}
                     <div class="bg-white/95 backdrop-blur-md rounded-md px-4 pt-3 pb-3 overflow-y-auto shadow-2xl border border-black/30 mb-2 mt-2" style="max-height: 88vh;">
-                        <div class="flex items-center justify-between mb-6 pb-2 pt-2">
+                        <div class="flex items-center justify-center mb-6 pb-2 pt-2 relative">
                             <h3 class="text-2xl font-bold text-gray-900 flex items-center">
                                 <svg class="w-6 h-6 mr-3 text-red-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
                                 </svg>
                                 Form Tambah Agenda
                             </h3>
-                            <button type="button" @click="isCreateModalOpen = false" class="text-gray-400 hover:text-gray-600 transition-colors">
+                            <button type="button" @click="isCreateModalOpen = false" class="absolute right-0 text-gray-400 hover:text-gray-600 transition-colors">
                                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                                 </svg>
@@ -231,13 +231,13 @@
                                 <input type="date" name="tanggal" id="create_tanggal" value="{{ old('tanggal') }}" class="block w-full rounded-md border-2 border-gray-200 bg-white/60 backdrop-blur-sm px-4 py-3 text-gray-900 focus:border-gray-300 focus:outline-none transition-all duration-200" required>
                             </div>
                             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                <div>
+                                <div class="time-picker-container">
                                     <label for="create_jam_mulai" class="block text-sm font-semibold text-gray-800 mb-2">Jam Mulai</label>
-                                    <input type="time" name="jam_mulai" id="create_jam_mulai" value="{{ old('jam_mulai', '00:00') }}" class="block w-full rounded-md border-2 border-gray-200 bg-white/60 backdrop-blur-sm px-4 py-3 text-gray-900 focus:border-gray-300 focus:outline-none transition-all duration-200" required>
+                                    <input type="time" name="jam_mulai" id="create_jam_mulai" value="{{ old('jam_mulai', '00:00') }}" class="block w-full rounded-md border-2 border-gray-200 bg-white/60 backdrop-blur-sm px-4 py-3 text-gray-900 focus:border-gray-300 focus:outline-none transition-all duration-200 cursor-pointer" onclick="this.showPicker()" required>
                                 </div>
-                                <div>
+                                <div class="time-picker-container">
                                     <label for="create_jam_selesai" class="block text-sm font-semibold text-gray-800 mb-2">Jam Selesai</label>
-                                    <input type="time" name="jam_selesai" id="create_jam_selesai" value="{{ old('jam_selesai', '00:00') }}" class="block w-full rounded-md border-2 border-gray-200 bg-white/60 backdrop-blur-sm px-4 py-3 text-gray-900 focus:border-gray-300 focus:outline-none transition-all duration-200" required>
+                                    <input type="time" name="jam_selesai" id="create_jam_selesai" value="{{ old('jam_selesai', '00:00') }}" class="block w-full rounded-md border-2 border-gray-200 bg-white/60 backdrop-blur-sm px-4 py-3 text-gray-900 focus:border-gray-300 focus:outline-none transition-all duration-200 cursor-pointer" onclick="this.showPicker()" required>
                                 </div>
                             </div>
                             <div>
@@ -249,7 +249,7 @@
                     
                     {{-- Kontainer Tombol Simpan (Di luar kotak putih) --}}
                     <div class="flex justify-center">
-                        <button type="button" @click="confirmCreateAgenda()" class="px-6 py-3 bg-gradient-to-r from-red-600 to-red-700 text-white rounded-lg text-base font-semibold hover:from-red-700 hover:to-red-800 focus:outline-none focus:ring-4 focus:ring-red-500/30 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 border-2 border-red-500/20">
+                        <button type="button" @click="confirmCreateAgenda()" class="px-3 py-1 bg-gradient-to-r from-red-600 to-red-700 text-white rounded-md text-base font-semibold hover:from-red-700 hover:to-red-800 focus:outline-none focus:ring-4 focus:ring-red-500/30 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 border-2 border-red-500/20">
                             Simpan Agenda
                         </button>
                     </div>
@@ -286,14 +286,14 @@
                     class="relative z-[1000] inline-block align-bottom bg-white/95 backdrop-blur-md rounded-md px-4 pt-4 pb-4 text-left overflow-hidden shadow-2xl border border-black/30 transform transition-all"
                     @click.stop
                 >
-                    <div class="flex items-center justify-between mb-6">
+                    <div class="flex items-center justify-center mb-6 relative">
                         <h3 class="text-2xl font-bold text-gray-900 flex items-center">
                             <svg class="w-6 h-6 mr-3 text-red-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
                             </svg>
                             Form Edit Agenda
                         </h3>
-                        <button type="button" @click="isEditModalOpen = false" class="text-gray-400 hover:text-gray-600 transition-colors">
+                        <button type="button" @click="isEditModalOpen = false" class="absolute right-0 text-gray-400 hover:text-gray-600 transition-colors">
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                             </svg>
@@ -316,26 +316,27 @@
                             <input type="date" name="tanggal" id="edit_tanggal" x-model="editAgenda.tanggal" class="block w-full rounded-md border-2 border-gray-200 bg-white/60 backdrop-blur-sm px-4 py-3 text-gray-900 focus:border-gray-300 focus:outline-none transition-all duration-200" required>
                         </div>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <div>
+                            <div class="time-picker-container">
                                 <label for="edit_jam_mulai" class="block text-sm font-semibold text-gray-800 mb-2">Jam Mulai</label>
-                                <input type="time" name="jam_mulai" id="edit_jam_mulai" x-model="editAgenda.jam_mulai" class="block w-full rounded-md border-2 border-gray-200 bg-white/60 backdrop-blur-sm px-4 py-3 text-gray-900 focus:border-gray-300 focus:outline-none transition-all duration-200" step="300" required>
+                                <input type="time" name="jam_mulai" id="edit_jam_mulai" x-model="editAgenda.jam_mulai" class="block w-full rounded-md border-2 border-gray-200 bg-white/60 backdrop-blur-sm px-4 py-3 text-gray-900 focus:border-gray-300 focus:outline-none transition-all duration-200 cursor-pointer" onclick="this.showPicker()" step="300" required>
                             </div>
-                            <div>
+                            <div class="time-picker-container">
                                 <label for="edit_jam_selesai" class="block text-sm font-semibold text-gray-800 mb-2">Jam Selesai</label>
-                                <input type="time" name="jam_selesai" id="edit_jam_selesai" x-model="editAgenda.jam_selesai" class="block w-full rounded-md border-2 border-gray-200 bg-white/60 backdrop-blur-sm px-4 py-3 text-gray-900 focus:border-gray-300 focus:outline-none transition-all duration-200" step="300" required>
+                                <input type="time" name="jam_selesai" id="edit_jam_selesai" x-model="editAgenda.jam_selesai" class="block w-full rounded-md border-2 border-gray-200 bg-white/60 backdrop-blur-sm px-4 py-3 text-gray-900 focus:border-gray-300 focus:outline-none transition-all duration-200 cursor-pointer" onclick="this.showPicker()" step="300" required>
                             </div>
                         </div>
                         <div class="pt-6 flex justify-end space-x-3">
-                            <button type="button" @click="isEditModalOpen = false" class="px-6 py-3 border-2 border-gray-300 rounded-md text-sm font-semibold text-gray-700 bg-white hover:bg-gray-50 hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500/20 transition-all duration-200">
-                                Batal
-                            </button>
-                            <button type="button" @click="confirmEditAgenda()" class="px-6 py-3 bg-gradient-to-r from-red-600 to-red-700 text-white rounded-md text-sm font-semibold hover:from-red-700 hover:to-red-800 focus:outline-none focus:ring-2 focus:ring-red-500/20 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105">
-                                <svg class="w-4 h-4 mr-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                                </svg>
-                                Simpan Perubahan
-                            </button>
-                        </div>
+    <button type="button" @click="isEditModalOpen = false" class="px-6 py-3 border-2 border-gray-300 rounded-md text-sm font-semibold text-gray-700 bg-white hover:bg-gray-50 hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500/20 transition-all duration-200">
+        Batal
+    </button>
+    
+    <button type="button" @click="confirmEditAgenda()" class="px-6 py-3 bg-gradient-to-r from-red-600 to-red-700 text-white rounded-md text-sm font-semibold hover:from-red-700 hover:to-red-800 focus:outline-none focus:ring-2 focus:ring-red-500/20 shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105">
+        <svg class="w-4 h-4 mr-2 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+        </svg>
+        Simpan Perubahan
+    </button>
+</div>
                     </form>
                 </div>
             </div>

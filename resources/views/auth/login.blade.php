@@ -34,6 +34,18 @@
             Login Admin
           </h1>
 
+          {{-- Success Message (e.g., after logout) --}}
+          @if(session('message'))
+            <div class="p-4 mb-4 text-sm text-green-800 rounded-lg bg-green-50 border border-green-200" role="alert">
+              <div class="flex items-center">
+                <svg class="flex-shrink-0 w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                </svg>
+                <span class="font-medium">{{ session('message') }}</span>
+              </div>
+            </div>
+          @endif
+
           <form class="space-y-4 md:space-y-6" action="{{ route('login') }}" method="POST">
             @csrf
 

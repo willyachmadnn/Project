@@ -187,7 +187,7 @@
 
                             <div class="py-1">
                                 <a href="{{ route('dashboard') }}"
-                                    class="block px-4 py-2 text-sm hover:bg-gray-50">Dashboard</a>
+                                    class="block px-4 py-2 text-sm hover:bg-gray-50 hover:border-l-4 hover:border-blue-500 transition-all duration-200">Dashboard</a>
                             </div>
 
                             <div class="border-t border-gray-200"></div>
@@ -196,7 +196,7 @@
                                 <form method="POST" action="{{ route('logout') }}">
                                     @csrf
                                     <button type="submit"
-                                        class="w-full text-left px-4 py-2 text-sm hover:bg-gray-50">Sign out</button>
+                                        class="w-full text-left px-4 py-2 text-sm hover:bg-gray-50 hover:border-l-4 hover:border-red-500 transition-all duration-200">Sign out</button>
                                 </form>
                             </div>
                         </div>
