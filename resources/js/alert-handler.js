@@ -110,8 +110,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
             
-            // Tambahkan tombol close dengan styling yang lebih baik
-            if (!alert.querySelector('.close-btn')) {
+            // Tambahkan tombol close hanya jika belum ada tombol close
+            // Cek apakah sudah ada tombol close (baik dengan class .close-btn atau button dengan onclick)
+            const existingCloseBtn = alert.querySelector('.close-btn') || alert.querySelector('button[onclick*="hideAlert"]') || alert.querySelector('button[onclick*="hideErrorAlert"]');
+            
+            if (!existingCloseBtn) {
                 const closeBtn = document.createElement('button');
                 closeBtn.className = 'close-btn absolute top-2 right-2 text-gray-500 hover:text-gray-700 p-1.5 rounded-full hover:bg-gray-200 transition-all duration-300 flex items-center justify-center';
                 closeBtn.innerHTML = '&times;';
