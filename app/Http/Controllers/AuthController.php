@@ -91,11 +91,27 @@ class AuthController extends Controller
      */
     public function logout(Request $request)
     {
-        Auth::guard('admin')->logout();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
+        try {
+            // Pastikan user sudah login sebelum logout
+            if (Auth::guard('admin')->check()) {
+                Auth::guard('admin')->logout();
+            }
+            
+            // Invalidate session dengan error handling
+            if ($request->hasSession()) {
+                $request->session()->invalidate();
+                $request->session()->regenerateToken();
+            }
+            
+            // Clear any cached authentication
+            $request->session()->flush();
+            
+        } catch (\Exception $e) {
+            // Log error tapi tetap redirect ke login
+            \Log::error('Logout error: ' . $e->getMessage());
+        }
 
-        return redirect()->route('login'); // <- kembali ke halaman login
+        return redirect()->route('login')->with('message', 'Anda telah berhasil logout.'); // <- kembali ke halaman login
     }
 
 }
