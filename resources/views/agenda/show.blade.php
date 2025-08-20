@@ -233,6 +233,7 @@
                          role="tabpanel"
                          aria-labelledby="detail-tab"
                          id="detail-panel"
+                         style="border:#0d498d 1px solid; border-radius: 10px;"
                          tabindex="0">
                         <div class="glass-effect bg-gray-500 border-black rounded-2xl p-8 h-full overflow-hidden">
                             <div class="flex items-center justify-between mb-6">
@@ -356,6 +357,7 @@
                          role="tabpanel"
                          aria-labelledby="tamu-tab"
                          id="tamu-panel"
+                         style="border:#188d0d 1px solid; border-radius: 10px;"
                          tabindex="0">
 
                         {{-- Bagian Tamu --}}
@@ -466,6 +468,7 @@
                          role="tabpanel"
                          aria-labelledby="notulen-tab"
                          id="notulen-panel"
+                         style="border:#6f0d8d 1px solid; border-radius: 10px;"
                          tabindex="0">
                         {{-- Bagian Notulen --}}
                         <div class="h-full overflow-hidden">
