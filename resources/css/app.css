@@ -47,6 +47,49 @@ table { width: 100%; border-collapse: collapse; }
 nav[role="navigation"] { display: flex; flex-wrap: wrap; gap: .5rem; justify-content: center; }
 nav[role="navigation"] ul { display: flex; flex-wrap: wrap; gap: .25rem; }
 
+/* ====== TIME PICKER DROPDOWN POSITIONING ====== */
+/* Time picker positioning */
+.time-picker-container {
+    position: relative;
+    z-index: 1;
+}
+
+.time-picker-container input[type="time"] {
+    position: relative;
+}
+
+.time-picker-container input[type="time"]::-webkit-calendar-picker-indicator {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+    z-index: 1;
+}
+
+.time-picker-container input[type="time"]::-webkit-datetime-edit {
+    position: relative;
+    z-index: 2;
+}
+
+/* Force dropdown to appear below */
+.time-picker-container input[type="time"]:focus {
+    z-index: 10;
+}
+
+/* Ensure modal content allows dropdown overflow */
+.modal-content {
+    overflow: visible !important;
+}
+
+.modal-body {
+    overflow: visible !important;
+}
+
 /* ====== POPUP ALERT ANIMATIONS ====== */
 .popup-alert {
   transform: translate(-50%, 0);
