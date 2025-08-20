@@ -18,7 +18,7 @@ Route::get('/api/agenda-counts', [PageController::class, 'getAgendaCounts'])->mi
 // Auth (admin)
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
-Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:admin')->name('logout');
 
 //
 // PROTECTED (auth:admin)
