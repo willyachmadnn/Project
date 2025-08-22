@@ -1,159 +1,76 @@
-<x-layout>
-    <x-slot:title>Buat Notulen Agenda: {{ $agenda->nama_agenda }}</x-slot:title>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buat Notulen: {{ $agenda->nama_agenda }}</title>
 
-    <style>
-        /* Modern Button Animations */
-        .modern-btn {
-            position: relative;
-            overflow: hidden;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        
-        .modern-btn::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-            transition: left 0.5s ease;
-        }
-        
-        .modern-btn:hover::before {
-            left: 100%;
-        }
-        
-        .modern-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
-        }
-        
-        .modern-btn:active {
-            transform: translateY(0);
-        }
-        
-        .back-btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            padding: 10px 20px;
-            font-weight: 600;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-        
-        .back-btn:hover {
-            color: white;
-            text-decoration: none;
-        }
-        
-        .submit-btn {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            padding: 12px 24px;
-            font-weight: 600;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-    </style>
+    {{-- Aset yang Diperlukan agar Editor Berfungsi --}}
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Summernote CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
+    <!-- Font Awesome untuk ikon -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <!-- Summernote JS -->
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
+    <!-- Pustaka untuk ekspor PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.3.2/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.3.1/jspdf.umd.min.js"></script>
+</head>
+<body class="bg-gray-100">
 
-    <div class="bg-white shadow-sm rounded-lg overflow-hidden">
-        <div class="p-6">
-            <h2 class="text-2xl font-bold text-gray-800 mb-6">Buat Notulen Agenda: {{ $agenda->nama_agenda }}</h2>
+    <div class="container mx-auto p-4 sm:p-8">
+        {{-- Tombol Kembali ke Halaman Detail Agenda --}}
+        <div class="mb-6">
+            <a href="{{ route('agenda.show', $agenda->agenda_id) }}" class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-25 transition ease-in-out duration-150">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                Kembali ke Detail Agenda
+            </a>
+        </div>
 
-            @if ($errors->any())
-                <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6" role="alert">
-                    <p class="font-bold">Terjadi kesalahan:</p>
-                    <ul>
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
-
-            {{-- PERBAIKAN: Menggunakan agenda_id untuk parameter route --}}
-            <form action="{{ route('agenda.notulen.store', $agenda->agenda_id) }}" method="POST">
-                @csrf
-
-                <div class="mb-6">
-                    <label for="pembuat" class="block text-sm font-medium text-gray-700 mb-1">Pembuat Notulen <span class="text-red-500">*</span></label>
-                    <input type="text" name="pembuat" id="pembuat" value="{{ old('pembuat') }}" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" required>
-                </div>
-
-                <div class="mb-6">
-                    <label for="isi_notulen" class="block text-sm font-medium text-gray-700 mb-1">Isi Notulen <span class="text-red-500">*</span></label>
-                    <textarea name="isi_notulen" id="isi_notulen" rows="10" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" required>{{ old('isi_notulen') }}</textarea>
-                </div>
-
-                <div class="flex justify-between">
-                    {{-- PERBAIKAN: Menggunakan array asosiatif dan agenda_id --}}
-                    <a href="{{ route('agenda.show', ['agenda' => $agenda->agenda_id]) }}" class="modern-btn back-btn">
-                        <svg class="w-4 h-4 transition-transform duration-300 hover:-translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-                        </svg>
-                        Batal
-                    </a>
-                    <button type="submit" class="modern-btn submit-btn">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-                        </svg>
-                        Simpan Notulen
-                    </button>
-                </div>
-            </form>
+        {{-- Memanggil komponen isiNotulen yang berisi editor dan fungsionalitasnya --}}
+        <div class="bg-white p-6 rounded-lg shadow-xl">
+            <x-isiNotulen :agenda="$agenda" />
         </div>
     </div>
-</x-layout>
-<x-layout>
-    <x-slot:title>Buat Notulen Agenda: {{ $agenda->nama_agenda }}</x-slot:title>
 
-    <div class="bg-white shadow-sm rounded-lg overflow-hidden">
-        <div class="p-6">
-            <h2 class="text-2xl font-bold text-gray-800 mb-6">Buat Notulen Agenda: {{ $agenda->nama_agenda }}</h2>
+    {{-- Skrip untuk inisialisasi Summernote pada halaman ini --}}
+    <script>
+        $(document).ready(function() {
+            const editor = $('#summernote-editor');
+            if (editor.length > 0 && !editor.hasClass('note-editor')) {
+                editor.summernote({
+                    placeholder: 'Tulis isi notulen di sini...',
+                    tabsize: 2,
+                    height: 500,
+                    focus: true,
+                    lang: 'id-ID',
+                    toolbar: [
+                        ['style', ['style']],
+                        ['font', ['bold', 'italic', 'underline', 'clear']],
+                        ['fontname', ['fontname']],
+                        ['fontsize', ['fontsize']],
+                        ['color', ['color']],
+                        ['para', ['ul', 'ol', 'paragraph']],
+                        ['table', ['table']],
+                        ['insert', ['link', 'picture', 'hr']],
+                        ['view', ['fullscreen', 'codeview', 'help']]
+                    ],
+                    callbacks: {
+                        onInit: function() {
+                            console.log('Summernote berhasil diinisialisasi di halaman create.');
+                        }
+                    }
+                });
+            }
+        });
+    </script>
 
-            @if ($errors->any())
-                <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6" role="alert">
-                    <p class="font-bold">Terjadi kesalahan:</p>
-                    <ul>
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
-
-            {{-- PERBAIKAN: Menggunakan agenda_id untuk parameter route --}}
-            <form action="{{ route('agenda.notulen.store', $agenda->agenda_id) }}" method="POST">
-                @csrf
-
-                <div class="mb-6">
-                    <label for="pembuat" class="block text-sm font-medium text-gray-700 mb-1">Pembuat Notulen <span class="text-red-500">*</span></label>
-                    <input type="text" name="pembuat" id="pembuat" value="{{ old('pembuat') }}" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" required>
-                </div>
-
-                <div class="mb-6">
-                    <label for="isi_notulen" class="block text-sm font-medium text-gray-700 mb-1">Isi Notulen <span class="text-red-500">*</span></label>
-                    <textarea name="isi_notulen" id="isi_notulen" rows="10" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" required>{{ old('isi_notulen') }}</textarea>
-                </div>
-
-                <div class="flex justify-between">
-                    {{-- PERBAIKAN: Menggunakan array asosiatif dan agenda_id --}}
-                    <a href="{{ route('agenda.show', ['agenda' => $agenda->agenda_id]) }}" class="inline-flex justify-center py-2 px-4 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                        Batal
-                    </a>
-                    <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                        Simpan Notulen
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-</x-layout>
+</body>
+</html>

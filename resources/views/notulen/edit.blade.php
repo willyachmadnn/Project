@@ -1,45 +1,76 @@
-<x-layout>
-    <x-slot:title>Edit Notulen Agenda: {{ $agenda->nama_agenda }}</x-slot:title>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editor Notulen: {{ $agenda->nama_agenda }}</title>
 
-    <div class="bg-white shadow-sm rounded-lg overflow-hidden">
-        <div class="p-6">
-            <h2 class="text-2xl font-bold text-gray-800 mb-6">Edit Notulen Agenda: {{ $agenda->nama_agenda }}</h2>
+    {{-- Aset yang Diperlukan untuk Editor Berfungsi --}}
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Summernote CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
+    <!-- Font Awesome untuk ikon -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <!-- Summernote JS -->
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
+    <!-- Pustaka untuk ekspor PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.3.2/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.3.1/jspdf.umd.min.js"></script>
+</head>
+<body class="bg-gray-100">
 
-            @if ($errors->any())
-                <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6" role="alert">
-                    <p class="font-bold">Terjadi kesalahan:</p>
-                    <ul>
-                        @foreach ($errors->all() as $error)
-                            <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-            @endif
+    <div class="container mx-auto p-4 sm:p-8">
+        {{-- Tombol Kembali ke Halaman Detail --}}
+        <div class="mb-6">
+            <a href="{{ route('agenda.show', $agenda->agenda_id) }}" class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-25 transition ease-in-out duration-150">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                Kembali ke Detail Agenda
+            </a>
+        </div>
 
-            <form action="{{ route('agenda.notulen.update', ['agendaId' => $agenda->id, 'id' => $notulen->id]) }}" method="POST">
-                @csrf
-                @method('PUT')
-
-                <div class="mb-6">
-                    <label for="pembuat" class="block text-sm font-medium text-gray-700 mb-1">Pembuat Notulen <span class="text-red-500">*</span></label>
-                    <input type="text" name="pembuat" id="pembuat" value="{{ old('pembuat', $notulen->pembuat) }}" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" required>
-                </div>
-
-                <div class="mb-6">
-                    <label for="isi_notulen" class="block text-sm font-medium text-gray-700 mb-1">Isi Notulen <span class="text-red-500">*</span></label>
-                    <textarea name="isi_notulen" id="isi_notulen" rows="10" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" required>{{ old('isi_notulen', $notulen->isi_notulen) }}</textarea>
-                    <p class="mt-1 text-sm text-gray-500">Tuliskan hasil notulen agenda secara lengkap dan jelas.</p>
-                </div>
-
-                <div class="flex justify-between">
-                    <a href="{{ route('agenda.notulen.show', ['agendaId' => $agenda->id, 'id' => $notulen->id]) }}" class="inline-flex justify-center py-2 px-4 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                        Batal
-                    </a>
-                    <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                        Simpan Perubahan
-                    </button>
-                </div>
-            </form>
+        {{-- Memanggil komponen isiNotulen --}}
+        <div class="bg-white p-6 rounded-lg shadow-xl">
+            <x-isiNotulen :agenda="$agenda" />
         </div>
     </div>
-</x-layout>
+
+    {{-- Skrip untuk inisialisasi Summernote di halaman ini --}}
+    <script>
+        $(document).ready(function() {
+            const editor = $('#summernote-editor');
+            if (editor.length > 0 && !editor.hasClass('note-editor')) {
+                editor.summernote({
+                    placeholder: 'Tulis isi notulen di sini...',
+                    tabsize: 2,
+                    height: 500,
+                    focus: true,
+                    lang: 'id-ID',
+                    toolbar: [
+                        ['style', ['style']],
+                        ['font', ['bold', 'italic', 'underline', 'clear']],
+                        ['fontname', ['fontname']],
+                        ['fontsize', ['fontsize']],
+                        ['color', ['color']],
+                        ['para', ['ul', 'ol', 'paragraph']],
+                        ['table', ['table']],
+                        ['insert', ['link', 'picture', 'hr']],
+                        ['view', ['fullscreen', 'codeview', 'help']]
+                    ],
+                    callbacks: {
+                        onInit: function() {
+                            console.log('Summernote berhasil diinisialisasi di halaman edit.');
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+
+</body>
+</html>

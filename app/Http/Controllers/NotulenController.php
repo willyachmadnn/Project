@@ -13,14 +13,14 @@ class NotulenController extends Controller
      * Menampilkan form untuk membuat notulen.
      * Jika notulen sudah ada, akan diarahkan ke halaman edit.
      */
-    public function create(string $agendaId)
+    public function create(Agenda $agenda)
     {
-        $agenda = Agenda::findOrFail($agendaId);
-        $notulen = Notulen::where('agenda_id', $agendaId)->first();
+        $notulen = Notulen::where('agenda_id', $agenda->agenda_id)->first();
 
         // Cek jika notulen untuk agenda ini sudah ada
         if ($notulen) {
-            return redirect()->route('agenda.notulen.edit', ['agendaId' => $agendaId, 'notulen' => $notulen->id])
+            // DIUBAH: Menggunakan $agenda langsung
+            return redirect()->route('agenda.notulen.edit', ['agenda' => $agenda, 'notulen' => $notulen])
                 ->with('info', 'Notulen untuk agenda ini sudah ada. Silakan edit.');
         }
 
@@ -30,75 +30,71 @@ class NotulenController extends Controller
     /**
      * Menyimpan notulen baru ke database.
      */
-    public function store(Request $request, string $agendaId)
+    public function store(Request $request, Agenda $agenda)
     {
-        Agenda::findOrFail($agendaId);
-
         $validator = Validator::make($request->all(), [
-            'pembuat' => 'required|string|max:255',
             'isi_notulen' => 'required|string',
         ]);
 
         if ($validator->fails()) {
-            return redirect()->route('agenda.notulen.create', $agendaId)
-                ->withErrors($validator)
-                ->withInput();
+            return back()->withErrors($validator)->withInput();
         }
 
         // Buat notulen baru dengan data dari request
-        $notulen = new Notulen($request->all());
-        $notulen->agenda_id = $agendaId;
+        $notulen = new Notulen();
+        $notulen->agenda_id = $agenda->agenda_id;
+        $notulen->isi_notulen = $request->isi_notulen;
+        // Mengambil nama pembuat dari user yang sedang login
+        $notulen->pembuat = auth('admin')->user()->nama_admin;
         $notulen->save();
 
         // Redirect ke halaman detail agenda dengan pesan sukses
-        return redirect()->route('agenda.show', ['agenda' => $agendaId])
+        return redirect()->route('agenda.show', ['agenda' => $agenda])
             ->with('success', 'Notulen berhasil ditambahkan.');
     }
 
     /**
      * Menampilkan form untuk mengedit notulen.
      */
-    public function edit(string $agendaId, string $id)
+    public function edit(Agenda $agenda, Notulen $notulen)
     {
-        $agenda = Agenda::findOrFail($agendaId);
-        $notulen = Notulen::where('agenda_id', $agendaId)->findOrFail($id);
-        
         return view('notulen.edit', compact('agenda', 'notulen'));
     }
 
     /**
      * Memperbarui data notulen yang ada di database.
      */
-    public function update(Request $request, string $agendaId, string $id)
+    public function update(Request $request, Agenda $agenda, Notulen $notulen)
     {
-        $notulen = Notulen::where('agenda_id', $agendaId)->findOrFail($id);
-        
         $validator = Validator::make($request->all(), [
-            'pembuat' => 'required|string|max:255',
             'isi_notulen' => 'required|string',
         ]);
 
         if ($validator->fails()) {
-            return redirect()->route('agenda.notulen.edit', ['agendaId' => $agendaId, 'notulen' => $id])
+            // DIUBAH: Menggunakan $agenda dan $notulen langsung
+            return redirect()->route('agenda.notulen.edit', ['agenda' => $agenda, 'notulen' => $notulen])
                 ->withErrors($validator)
                 ->withInput();
         }
 
-        $notulen->update($request->all());
+        $notulenData = $request->only(['isi_notulen']);
+        // Mengupdate nama pembuat dengan user yang sedang login saat update
+        $notulenData['pembuat'] = auth('admin')->user()->nama_admin;
+        
+        $notulen->update($notulenData);
 
-        return redirect()->route('agenda.show', ['agenda' => $agendaId])
+        return redirect()->route('agenda.show', ['agenda' => $agenda])
             ->with('success', 'Notulen berhasil diperbarui.');
     }
 
     /**
      * Menghapus notulen dari database.
      */
-    public function destroy(string $agendaId, string $id)
+    public function destroy(Agenda $agenda, Notulen $notulen)
     {
-        $notulen = Notulen::where('agenda_id', $agendaId)->findOrFail($id);
         $notulen->delete();
 
-        return redirect()->route('agenda.show', ['agenda' => $agendaId])
+        return redirect()->route('agenda.show', ['agenda' => $agenda])
             ->with('success', 'Notulen berhasil dihapus.');
     }
 }
