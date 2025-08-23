@@ -42,14 +42,14 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {{-- 4. Waktu Mulai --}}
                     <div>
-                        <label for="create_jam_mulai" class="block text-sm font-medium text-gray-700">Waktu Mulai</label>
-                        <input type="time" name="jam_mulai" id="create_jam_mulai" value="{{ old('jam_mulai') }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" required>
+                        <label for="create_jam_mulai" class="block text-sm font-medium text-gray-700">Jam Mulai</label>
+<input type="time" name="jam_mulai" id="create_jam_mulai" value="{{ old('jam_mulai') }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" required>
                     </div>
 
                     {{-- 5. Waktu Selesai --}}
                     <div>
-                        <label for="create_jam_selesai" class="block text-sm font-medium text-gray-700">Waktu Selesai</label>
-                        <input type="time" name="jam_selesai" id="create_jam_selesai" value="{{ old('jam_selesai') }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" required>
+                        <label for="create_jam_selesai" class="block text-sm font-medium text-gray-700">Jam Selesai</label>
+<input type="time" name="jam_selesai" id="create_jam_selesai" value="{{ old('jam_selesai') }}" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm" required>
                     </div>
                 </div>
 
