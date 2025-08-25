@@ -43,7 +43,7 @@
     
 
   </style>
-<form action="{{ auth('admin')->check() ? route('agenda.index') : route('landing') }}"
+<form action="{{ route('landing') }}"
       method="GET" id="filterForm" data-ajax="true">
   {{-- hidden untuk sync via JS --}}
   <input type="hidden" name="timeRange" value="{{ request('timeRange', 5) }}">

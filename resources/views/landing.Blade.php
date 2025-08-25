@@ -13,7 +13,7 @@
             <div class="slide-in-wrapper">
                 <h1 id="hero-title"
                     class="animate-item text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight mb-4 text-white text-shadow">
-                    Tentang Portal E-Agenda
+                    Portal E-Agenda
                 </h1>
             </div>
             

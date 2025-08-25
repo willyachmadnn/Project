@@ -143,7 +143,7 @@
                     const pdfWidth = pdf.internal.pageSize.getWidth();
                     const imgHeight = canvas.height * pdfWidth / canvas.width;
                     pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, imgHeight);
-                    pdf.save('notulen-rapat-{{ Str::slug($agenda->nama_agenda) }}.pdf');
+                    pdf.save('notulen-rapat-{{ Str::slug($agenda->nama_agenda) }}_{{ Str::slug($agenda->tanggal) }}.pdf');
                     
                     button.html(originalText).prop('disabled', false);
                 }).catch(error => {
