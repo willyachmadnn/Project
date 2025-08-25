@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Agenda;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -14,6 +15,11 @@ class AgendaController extends Controller
     public function index(Request $request)
     {
         $query = Agenda::query();
+        
+        // Filter agenda berdasarkan admin yang sedang login
+        if (auth('admin')->check()) {
+            $query->where('admin_id', auth('admin')->id());
+        }
 
         // === SHOW/PER PAGE ===
         $perPage = (int) $request->input('perPage', 10);
@@ -98,22 +104,35 @@ class AgendaController extends Controller
         }
 
         // Data + paginate sesuai Show
-        // PERBAIKAN: Urutkan berdasarkan created_at agar agenda baru muncul di atas
+        // PERBAIKAN: Urutkan berdasarkan status (menunggu dan berlangsung di awal, berakhir di akhir)
         // OPTIMASI: Eager load semua relasi yang diperlukan untuk menghindari N+1 queries
         $agendas = $query->with(['admin', 'tamu'])
-            ->latest() // Mengurutkan berdasarkan created_at (terbaru di atas)
+            ->orderByRaw("
+                CASE 
+                    WHEN datetime(date(tanggal) || ' ' || jam_mulai) > ? THEN 1 -- Menunggu (prioritas tertinggi)
+                    WHEN datetime(date(tanggal) || ' ' || jam_mulai) <= ? AND 
+                        CASE 
+                            WHEN time(jam_mulai) <= time(jam_selesai) 
+                            THEN datetime(date(tanggal) || ' ' || jam_selesai) 
+                            ELSE datetime(date(tanggal, '+1 day') || ' ' || jam_selesai) 
+                        END >= ? THEN 2 -- Berlangsung (prioritas kedua)
+                    ELSE 3 -- Berakhir (prioritas terendah)
+                END
+            ", [Carbon::now('Asia/Jakarta')->toDateTimeString(), Carbon::now('Asia/Jakarta')->toDateTimeString(), Carbon::now('Asia/Jakarta')->toDateTimeString()])
+            ->latest() // Mengurutkan berdasarkan created_at dalam setiap kategori status
             ->paginate($perPage)   // ← gunakan nilai dari Show
             ->withQueryString();   // ← jaga query filter
 
         // Kartu status dengan caching untuk mengurangi beban database
-        $pendingAgendasCount = cache()->remember('agenda_pending_count', 300, function () {
-            return Agenda::menunggu()->count();
+        $adminId = auth('admin')->id();
+        $pendingAgendasCount = cache()->remember("agenda_pending_count_{$adminId}", 300, function () use ($adminId) {
+            return Agenda::where('admin_id', $adminId)->menunggu()->count();
         });
-        $ongoingAgendasCount = cache()->remember('agenda_ongoing_count', 300, function () {
-            return Agenda::berlangsung()->count();
+        $ongoingAgendasCount = cache()->remember("agenda_ongoing_count_{$adminId}", 300, function () use ($adminId) {
+            return Agenda::where('admin_id', $adminId)->berlangsung()->count();
         });
-        $finishedAgendasCount = cache()->remember('agenda_finished_count', 300, function () {
-            return Agenda::berakhir()->count();
+        $finishedAgendasCount = cache()->remember("agenda_finished_count_{$adminId}", 300, function () use ($adminId) {
+            return Agenda::where('admin_id', $adminId)->berakhir()->count();
         });
 
         return view('agenda.index', compact(

@@ -15,9 +15,15 @@ class PageController extends Controller
      */
     public function index(Request $request): View
     {
-        // --- 1. PENGHITUNGAN UNTUK KARTU STATUS (Tidak ada perubahan) ---
+        // --- 1. PENGHITUNGAN UNTUK KARTU STATUS ---
         $countQuery = Agenda::query();
         $timeRange = $request->input('timeRange', '5');
+        
+        // Filter agenda berdasarkan admin yang sedang login
+        if (auth('admin')->check()) {
+            $adminId = auth('admin')->id();
+            $countQuery->where('admin_id', $adminId);
+        }
 
         if ($timeRange != '5') {
             $startDate = null;
@@ -39,8 +45,9 @@ class PageController extends Controller
                 $countQuery->where('tanggal', '>=', $startDate);
             }
         }
-        // Cache status counts dengan key yang berbeda berdasarkan timeRange
-        $cacheKey = "landing_counts_{$timeRange}";
+        // Cache status counts dengan key yang berbeda berdasarkan timeRange dan admin_id
+        $adminId = auth('admin')->check() ? auth('admin')->id() : 'guest';
+        $cacheKey = "landing_counts_{$timeRange}_{$adminId}";
         $counts = cache()->remember($cacheKey, 300, function () use ($countQuery) {
             return [
                 'pending' => (clone $countQuery)->menunggu()->count(),
@@ -55,6 +62,13 @@ class PageController extends Controller
 
         // --- 2. QUERY UNTUK TABEL DAFTAR AGENDA ---
         $agendasQuery = Agenda::query(); // Menggunakan query baru, bukan yang dari count
+        
+        // Filter agenda berdasarkan admin yang sedang login
+        if (auth('admin')->check()) {
+            $adminId = auth('admin')->id();
+            $agendasQuery->where('admin_id', $adminId);
+        }
+        // Jika tidak login sebagai admin, tampilkan semua agenda (tidak perlu filter)
 
         // ==================================================================
         // PERBAIKAN UTAMA: Menambahkan kolom OPD dan Dihadiri ke dalam pencarian
@@ -89,9 +103,9 @@ class PageController extends Controller
         }
 
         $perPage = $request->input('perPage', 10);
-        // PERBAIKAN: Urutkan berdasarkan created_at agar agenda baru muncul di atas
+        // PERBAIKAN: Urutkan berdasarkan tanggal terbaru (kolom tanggal)
         // OPTIMASI: Eager load relasi untuk menghindari N+1 queries
-        $agendas = $agendasQuery->with(['admin', 'tamu'])->latest()->paginate($perPage)->withQueryString();
+        $agendas = $agendasQuery->with(['admin', 'tamu'])->orderBy('tanggal', 'desc')->paginate($perPage)->withQueryString();
 
         return view('landing', [
             'agendas' => $agendas,
@@ -106,9 +120,13 @@ class PageController extends Controller
      */
     public function getAgendaCounts(Request $request): JsonResponse
     {
-        // ... (Tidak ada perubahan di method ini)
         $countQuery = Agenda::query();
         $timeRange = $request->input('timeRange', '5');
+        
+        // Filter agenda berdasarkan admin yang sedang login
+        if (auth('admin')->check()) {
+            $countQuery->where('admin_id', auth('admin')->id());
+        }
 
         if ($timeRange != '5') {
             $startDate = null;
