@@ -49,6 +49,7 @@
             editAgenda: {},
             activeTab: 'detail',
             toasts: {{ json_encode($initialToasts) }},
+            showQrModal: false,
 
             init() {
                 this.toasts.forEach(toast => {
