@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Facades\Cache;
 use Carbon\Carbon;
+use App\Models\Admin;
 
 class Agenda extends Model
 {
@@ -130,16 +131,26 @@ class Agenda extends Model
      */
     public static function clearAgendaCache(): void
     {
-        Cache::forget('agenda_counts_menunggu');
-        Cache::forget('agenda_counts_berlangsung');
-        Cache::forget('agenda_counts_berakhir');
+        // Hapus cache untuk semua admin
+        $admins = Admin::all(['admin_id']);
         
-        // Clear cache with different prefixes if any
-        $prefix = config('cache.prefix');
-        if ($prefix) {
-            Cache::forget($prefix . 'agenda_counts_menunggu');
-            Cache::forget($prefix . 'agenda_counts_berlangsung');
-            Cache::forget($prefix . 'agenda_counts_berakhir');
+        foreach ($admins as $admin) {
+            $adminId = $admin->admin_id;
+            
+            // Hapus cache untuk dashboard
+            Cache::forget("agenda_pending_count_{$adminId}");
+            Cache::forget("agenda_ongoing_count_{$adminId}");
+            Cache::forget("agenda_finished_count_{$adminId}");
+            
+            // Hapus cache untuk landing page dengan berbagai timeRange
+            foreach (['1', '2', '3', '4', '5'] as $timeRange) {
+                Cache::forget("landing_counts_{$timeRange}_{$adminId}");
+            }
+        }
+        
+        // Hapus cache untuk guest
+        foreach (['1', '2', '3', '4', '5'] as $timeRange) {
+            Cache::forget("landing_counts_{$timeRange}_guest");
         }
     }
 }
