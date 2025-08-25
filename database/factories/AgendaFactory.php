@@ -43,9 +43,8 @@ class AgendaFactory extends Factory
             'jam_mulai' => $jamMulai->format('H:i:s'),
             'jam_selesai' => $jamSelesai->format('H:i:s'),
             'dihadiri' => $this->faker->randomElement($dihadiriOleh),
-            // Mengambil ID admin secara acak dari user yang ada.
-            // Jika tidak ada user, maka akan dibuat satu user baru.
-            'admin_id' => User::inRandomOrder()->first()->id ?? User::factory()->create()->id,
+            // Admin ID akan diatur saat pembuatan agenda
+            'admin_id' => null,
         ];
     }
 }
