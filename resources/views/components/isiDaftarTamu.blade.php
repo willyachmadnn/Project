@@ -1,7 +1,7 @@
 {{-- resources/views/components/isiDaftarTamu.blade.php --}}
 @props(['agenda'])
 
-<div class="glass-effect rounded-2xl p-8 flex-1 overflow-y-auto">
+<div class="bg-white/90 backdrop-blur-sm rounded-2xl p-8 flex-1 overflow-y-auto shadow-lg border border-gray-200">
     <div class="flex justify-between items-center mb-6">
         <div class="flex items-center">
             <div class="w-10 h-10 bg-gradient-to-r from-green-500 to-teal-500 rounded-full flex items-center justify-center mr-4">

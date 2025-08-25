@@ -1,7 +1,7 @@
 {{-- resources/views/components/isiDetailAgenda.blade.php --}}
 @props(['agenda'])
 
-<div class="glass-effect rounded-2xl p-8 h-full flex flex-col">
+<div class="bg-white/90 backdrop-blur-sm rounded-2xl p-8 h-full flex flex-col shadow-lg border border-gray-200">
     <div class="flex items-center justify-between mb-6">
         <div class="flex items-center">
             <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-blue-800 rounded-full flex items-center justify-center mr-4">
@@ -71,18 +71,18 @@
     </div>
 
     <!-- Modal QR Code -->
-<template x-teleport="body">
-    <div x-cloak x-show="showQrModal" @keydown.escape.window="showQrModal = false" class="fixed inset-0 z-[999] flex items-center justify-center p-4">
-        <div class="fixed inset-0 bg-black/40 backdrop-blur-sm" @click="showQrModal = false"></div>
-        <div x-show="showQrModal" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100" x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" class="relative z-[1000] bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] flex flex-col">
+    <template x-teleport="body">
+        <div x-cloak x-show="showQrModal" @keydown.escape.window="showQrModal = false" class="qr-modal fixed inset-0 z-[1001] flex items-center justify-center p-4">
+            <div class="fixed inset-0 bg-black/20 backdrop-blur-sm" @click="showQrModal = false"></div>
+            <div x-show="showQrModal" x-transition:enter="ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100" x-transition:leave="ease-in duration-200" x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100" x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" class="relative z-[1002] bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] flex flex-col border border-gray-200 shadow-2xl">
             <!-- Modal Header -->
-            <div class="flex items-center justify-between p-5 border-b">
+            <div class="modal-content flex items-center justify-between p-5 border-b">
                 <h3 class="text-xl font-semibold text-gray-900">QR Code - {{ $agenda->nama_agenda }}</h3>
                 <button type="button" @click="showQrModal = false" class="text-gray-400 hover:text-gray-600 p-2 rounded-full">&times;</button>
             </div>
             
             <!-- Modal Content -->
-            <div class="p-6 space-y-4 overflow-y-auto">
+            <div class="modal-content p-6 space-y-4 overflow-y-auto">
 
                         <!-- QR Codes Container -->
                         <div class="flex flex-col sm:flex-row justify-around items-center gap-8 mb-6">
@@ -104,122 +104,214 @@
             </div>
             
             <!-- Modal Footer -->
-            <div class="flex items-center justify-end p-5 border-t space-x-3">
-                <button @click="downloadQrPdf()" :disabled="isDownloading" class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white text-sm font-medium rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                    <span x-show="!isDownloading">Download PDF</span>
-                    <span x-show="isDownloading" class="flex items-center">
-                        <svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                        </svg>
-                        Generating...
-                    </span>
+            <div class="modal-content flex items-center justify-end p-5 border-t space-x-3">
+                <button id="downloadQrPdfBtn" type="button" class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-400 text-white text-sm font-medium rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                    </svg>
+                    Download PDF
                 </button>
                 <button @click="showQrModal = false" class="inline-flex items-center px-4 py-2 bg-gray-300 hover:bg-gray-400 text-gray-700 text-sm font-medium rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
                     Tutup
                 </button>
             </div>
         </div>
-    </div>
-</template>
+    </template>
 
-<!-- QR Code Scripts -->
-<script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style class="ignore-pdf">
+    /* Override any oklch colors with fallbacks for PDF generation */
+    #qr-pegawai, #qr-non-pegawai {
+        background-color: #ffffff !important;
+        color: #000000 !important;
+    }
+    
+    #qr-pegawai *, #qr-non-pegawai * {
+        background-color: transparent !important;
+        color: inherit !important;
+    }
+    
+    #qr-pegawai canvas, #qr-non-pegawai canvas {
+        background-color: #ffffff !important;
+    }
+    
+    /* Ensure no modern CSS color functions are used */
+    .qr-container {
+        background: #ffffff !important;
+        color: #000000 !important;
+    }
+</style>
+
+<!-- All QR Code and PDF Scripts are loaded in layout.blade.php -->
 
 <script>
     function openQrModal() {
+        // Generate QR codes for both pegawai and non-pegawai
+        const baseUrl = window.location.origin;
+        const agendaId = {{ $agenda->agenda_id }};
+        
+        // URLs for different user types
+        const urlPegawai = `${baseUrl}/tamu/create?agenda_id=${agendaId}&type=pegawai`;
+        const urlNonPegawai = `${baseUrl}/tamu/create?agenda_id=${agendaId}&type=non-pegawai`;
+        
         // Clear previous QR codes
         document.getElementById('qr-pegawai').innerHTML = '';
         document.getElementById('qr-non-pegawai').innerHTML = '';
         
-        // Generate QR codes
-        setTimeout(() => {
-            // QR Code untuk Pegawai
-            new QRCode(document.getElementById('qr-pegawai'), {
-                text: `${window.location.origin}/agenda/{{ $agenda->id }}/form/pegawai`,
-                width: 180,
-                height: 180,
-                colorDark: '#000000',
-                colorLight: '#ffffff',
-                correctLevel: QRCode.CorrectLevel.H
-            });
-            
-            // QR Code untuk Non Pegawai
-            new QRCode(document.getElementById('qr-non-pegawai'), {
-                text: `${window.location.origin}/agenda/{{ $agenda->id }}/form/non-pegawai`,
-                width: 180,
-                height: 180,
-                colorDark: '#000000',
-                colorLight: '#ffffff',
-                correctLevel: QRCode.CorrectLevel.H
-            });
-        }, 100);
-    }
-    
-    async function downloadQrPdf() {
-        const { jsPDF } = window.jspdf;
-        const modal = document.querySelector('.inline-block.align-bottom.bg-white');
-        const downloadBtn = event.target;
+        // Create canvas elements for QR codes
+        const canvasPegawai = document.createElement('canvas');
+        const canvasNonPegawai = document.createElement('canvas');
         
-        // Show loading state
-        downloadBtn.innerHTML = '<svg class="animate-spin -ml-1 mr-3 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>Memproses...';
-        downloadBtn.disabled = true;
+        document.getElementById('qr-pegawai').appendChild(canvasPegawai);
+        document.getElementById('qr-non-pegawai').appendChild(canvasNonPegawai);
         
+        // Generate QR codes using QRious
         try {
-            // Capture the QR codes area
-            const qrContainer = document.querySelector('.flex.flex-col.sm\\:flex-row.justify-around');
-            const canvas = await html2canvas(qrContainer, {
-                scale: 2,
-                backgroundColor: '#ffffff',
-                useCORS: true
+            const qrPegawai = new QRious({
+                element: canvasPegawai,
+                value: urlPegawai,
+                size: 200,
+                background: '#ffffff',
+                foreground: '#000000',
+                level: 'M'
             });
             
-            const imgData = canvas.toDataURL('image/png');
-            
-            // Create PDF
-            const pdf = new jsPDF({
-                orientation: 'portrait',
-                unit: 'mm',
-                format: 'a4'
+            const qrNonPegawai = new QRious({
+                element: canvasNonPegawai,
+                value: urlNonPegawai,
+                size: 200,
+                background: '#ffffff',
+                foreground: '#000000',
+                level: 'M'
             });
             
-            // Add title
-            pdf.setFontSize(16);
-            pdf.setFont('helvetica', 'bold');
-            pdf.text('QR Code - {{ $agenda->nama_agenda }}', 105, 20, { align: 'center' });
-            
-            // Add QR codes image
-            const pdfWidth = 210; // A4 width in mm
-            const pdfHeight = 297; // A4 height in mm
-            const imgWidth = canvas.width;
-            const imgHeight = canvas.height;
-            const ratio = Math.min((pdfWidth - 40) / imgWidth, (pdfHeight - 60) / imgHeight);
-            
-            const scaledWidth = imgWidth * ratio;
-            const scaledHeight = imgHeight * ratio;
-            const x = (pdfWidth - scaledWidth) / 2;
-            const y = 40;
-            
-            pdf.addImage(imgData, 'PNG', x, y, scaledWidth, scaledHeight);
-            
-            // Add footer
-            pdf.setFontSize(10);
-            pdf.setFont('helvetica', 'normal');
-            pdf.text('Generated on: ' + new Date().toLocaleString('id-ID'), 105, pdfHeight - 10, { align: 'center' });
-            
-            // Save PDF
-            const fileName = `QR-Code-${"{{ Str::slug($agenda->nama_agenda) }}".replace(/[^a-zA-Z0-9-]/g, '')}.pdf`;
-            pdf.save(fileName);
-            
+            console.log('QR codes generated successfully');
         } catch (error) {
-            console.error('Error generating PDF:', error);
-            alert('Terjadi kesalahan saat membuat PDF. Silakan coba lagi.');
-        } finally {
-            // Reset button
-            downloadBtn.innerHTML = '<svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>Download PDF';
-            downloadBtn.disabled = false;
+            console.error('Error generating QR codes:', error);
+            alert('Gagal membuat QR code. Silakan refresh halaman dan coba lagi.');
         }
     }
+    
+    // jQuery implementation for PDF download following isiNotulen pattern
+    $(document).ready(function() {
+        $(document).on('click', '#downloadQrPdfBtn', function() {
+            const button = $(this);
+            const originalText = button.html();
+            button.html('<i class="fas fa-spinner fa-spin mr-2"></i>Mempersiapkan...').prop('disabled', true);
+
+            try {
+                // Force compatible colors for QR containers
+                const qrPegawai = document.getElementById('qr-pegawai');
+                const qrNonPegawai = document.getElementById('qr-non-pegawai');
+                
+                if (!qrPegawai || !qrNonPegawai) {
+                    throw new Error('QR code elements not found');
+                }
+                
+                // Apply inline styles to ensure color compatibility
+                qrPegawai.style.backgroundColor = '#ffffff';
+                qrPegawai.style.color = '#000000';
+                qrNonPegawai.style.backgroundColor = '#ffffff';
+                qrNonPegawai.style.color = '#000000';
+                
+                // Check if QR codes have content
+                if (!qrPegawai.innerHTML.trim() || !qrNonPegawai.innerHTML.trim()) {
+                    throw new Error('QR codes are not generated yet. Please close and reopen the modal.');
+                }
+
+                // Wait for QR codes to render then capture
+                setTimeout(() => {
+                    Promise.all([
+                        html2canvas(qrPegawai, {
+                            backgroundColor: '#ffffff',
+                            scale: 2,
+                            useCORS: true,
+                            allowTaint: false,
+                            foreignObjectRendering: false,
+                            logging: false,
+                            removeContainer: true,
+                            ignoreElements: function(element) {
+                                // Skip elements that might have oklch colors
+                                return element.tagName === 'STYLE' || element.classList.contains('ignore-pdf');
+                            },
+                            onclone: function(clonedDoc) {
+                                // Force all colors to be hex/rgb in cloned document
+                                const style = clonedDoc.createElement('style');
+                                style.textContent = `
+                                    * { color: #000000 !important; background-color: #ffffff !important; }
+                                    canvas { background-color: #ffffff !important; }
+                                `;
+                                clonedDoc.head.appendChild(style);
+                            }
+                        }),
+                        html2canvas(qrNonPegawai, {
+                            backgroundColor: '#ffffff',
+                            scale: 2,
+                            useCORS: true,
+                            allowTaint: false,
+                            foreignObjectRendering: false,
+                            logging: false,
+                            removeContainer: true,
+                            ignoreElements: function(element) {
+                                // Skip elements that might have oklch colors
+                                return element.tagName === 'STYLE' || element.classList.contains('ignore-pdf');
+                            },
+                            onclone: function(clonedDoc) {
+                                // Force all colors to be hex/rgb in cloned document
+                                const style = clonedDoc.createElement('style');
+                                style.textContent = `
+                                    * { color: #000000 !important; background-color: #ffffff !important; }
+                                    canvas { background-color: #ffffff !important; }
+                                `;
+                                clonedDoc.head.appendChild(style);
+                            }
+                        })
+                    ]).then(([qrPegawaiCanvas, qrNonPegawaiCanvas]) => {
+                        // Create PDF
+                        const { jsPDF } = window.jspdf;
+                        const pdf = new jsPDF();
+
+                        // Add title
+                        pdf.setFontSize(16);
+                        const pageWidth = pdf.internal.pageSize.getWidth();
+                        pdf.text('QR Code Agenda: {{ $agenda->nama_agenda }}', pageWidth / 2, 20, { align: 'center' });
+
+                        // Add QR codes
+                        const imgWidth = 80;
+                        const imgHeight = 80;
+                        const centerX = (pageWidth - imgWidth) / 2;
+                        const textCenterX = pageWidth / 2;
+
+                        // QR Pegawai
+                        pdf.setFontSize(12);
+                        pdf.text('QR Code untuk Pegawai:', textCenterX, 40, { align: 'center' });
+                        pdf.addImage(qrPegawaiCanvas.toDataURL('image/png'), 'PNG', centerX, 50, imgWidth, imgHeight);
+
+                        // QR Non-Pegawai
+                        pdf.text('QR Code untuk Non-Pegawai:', textCenterX, 150, { align: 'center' });
+                        pdf.addImage(qrNonPegawaiCanvas.toDataURL('image/png'), 'PNG', centerX, 160, imgWidth, imgHeight);
+
+                        // Add footer
+                        pdf.setFontSize(10);
+                        pdf.text('Generated on: ' + new Date().toLocaleString(), 20, 280);
+
+                        // Save PDF
+                        pdf.save('QR-Code-Agenda-{{ Str::slug($agenda->nama_agenda) }}_{{ date('d-m-Y') }}.pdf');
+
+                        // Show success message and reset button
+                        alert('PDF berhasil diunduh!');
+                        button.html(originalText).prop('disabled', false);
+                    }).catch(error => {
+                        console.error('Error generating PDF:', error);
+                        alert('Terjadi kesalahan saat membuat PDF: ' + error.message + '. Silakan coba lagi.');
+                        button.html(originalText).prop('disabled', false);
+                    });
+                }, 500);
+
+            } catch (error) {
+                console.error('Error in PDF generation:', error);
+                alert('Terjadi kesalahan: ' + error.message);
+                button.html(originalText).prop('disabled', false);
+            }
+        });
+    });
 </script>

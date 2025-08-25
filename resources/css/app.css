@@ -11,6 +11,18 @@
 @theme {
   --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji',
                'Segoe UI Emoji','Segoe UI Symbol','Noto Color Emoji';
+  
+  /* Force hex/rgb colors instead of oklch for html2canvas compatibility */
+  --color-blue-600: #2563eb;
+  --color-blue-700: #1d4ed8;
+  --color-blue-400: #60a5fa;
+  --color-gray-300: #d1d5db;
+  --color-gray-400: #9ca3af;
+  --color-gray-700: #374151;
+  --color-green-500: #10b981;
+  --color-green-600: #059669;
+  --color-white: #ffffff;
+  --color-black: #000000;
 }
 
 /* ====== GLOBAL RESET & PENGAMANAN LAYOUT ====== */
@@ -34,6 +46,34 @@ main {
 /* ====== GAYA UMUM KONTEN (Tabel, dll) ====== */
 .table-responsive { display: block; width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
 table { width: 100%; border-collapse: collapse; }
+
+/* ====== PDF GENERATION COMPATIBILITY ====== */
+/* Force compatible colors for html2canvas - exclude modal background */
+.qr-modal .modal-content *, .qr-modal .modal-content *::before, .qr-modal .modal-content *::after {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+  border-color: #d1d5db !important;
+}
+
+.qr-modal .bg-blue-600 {
+  background-color: #2563eb !important;
+}
+
+.qr-modal .bg-blue-700 {
+  background-color: #1d4ed8 !important;
+}
+
+.qr-modal .bg-gray-300 {
+  background-color: #d1d5db !important;
+}
+
+.qr-modal .text-white {
+  color: #ffffff !important;
+}
+
+.qr-modal .text-gray-700 {
+  color: #374151 !important;
+}
 @media (max-width: 640px){
   table { display: block; overflow-x: auto; white-space: nowrap; }
 }

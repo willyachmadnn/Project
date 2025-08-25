@@ -30,6 +30,17 @@
     {{-- Alpine.js with defer for better performance --}}
     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
     
+    {{-- jQuery for PDF functionality --}}
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    {{-- QR Code and PDF Libraries --}}
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+     
+     {{-- Font Awesome for icons --}}
+     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    
     {{-- Performance optimizations --}}
     <meta name="theme-color" content="#ac1616">
     <link rel="manifest" href="/manifest.json">
