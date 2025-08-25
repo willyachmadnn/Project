@@ -100,7 +100,7 @@
     <table class="details-table">
         <tr><td>Sidang / Rapat</td><td>:</td><td>{{ $agenda->nama_agenda }}</td></tr>
         <tr><td>Hari / Tanggal</td><td>:</td><td>{{ $agenda->tanggal->translatedFormat('l, d F Y') }}</td></tr>
-        <tr><td>Waktu</td><td>:</td><td>{{ \Carbon\Carbon::parse($agenda->jam_mulai)->format('H:i') }} - Selesai</td></tr>
+        <tr><td>Waktu</td><td>:</td><td>{{ \Carbon\Carbon::parse($agenda->jam_mulai)->format('H:i') }} - {{ \Carbon\Carbon::parse($agenda->jam_selesai)->format('H:i') }}</td></tr>
         <tr><td>Tempat</td><td>:</td><td>{{ $agenda->tempat }}</td></tr>
         <tr><td>Pimpinan Rapat</td><td>:</td><td id="pdf_pimpinan_name_detail">{{ $agenda->admin->nama_admin ?? 'Pimpinan Rapat' }}</td></tr>
         <tr><td>Peserta</td><td>:</td><td>{{ $agenda->dihadiri }}</td></tr>

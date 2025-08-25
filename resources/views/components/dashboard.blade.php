@@ -208,8 +208,9 @@
                 try { return \Illuminate\Support\Carbon::parse((string)$v)->format('H:i'); }
                 catch (\Throwable $e) { return null; }
               };
-              $wMulaiRaw   = $agenda->waktu_mulai  ?? $agenda->jam_mulai ?? $agenda->pukul_mulai ?? $agenda->start_time ?? null;
-              $wSelesaiRaw = $agenda->waktu_selesai ?? $agenda->jam_selesai ?? $agenda->pukul_selesai ?? $agenda->end_time   ?? null;
+              // Standardisasi penamaan variabel waktu - menggunakan jam_mulai dan jam_selesai sebagai standar
+              $wMulaiRaw   = $agenda->jam_mulai ?? null;
+              $wSelesaiRaw = $agenda->jam_selesai ?? null;
               $wSatuRaw    = $agenda->waktu ?? $agenda->jam ?? $agenda->pukul ?? null;
 
               $wMulai   = $fmt($wMulaiRaw);
