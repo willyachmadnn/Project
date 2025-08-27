@@ -221,107 +221,148 @@
             document.getElementById('delete-agenda-form').submit();
         }
     }" @open-delete-modal.window="openDeleteModal()"
-        class="h-screen flex flex-col overflow-hidden bg-gradient-to-br from-blue-50 via-white to-purple-50">
+        class="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/50 relative overflow-hidden">
 
         <!-- Header Halaman -->
-        <div class="bg-transparent border-b border-gray-100 flex-shrink-0">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-                <div class="flex justify-between items-center">
-                    <div>
-                        <h1
-                            class="text-3xl font-bold bg-gradient-to-r from-red-700 to-orange-700 bg-clip-text text-transparent break-words">
-                            Detail Agenda: {{ $agenda->nama_agenda }}
-                        </h1>
-                        <p class="text-gray-600 mt-1">Informasi lengkap agenda dan peserta.</p>
+        <div class="relative bg-white/80 backdrop-blur-xl border-b border-gray-200/50 shadow-sm">
+            <!-- Decorative background elements -->
+            <div class="absolute inset-0 bg-gradient-to-r from-blue-600/5 via-indigo-600/5 to-purple-600/5"></div>
+            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500"></div>
+            
+            <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <div class="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-6">
+                    <div class="space-y-3">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg">
+                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                </svg>
+                            </div>
+                            <div>
+                                <h1 class="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-gray-900 via-blue-800 to-indigo-800 bg-clip-text text-transparent leading-tight">
+                                    Detail Agenda
+                                </h1>
+                            </div>
+                        </div>
+                        <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-4 border border-blue-100">
+                            <h2 class="text-xl font-semibold text-gray-800 mb-1">{{ $agenda->nama_agenda }}</h2>
+                            <p class="text-gray-600 text-sm">Informasi lengkap agenda dan daftar peserta yang hadir</p>
+                        </div>
                     </div>
-                    <a href="{{ route('agenda.index') }}"
-                        class="inline-flex items-center px-4 py-2 bg-gradient-to-l from-red-700 to-orange-700 text-white font-medium rounded-md shadow-md hover:shadow-lg transform hover:-translate-y-1 transition-transform">
-                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-                        </svg>
-                        Kembali
-                    </a>
+                    <div class="flex items-center space-x-3">
+                        <a href="{{ route('agenda.index') }}"
+                            class="group inline-flex items-center px-6 py-3 bg-gradient-to-r from-gray-700 to-gray-800 hover:from-gray-800 hover:to-gray-900 text-white font-medium rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2">
+                            <svg class="w-5 h-5 mr-2 group-hover:-translate-x-1 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                            </svg>
+                            Kembali ke Daftar
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <div class="flex-1 overflow-y-auto">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10 py-2">
+        <div class="flex-1 py-8">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 {{-- Navigasi Tab --}}
-                <div class="mb-10">
-                    <div class="border-b border-gray-200">
-                        <nav class="-mb-px flex space-x-8" role="presentation">
+                <div class="mb-8">
+                    <div class="bg-white/70 backdrop-blur-sm rounded-2xl p-2 shadow-lg border border-gray-200/50">
+                        <nav class="flex space-x-1" role="presentation">
                             <button @click="activeTab = 'detail'"
-                                :class="activeTab === 'detail' ? 'border-blue-600 text-blue-600' :
-                                    'border-transparent text-gray-500 hover:text-blue-600'"
-                                class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors duration-200">Detail
-                                Agenda</button>
+                                :class="activeTab === 'detail' ? 
+                                    'bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg scale-105' :
+                                    'text-gray-600 hover:text-blue-600 hover:bg-blue-50/50'"
+                                class="group relative flex-1 flex items-center justify-center px-6 py-4 rounded-xl font-semibold text-sm transition-all duration-300 transform hover:scale-102">
+                                <svg class="w-5 h-5 mr-2" :class="activeTab === 'detail' ? 'text-white' : 'text-blue-500'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                </svg>
+                                Detail Agenda
+                            </button>
                             <button @click="activeTab = 'tamu'"
-                                :class="activeTab === 'tamu' ? 'border-green-600 text-green-600' :
-                                    'border-transparent text-gray-500 hover:text-green-600'"
-                                class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors duration-200">Daftar
-                                Tamu</button>
+                                :class="activeTab === 'tamu' ? 
+                                    'bg-gradient-to-r from-emerald-500 to-green-600 text-white shadow-lg scale-105' :
+                                    'text-gray-600 hover:text-emerald-600 hover:bg-emerald-50/50'"
+                                class="group relative flex-1 flex items-center justify-center px-6 py-4 rounded-xl font-semibold text-sm transition-all duration-300 transform hover:scale-102">
+                                <svg class="w-5 h-5 mr-2" :class="activeTab === 'tamu' ? 'text-white' : 'text-emerald-500'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                                </svg>
+                                Daftar Tamu
+                            </button>
                             <button @click="activeTab = 'notulen'"
-                                :class="activeTab === 'notulen' ? 'border-purple-600 text-purple-600' :
-                                    'border-transparent text-gray-500 hover:text-purple-600'"
-                                class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm transition-colors duration-200">Notulen</button>
+                                :class="activeTab === 'notulen' ? 
+                                    'bg-gradient-to-r from-purple-500 to-indigo-600 text-white shadow-lg scale-105' :
+                                    'text-gray-600 hover:text-purple-600 hover:bg-purple-50/50'"
+                                class="group relative flex-1 flex items-center justify-center px-6 py-4 rounded-xl font-semibold text-sm transition-all duration-300 transform hover:scale-102">
+                                <svg class="w-5 h-5 mr-2" :class="activeTab === 'notulen' ? 'text-white' : 'text-purple-500'" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.5L15.232 5.232z"></path>
+                                </svg>
+                                Notulen
+                            </button>
                         </nav>
                     </div>
 
                     {{-- Konten Tab --}}
-                    <div class="mt-6 h-[calc(100vh-280px)] overflow-y-auto">
-                        {{-- PERUBAHAN: Menggunakan x-if alih-alih x-show untuk menghindari masalah CSS --}}
+                    <div class="mt-8">
+                        {{-- Tab Content dengan animasi smooth --}}
                         <template x-if="activeTab === 'detail'">
-                            <div role="tabpanel"
-                                class="h-full bg-blue-50 rounded-lg border-2 border-dashed border-blue-200">
+                            <div role="tabpanel" 
+                                x-transition:enter="transition ease-out duration-300"
+                                x-transition:enter-start="opacity-0 transform translate-y-4"
+                                x-transition:enter-end="opacity-100 transform translate-y-0"
+                                class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-gray-200/50 overflow-hidden">
                                 <x-isiDetailAgenda :agenda="$agenda" />
                             </div>
                         </template>
                         
                         <template x-if="activeTab === 'tamu'">
                             <div role="tabpanel"
-                                class="h-full flex flex-col bg-green-50 rounded-lg border-2 border-dashed border-green-200">
+                                x-transition:enter="transition ease-out duration-300"
+                                x-transition:enter-start="opacity-0 transform translate-y-4"
+                                x-transition:enter-end="opacity-100 transform translate-y-0"
+                                class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-gray-200/50 overflow-hidden">
                                 <x-isiDaftarTamu :agenda="$agenda" />
                             </div>
                         </template>
                         
                         <template x-if="activeTab === 'notulen'">
                             <div role="tabpanel"
-                                class="h-full flex flex-col items-center justify-center bg-purple-50 rounded-lg border-2 border-dashed border-purple-200 p-8">
-                                <div
-                                    class="w-20 h-20 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-full flex items-center justify-center mb-6 shadow-lg">
-                                    <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor"
-                                        viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.5L15.232 5.232z">
-                                        </path>
-                                    </svg>
+                                x-transition:enter="transition ease-out duration-300"
+                                x-transition:enter-start="opacity-0 transform translate-y-4"
+                                x-transition:enter-end="opacity-100 transform translate-y-0"
+                                class="bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl border border-gray-200/50 p-12 text-center">
+                                <div class="max-w-md mx-auto">
+                                    <div class="w-24 h-24 bg-gradient-to-br from-purple-500 via-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center mb-8 shadow-2xl mx-auto transform hover:scale-105 transition-transform duration-300">
+                                        <svg class="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.5L15.232 5.232z"></path>
+                                        </svg>
+                                    </div>
+                                    <h3 class="text-3xl font-bold bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent mb-4">Manajemen Notulen</h3>
+                                    <p class="text-gray-600 text-lg leading-relaxed mb-8">Kelola dan edit notulen rapat untuk agenda ini dengan mudah melalui editor yang tersedia.</p>
+                                    
+                                    @php
+                                        $route = $agenda->notulen
+                                            ? route('agenda.notulen.edit', [
+                                                'agenda' => $agenda->agenda_id,
+                                                'notulen' => $agenda->notulen->id,
+                                            ])
+                                            : route('agenda.notulen.create', ['agenda' => $agenda->agenda_id]);
+                                    @endphp
+                                    
+                                    <a href="{{ $route }}"
+                                        class="group inline-flex items-center px-8 py-4 bg-gradient-to-r from-purple-600 via-indigo-600 to-purple-700 hover:from-purple-700 hover:via-indigo-700 hover:to-purple-800 text-white rounded-2xl shadow-2xl hover:shadow-purple-500/25 transform hover:scale-105 hover:-translate-y-1 transition-all duration-300 focus:outline-none focus:ring-4 focus:ring-purple-500/50 text-lg font-semibold">
+                                        <svg class="w-6 h-6 mr-3 group-hover:rotate-12 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.5L15.232 5.232z"></path>
+                                        </svg>
+                                        @if ($agenda->notulen)
+                                            Edit Notulen
+                                        @else
+                                            Buat Notulen Baru
+                                        @endif
+                                        <svg class="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform duration-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                                        </svg>
+                                    </a>
                                 </div>
-                                <h3 class="text-2xl font-bold text-gray-800">Manajemen Notulen</h3>
-                                <p class="text-gray-600 mt-2 mb-6 max-w-md text-center">Klik tombol di bawah untuk membuka halaman
-                                    editor, di mana Anda dapat menulis atau mengedit notulen untuk agenda ini.</p>
-                                @php
-                                    $route = $agenda->notulen
-                                        ? route('agenda.notulen.edit', [
-                                            'agenda' => $agenda->agenda_id,
-                                            'notulen' => $agenda->notulen->id,
-                                        ])
-                                        : route('agenda.notulen.create', ['agenda' => $agenda->agenda_id]);
-                                @endphp
-                                <a href="{{ $route }}"
-                                    class="px-8 py-4 bg-gradient-to-r from-purple-600 to-indigo-700 text-white rounded-lg hover:from-purple-700 hover:to-indigo-800 focus:outline-none focus:ring-2 focus:ring-purple-500 shadow-lg flex items-center text-lg font-bold transform hover:scale-105 transition-all">
-                                    <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                            d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.5L15.232 5.232z">
-                                        </path>
-                                    </svg>
-                                    @if ($agenda->notulen)
-                                        Edit Notulen
-                                    @else
-                                        Buat Notulen Baru
-                                    @endif
-                                </a>
                             </div>
                         </template>
                     </div>
@@ -334,24 +375,50 @@
     @include('modal.tambah')
     <template x-teleport="body">
         <div x-cloak x-show="isDeleteModalOpen" @keydown.escape.window="isDeleteModalOpen = false"
+            x-transition:enter="transition ease-out duration-300"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="transition ease-in duration-200"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
             class="fixed inset-0 z-[999] flex items-center justify-center p-4">
-            <div class="fixed inset-0 bg-black/40 backdrop-blur-sm" @click="isDeleteModalOpen = false"></div>
-            <div x-show="isDeleteModalOpen" class="relative z-[1000] bg-white rounded-lg shadow-xl w-full max-w-md">
-                <div class="p-6 text-center">
-                    <svg class="mx-auto mb-4 text-red-500 w-14 h-14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
-                    </svg>
-                    <h3 class="mb-5 text-lg font-normal text-gray-600">Apakah Anda yakin ingin menghapus agenda ini?</h3>
+            <div class="fixed inset-0 bg-black/60 backdrop-blur-sm" @click="isDeleteModalOpen = false"></div>
+            <div x-show="isDeleteModalOpen" 
+                x-transition:enter="transition ease-out duration-300 transform"
+                x-transition:enter-start="opacity-0 scale-95 translate-y-4"
+                x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+                x-transition:leave="transition ease-in duration-200 transform"
+                x-transition:leave-start="opacity-100 scale-100 translate-y-0"
+                x-transition:leave-end="opacity-0 scale-95 translate-y-4"
+                class="relative z-[1000] bg-white/95 backdrop-blur-sm rounded-3xl shadow-2xl border border-gray-200/50 w-full max-w-md">
+                <div class="p-8 text-center">
+                    <!-- Warning Icon -->
+                    <div class="flex justify-center mb-6">
+                        <div class="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center">
+                            <svg class="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                            </svg>
+                        </div>
+                    </div>
+                    
+                    <h3 class="text-2xl font-bold text-gray-900 mb-4">Konfirmasi Hapus</h3>
+                    <p class="text-gray-600 mb-8 leading-relaxed">Apakah Anda yakin ingin menghapus agenda ini? Tindakan ini tidak dapat dibatalkan dan semua data terkait akan hilang permanen.</p>
+                    
                     <form id="delete-agenda-form" action="{{ route('agenda.destroy', $agenda->agenda_id) }}" method="POST" class="hidden">
                         @csrf
                         @method('DELETE')
                     </form>
-                    <button @click="submitDeleteForm()" type="button" class="text-white bg-red-600 hover:bg-red-800 font-medium rounded-lg text-sm inline-flex items-center px-5 py-2.5 text-center mr-2">
-                        Ya, Hapus
-                    </button>
-                    <button @click="isDeleteModalOpen = false" type="button" class="text-gray-500 bg-white hover:bg-gray-100 rounded-lg border border-gray-200 text-sm font-medium px-5 py-2.5">
-                        Batal
-                    </button>
+                    
+                    <div class="flex flex-col sm:flex-row gap-3">
+                        <button @click="isDeleteModalOpen = false" type="button" 
+                            class="flex-1 px-6 py-3 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-xl font-semibold transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-gray-300/50">
+                            Batal
+                        </button>
+                        <button @click="submitDeleteForm()" type="button" 
+                            class="flex-1 px-6 py-3 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white rounded-xl font-semibold shadow-lg hover:shadow-red-500/25 transform hover:scale-105 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-red-500/50">
+                            Hapus Agenda
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
