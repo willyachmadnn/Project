@@ -145,171 +145,187 @@
 
 <script>
     function openQrModal() {
-        // Generate QR codes for both pegawai and non-pegawai
+        console.log('Opening QR Modal...');
+        
+        // Force immediate generation without waiting
+        generateQrCodes();
+    }
+    
+    function generateQrCodes() {
+        console.log('Generating QR Codes...');
+        
         const baseUrl = window.location.origin;
         const agendaId = {{ $agenda->agenda_id }};
         
-        // URLs for different user types
         const urlPegawai = `${baseUrl}/tamu/create?agenda_id=${agendaId}&type=pegawai`;
         const urlNonPegawai = `${baseUrl}/tamu/create?agenda_id=${agendaId}&type=non-pegawai`;
         
-        // Clear previous QR codes
-        document.getElementById('qr-pegawai').innerHTML = '';
-        document.getElementById('qr-non-pegawai').innerHTML = '';
+        console.log('QR URLs:', urlPegawai, urlNonPegawai);
         
-        // Create canvas elements for QR codes
-        const canvasPegawai = document.createElement('canvas');
-        const canvasNonPegawai = document.createElement('canvas');
+        const pegawaiContainer = document.getElementById('qr-pegawai');
+        const nonPegawaiContainer = document.getElementById('qr-non-pegawai');
         
-        document.getElementById('qr-pegawai').appendChild(canvasPegawai);
-        document.getElementById('qr-non-pegawai').appendChild(canvasNonPegawai);
+        if (!pegawaiContainer || !nonPegawaiContainer) {
+            console.error('Containers not found!');
+            return;
+        }
         
-        // Generate QR codes using QRious
+        // Clear containers completely
+        pegawaiContainer.innerHTML = '';
+        nonPegawaiContainer.innerHTML = '';
+        
         try {
-            const qrPegawai = new QRious({
-                element: canvasPegawai,
-                value: urlPegawai,
-                size: 200,
-                background: '#ffffff',
-                foreground: '#000000',
-                level: 'M'
-            });
-            
-            const qrNonPegawai = new QRious({
-                element: canvasNonPegawai,
-                value: urlNonPegawai,
-                size: 200,
-                background: '#ffffff',
-                foreground: '#000000',
-                level: 'M'
-            });
-            
-            console.log('QR codes generated successfully');
+            // Create QR codes with simple approach
+            if (typeof QRCode !== 'undefined') {
+                // Clear any existing QR instances
+                if (window.qrPegawai) {
+                    window.qrPegawai.clear();
+                    window.qrPegawai = null;
+                }
+                if (window.qrNonPegawai) {
+                    window.qrNonPegawai.clear();
+                    window.qrNonPegawai = null;
+                }
+                
+                window.qrPegawai = new QRCode(pegawaiContainer, {
+                    text: urlPegawai,
+                    width: 180,
+                    height: 180
+                });
+                
+                window.qrNonPegawai = new QRCode(nonPegawaiContainer, {
+                    text: urlNonPegawai,
+                    width: 180,
+                    height: 180
+                });
+                
+                console.log('QR Codes generated successfully!');
+            } else {
+                console.error('QRCode library not available');
+                // Fallback: create simple text
+                pegawaiContainer.innerHTML = '<div style="padding:20px;border:1px solid #ccc;">QR Pegawai<br>' + urlPegawai + '</div>';
+                nonPegawaiContainer.innerHTML = '<div style="padding:20px;border:1px solid #ccc;">QR Non-Pegawai<br>' + urlNonPegawai + '</div>';
+            }
         } catch (error) {
-            console.error('Error generating QR codes:', error);
-            alert('Gagal membuat QR code. Silakan refresh halaman dan coba lagi.');
+            console.error('QR Generation Error:', error);
+            pegawaiContainer.innerHTML = '<div style="padding:20px;border:1px solid red;">Error: ' + error.message + '</div>';
+            nonPegawaiContainer.innerHTML = '<div style="padding:20px;border:1px solid red;">Error: ' + error.message + '</div>';
         }
     }
     
-    // jQuery implementation for PDF download following isiNotulen pattern
+    // Simplified PDF download
     $(document).ready(function() {
         $(document).on('click', '#downloadQrPdfBtn', function() {
             const button = $(this);
             const originalText = button.html();
-            button.html('<i class="fas fa-spinner fa-spin mr-2"></i>Mempersiapkan...').prop('disabled', true);
+            button.html('Generating PDF...').prop('disabled', true);
 
             try {
-                // Force compatible colors for QR containers
+                // Check if QR codes already exist, if not generate them
                 const qrPegawai = document.getElementById('qr-pegawai');
                 const qrNonPegawai = document.getElementById('qr-non-pegawai');
                 
                 if (!qrPegawai || !qrNonPegawai) {
-                    throw new Error('QR code elements not found');
+                    throw new Error('QR containers not found');
                 }
                 
-                // Apply inline styles to ensure color compatibility
-                qrPegawai.style.backgroundColor = '#ffffff';
-                qrPegawai.style.color = '#000000';
-                qrNonPegawai.style.backgroundColor = '#ffffff';
-                qrNonPegawai.style.color = '#000000';
+                // Check if QR codes are already generated
+                const pegawaiHasContent = qrPegawai.innerHTML.trim() !== '';
+                const nonPegawaiHasContent = qrNonPegawai.innerHTML.trim() !== '';
                 
-                // Check if QR codes have content
-                if (!qrPegawai.innerHTML.trim() || !qrNonPegawai.innerHTML.trim()) {
-                    throw new Error('QR codes are not generated yet. Please close and reopen the modal.');
+                if (!pegawaiHasContent || !nonPegawaiHasContent) {
+                    console.log('QR codes not found, generating...');
+                    generateQrCodes();
+                    // Wait longer for generation to complete
+                    setTimeout(() => {
+                        processPdfGeneration();
+                    }, 3000);
+                } else {
+                    console.log('QR codes already exist, proceeding with PDF generation...');
+                    processPdfGeneration();
                 }
-
-                // Wait for QR codes to render then capture
-                setTimeout(() => {
-                    Promise.all([
-                        html2canvas(qrPegawai, {
-                            backgroundColor: '#ffffff',
-                            scale: 2,
-                            useCORS: true,
-                            allowTaint: false,
-                            foreignObjectRendering: false,
-                            logging: false,
-                            removeContainer: true,
-                            ignoreElements: function(element) {
-                                // Skip elements that might have oklch colors
-                                return element.tagName === 'STYLE' || element.classList.contains('ignore-pdf');
-                            },
-                            onclone: function(clonedDoc) {
-                                // Force all colors to be hex/rgb in cloned document
-                                const style = clonedDoc.createElement('style');
-                                style.textContent = `
-                                    * { color: #000000 !important; background-color: #ffffff !important; }
-                                    canvas { background-color: #ffffff !important; }
-                                `;
-                                clonedDoc.head.appendChild(style);
-                            }
-                        }),
-                        html2canvas(qrNonPegawai, {
-                            backgroundColor: '#ffffff',
-                            scale: 2,
-                            useCORS: true,
-                            allowTaint: false,
-                            foreignObjectRendering: false,
-                            logging: false,
-                            removeContainer: true,
-                            ignoreElements: function(element) {
-                                // Skip elements that might have oklch colors
-                                return element.tagName === 'STYLE' || element.classList.contains('ignore-pdf');
-                            },
-                            onclone: function(clonedDoc) {
-                                // Force all colors to be hex/rgb in cloned document
-                                const style = clonedDoc.createElement('style');
-                                style.textContent = `
-                                    * { color: #000000 !important; background-color: #ffffff !important; }
-                                    canvas { background-color: #ffffff !important; }
-                                `;
-                                clonedDoc.head.appendChild(style);
-                            }
-                        })
-                    ]).then(([qrPegawaiCanvas, qrNonPegawaiCanvas]) => {
-                        // Create PDF
+                
+                function processPdfGeneration() {
+                    try {
+                        // Ultra-simple approach: Generate PDF without html2canvas
                         const { jsPDF } = window.jspdf;
-                        const pdf = new jsPDF();
-
+                        const pdf = new jsPDF({
+                            orientation: 'portrait',
+                            unit: 'mm',
+                            format: 'a4'
+                        });
+                        
                         // Add title
+                        pdf.setFontSize(20);
+                        pdf.text('QR Code Agenda', 105, 30, { align: 'center' });
+                        
                         pdf.setFontSize(16);
-                        const pageWidth = pdf.internal.pageSize.getWidth();
-                        pdf.text('QR Code Agenda: {{ $agenda->nama_agenda }}', pageWidth / 2, 20, { align: 'center' });
-
-                        // Add QR codes
-                        const imgWidth = 80;
-                        const imgHeight = 80;
-                        const centerX = (pageWidth - imgWidth) / 2;
-                        const textCenterX = pageWidth / 2;
-
-                        // QR Pegawai
-                        pdf.setFontSize(12);
-                        pdf.text('QR Code untuk Pegawai:', textCenterX, 40, { align: 'center' });
-                        pdf.addImage(qrPegawaiCanvas.toDataURL('image/png'), 'PNG', centerX, 50, imgWidth, imgHeight);
-
-                        // QR Non-Pegawai
-                        pdf.text('QR Code untuk Non-Pegawai:', textCenterX, 150, { align: 'center' });
-                        pdf.addImage(qrNonPegawaiCanvas.toDataURL('image/png'), 'PNG', centerX, 160, imgWidth, imgHeight);
-
-                        // Add footer
-                        pdf.setFontSize(10);
-                        pdf.text('Generated on: ' + new Date().toLocaleString(), 20, 280);
-
-                        // Save PDF
-                        pdf.save('QR-Code-Agenda-{{ Str::slug($agenda->nama_agenda) }}_{{ date('d-m-Y') }}.pdf');
-
-                        // Show success message and reset button
-                        alert('PDF berhasil diunduh!');
+                        pdf.text('{{ $agenda->nama_agenda }}', 105, 45, { align: 'center' });
+                        
+                        // Add QR section headers
+                        pdf.setFontSize(14);
+                        pdf.text('QR Code Pegawai', 52.5, 70, { align: 'center' });
+                        pdf.text('QR Code Non-Pegawai', 157.5, 70, { align: 'center' });
+                        
+                        // Get QR canvas elements
+                        const qrPegawai = document.getElementById('qr-pegawai');
+                        const qrNonPegawai = document.getElementById('qr-non-pegawai');
+                        
+                        let addedImages = 0;
+                        const totalImages = 2;
+                        
+                        function checkComplete() {
+                            addedImages++;
+                            if (addedImages >= totalImages) {
+                                pdf.save(`QR-Code-{{ Str::slug($agenda->nama_agenda) }}.pdf`);
+                                button.html(originalText).prop('disabled', false);
+                                console.log('PDF generated successfully!');
+                            }
+                        }
+                        
+                        // Add QR images directly from canvas
+                        const pegawaiCanvas = qrPegawai ? qrPegawai.querySelector('canvas') : null;
+                        if (pegawaiCanvas) {
+                            try {
+                                const imgData = pegawaiCanvas.toDataURL('image/png');
+                                pdf.addImage(imgData, 'PNG', 20, 80, 65, 65);
+                            } catch (e) {
+                                console.warn('Failed to add pegawai QR:', e);
+                                pdf.rect(20, 80, 65, 65);
+                                pdf.text('QR Pegawai', 52.5, 115, { align: 'center' });
+                            }
+                        } else {
+                            pdf.rect(20, 80, 65, 65);
+                            pdf.text('QR Pegawai', 52.5, 115, { align: 'center' });
+                        }
+                        checkComplete();
+                        
+                        const nonPegawaiCanvas = qrNonPegawai ? qrNonPegawai.querySelector('canvas') : null;
+                        if (nonPegawaiCanvas) {
+                            try {
+                                const imgData = nonPegawaiCanvas.toDataURL('image/png');
+                                pdf.addImage(imgData, 'PNG', 125, 80, 65, 65);
+                            } catch (e) {
+                                console.warn('Failed to add non-pegawai QR:', e);
+                                pdf.rect(125, 80, 65, 65);
+                                pdf.text('QR Non-Pegawai', 157.5, 115, { align: 'center' });
+                            }
+                        } else {
+                            pdf.rect(125, 80, 65, 65);
+                            pdf.text('QR Non-Pegawai', 157.5, 115, { align: 'center' });
+                        }
+                        checkComplete();
+                        
+                    } catch (error) {
+                        console.error('PDF generation error:', error);
+                        alert('PDF generation failed: ' + (error.message || 'Unknown error'));
                         button.html(originalText).prop('disabled', false);
-                    }).catch(error => {
-                        console.error('Error generating PDF:', error);
-                        alert('Terjadi kesalahan saat membuat PDF: ' + error.message + '. Silakan coba lagi.');
-                        button.html(originalText).prop('disabled', false);
-                    });
-                }, 500);
+                    }
+                }
 
             } catch (error) {
-                console.error('Error in PDF generation:', error);
-                alert('Terjadi kesalahan: ' + error.message);
+                console.error('Error:', error);
+                alert('Error: ' + error.message);
                 button.html(originalText).prop('disabled', false);
             }
         });

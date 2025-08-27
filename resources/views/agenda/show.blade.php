@@ -164,6 +164,7 @@
         isCreateModalOpen: false,
         isEditModalOpen: false,
         isDeleteModalOpen: false,
+        showQrModal: false,
         editAgenda: {},
         editFormAction: '',
         showCreateConfirm: false,
@@ -189,11 +190,15 @@
         openDeleteModal() {
             this.isDeleteModalOpen = true;
         },
+        openQrModal() {
+            this.showQrModal = true;
+        },
         closeModal() {
             // Close modal with smooth animation
             this.isCreateModalOpen = false;
             this.isEditModalOpen = false;
             this.isDeleteModalOpen = false;
+            this.showQrModal = false;
             // Reset form data after animation completes
             setTimeout(() => {
                 this.editAgenda = {};
