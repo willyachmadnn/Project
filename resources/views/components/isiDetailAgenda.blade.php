@@ -1,7 +1,7 @@
 {{-- resources/views/components/isiDetailAgenda.blade.php --}}
 @props(['agenda'])
 
-<div class="bg-white/90 backdrop-blur-sm rounded-2xl p-8 h-full flex flex-col shadow-lg border border-gray-200">
+<div class="bg-white/90 backdrop-blur-sm rounded-2xl p-8 h-full overflow-y-auto shadow-lg border border-gray-200">
     <div class="flex items-center justify-between mb-6">
         <div class="flex items-center">
             <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-blue-800 rounded-full flex items-center justify-center mr-4">
