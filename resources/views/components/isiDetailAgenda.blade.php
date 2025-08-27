@@ -1,7 +1,55 @@
 {{-- resources/views/components/isiDetailAgenda.blade.php --}}
 @props(['agenda'])
 
-<div class="bg-white/90 backdrop-blur-sm rounded-2xl p-8 h-full overflow-y-auto shadow-lg border border-gray-200">
+<div x-data="{
+    showQrModal: false,
+    isEditModalOpen: false,
+    isDeleteModalOpen: false,
+    editAgenda: {},
+    editFormAction: '',
+    showEditConfirm: false,
+    
+    openEditModal() {
+        this.editAgenda = {
+            agenda_id: {{ json_encode($agenda->agenda_id) }},
+            nama_agenda: {{ json_encode($agenda->nama_agenda) }},
+            tempat: {{ json_encode($agenda->tempat) }},
+            tanggal: {{ json_encode($agenda->tanggal->format('Y-m-d')) }},
+            jam_mulai: {{ json_encode(\Carbon\Carbon::parse($agenda->jam_mulai)->format('H:i')) }},
+            jam_selesai: {{ json_encode(\Carbon\Carbon::parse($agenda->jam_selesai)->format('H:i')) }},
+            dihadiri: {{ json_encode($agenda->dihadiri) }}
+        };
+        const actionUrl = '{{ route('agenda.update', ':id') }}';
+        this.editFormAction = actionUrl.replace(':id', {{ json_encode($agenda->agenda_id) }});
+        this.isEditModalOpen = true;
+    },
+    
+    openDeleteModal() {
+        this.isDeleteModalOpen = true;
+    },
+    
+    closeModal() {
+        this.isEditModalOpen = false;
+        this.isDeleteModalOpen = false;
+        this.showQrModal = false;
+        setTimeout(() => {
+            this.editAgenda = {};
+            this.editFormAction = '';
+        }, 350);
+    },
+    
+    confirmEditAgenda() {
+        this.showEditConfirm = true;
+    },
+    
+    submitEditForm() {
+        document.getElementById('edit-agenda-form').submit();
+    },
+    
+    submitDeleteForm() {
+        document.getElementById('delete-agenda-form').submit();
+    }
+}" class="bg-white/90 backdrop-blur-sm rounded-2xl p-8 h-full overflow-y-auto shadow-lg border border-gray-200">
     <div class="flex items-center justify-between mb-6">
         <div class="flex items-center">
             <div class="w-10 h-10 bg-gradient-to-r from-blue-500 to-blue-800 rounded-full flex items-center justify-center mr-4">
@@ -14,12 +62,12 @@
                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M12 12h-4.01M12 12v4m6-4h.01M12 8h.01M12 8h4.01M12 8H7.99M12 8V4m0 0H7.99M12 4h4.01"></path></svg>
                 QR
             </button>
-            <button @click="openEditModal()" class="flex items-center px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-md transition-colors duration-200 shadow-md hover:shadow-lg">
+             <button @click="openEditModal()" class="flex items-center px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-md transition-colors duration-200 shadow-md hover:shadow-lg">
                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002 2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
                 EDIT
             </button>
             {{-- PERBAIKAN FINAL: Menggunakan $dispatch untuk mengirim sinyal --}}
-            <button @click="$dispatch('open-delete-modal')" class="flex items-center px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-md transition-colors duration-200 shadow-md hover:shadow-lg">
+            <button @click="openDeleteModal()" class="flex items-center px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-md transition-colors duration-200 shadow-md hover:shadow-lg">
                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                 HAPUS
             </button>
@@ -114,6 +162,176 @@
                 <button @click="showQrModal = false" class="inline-flex items-center px-4 py-2 bg-gray-300 hover:bg-gray-400 text-gray-700 text-sm font-medium rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
                     Tutup
                 </button>
+            </div>
+        </div>
+    </template>
+
+    {{-- Modal Edit Agenda --}}
+    <template x-teleport="body">
+        <div x-cloak x-show="isEditModalOpen" @keydown.escape.window="closeModal()" class="fixed inset-0 z-[999] flex items-center justify-center p-4">
+            <div class="fixed inset-0 bg-black/40 backdrop-blur-sm" @click="closeModal()"></div>
+            <div x-show="isEditModalOpen" 
+                 x-transition:enter="ease-out duration-300" 
+                 x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" 
+                 x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100" 
+                 x-transition:leave="ease-in duration-200" 
+                 x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100" 
+                 x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" 
+                 class="relative z-[1000] bg-white rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+                
+                {{-- Modal Header --}}
+                <div class="flex items-center justify-between p-6 border-b">
+                    <h3 class="text-xl font-semibold text-gray-900 flex items-center">
+                        <svg class="w-5 h-5 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                        </svg>
+                        Edit Agenda
+                    </h3>
+                    <button type="button" @click="closeModal()" class="text-gray-400 hover:text-gray-600 p-2 rounded-full hover:bg-gray-100">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+                
+                {{-- Modal Content --}}
+                <div class="p-6">
+                    <form id="edit-agenda-form" :action="editFormAction" method="POST" class="space-y-4">
+                        @csrf
+                        @method('PUT')
+                        
+                        <div>
+                            <label for="edit_nama_agenda" class="block text-sm font-medium text-gray-700 mb-2">Nama Agenda</label>
+                            <textarea name="nama_agenda" id="edit_nama_agenda" rows="3" 
+                                    class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" 
+                                    placeholder="Masukkan nama agenda" required
+                                    x-model="editAgenda.nama_agenda"></textarea>
+                        </div>
+                        
+                        <div>
+                            <label for="edit_tempat" class="block text-sm font-medium text-gray-700 mb-2">Tempat</label>
+                            <input type="text" name="tempat" id="edit_tempat" 
+                                   class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" 
+                                   placeholder="Masukkan tempat agenda" required
+                                   x-model="editAgenda.tempat">
+                        </div>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div>
+                                <label for="edit_tanggal" class="block text-sm font-medium text-gray-700 mb-2">Tanggal</label>
+                                <input type="date" name="tanggal" id="edit_tanggal" 
+                                       class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" 
+                                       required x-model="editAgenda.tanggal">
+                            </div>
+                            <div>
+                                <label for="edit_jam_mulai" class="block text-sm font-medium text-gray-700 mb-2">Jam Mulai</label>
+                                <input type="time" name="jam_mulai" id="edit_jam_mulai" 
+                                       class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" 
+                                       required x-model="editAgenda.jam_mulai">
+                            </div>
+                            <div>
+                                <label for="edit_jam_selesai" class="block text-sm font-medium text-gray-700 mb-2">Jam Selesai</label>
+                                <input type="time" name="jam_selesai" id="edit_jam_selesai" 
+                                       class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" 
+                                       required x-model="editAgenda.jam_selesai">
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label for="edit_dihadiri" class="block text-sm font-medium text-gray-700 mb-2">Dihadiri</label>
+                            <textarea name="dihadiri" id="edit_dihadiri" rows="3" 
+                                    class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500" 
+                                    placeholder="Masukkan daftar yang hadir" required
+                                    x-model="editAgenda.dihadiri"></textarea>
+                        </div>
+                    </form>
+                </div>
+                
+                {{-- Modal Footer --}}
+                <div class="flex items-center justify-end p-6 border-t space-x-3">
+                    <button type="button" @click="closeModal()" 
+                            class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-md transition-colors">
+                        Batal
+                    </button>
+                    <button type="button" @click="confirmEditAgenda()" 
+                            class="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md transition-colors">
+                        Simpan Perubahan
+                    </button>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    {{-- Modal Delete Confirmation --}}
+    <template x-teleport="body">
+        <div x-cloak x-show="isDeleteModalOpen" @keydown.escape.window="closeModal()" class="fixed inset-0 z-[999] flex items-center justify-center p-4">
+            <div class="fixed inset-0 bg-black/40 backdrop-blur-sm" @click="closeModal()"></div>
+            <div x-show="isDeleteModalOpen" 
+                 x-transition:enter="ease-out duration-300" 
+                 x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" 
+                 x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100" 
+                 x-transition:leave="ease-in duration-200" 
+                 x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100" 
+                 x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" 
+                 class="relative z-[1000] bg-white rounded-lg shadow-xl w-full max-w-md">
+                
+                <div class="p-6 text-center">
+                    <svg class="mx-auto mb-4 text-red-500 w-14 h-14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+                    </svg>
+                    <h3 class="mb-5 text-lg font-normal text-gray-600">Apakah Anda yakin ingin menghapus agenda ini?</h3>
+                    <p class="mb-6 text-sm text-gray-500">Tindakan ini tidak dapat dibatalkan dan akan menghapus semua data terkait agenda.</p>
+                    
+                    <form id="delete-agenda-form" action="{{ route('agenda.destroy', $agenda->agenda_id) }}" method="POST" class="hidden">
+                        @csrf
+                        @method('DELETE')
+                    </form>
+                    
+                    <div class="flex justify-center space-x-3">
+                        <button @click="closeModal()" type="button" 
+                                class="px-5 py-2.5 text-sm font-medium text-gray-500 bg-white hover:bg-gray-100 rounded-lg border border-gray-200 transition-colors">
+                            Batal
+                        </button>
+                        <button @click="submitDeleteForm()" type="button" 
+                                class="px-5 py-2.5 text-sm font-medium text-white bg-red-600 hover:bg-red-800 rounded-lg transition-colors">
+                            Ya, Hapus
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    {{-- Confirm Modal untuk Edit --}}
+    <template x-teleport="body">
+        <div x-cloak x-show="showEditConfirm" @keydown.escape.window="showEditConfirm = false" class="fixed inset-0 z-[1001] flex items-center justify-center p-4">
+            <div class="fixed inset-0 bg-black/40 backdrop-blur-sm" @click="showEditConfirm = false"></div>
+            <div x-show="showEditConfirm" 
+                 x-transition:enter="ease-out duration-300" 
+                 x-transition:enter-start="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" 
+                 x-transition:enter-end="opacity-100 translate-y-0 sm:scale-100" 
+                 x-transition:leave="ease-in duration-200" 
+                 x-transition:leave-start="opacity-100 translate-y-0 sm:scale-100" 
+                 x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95" 
+                 class="relative z-[1002] bg-white rounded-lg shadow-xl w-full max-w-md">
+                
+                <div class="p-6 text-center">
+                    <svg class="mx-auto mb-4 text-blue-500 w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <h3 class="mb-5 text-lg font-normal text-gray-600">Apakah Anda yakin ingin menyimpan perubahan agenda ini?</h3>
+                    
+                    <div class="flex justify-center space-x-3">
+                        <button @click="showEditConfirm = false" type="button" 
+                                class="px-5 py-2.5 text-sm font-medium text-gray-500 bg-white hover:bg-gray-100 rounded-lg border border-gray-200 transition-colors">
+                            Batal
+                        </button>
+                        <button @click="submitEditForm(); showEditConfirm = false" type="button" 
+                                class="px-5 py-2.5 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-lg transition-colors">
+                            Simpan
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     </template>
