@@ -19,7 +19,6 @@ return new class extends Migration
             
             // Kolom untuk data tamu
             $table->string('nama_tamu');
-            $table->string('instansi');
             $table->enum('jk', ['Laki-laki', 'Perempuan']);
             
             // Foreign key ke tabel agendas

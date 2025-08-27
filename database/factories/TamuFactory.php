@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Models\Tamu;
 use App\Models\Agenda; // <-- Jangan lupa import model Agenda
+use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -25,28 +26,13 @@ class TamuFactory extends Factory
      */
     public function definition()
     {
-        // Daftar contoh instansi pemerintah di Indonesia
-        $instansiPemerintah = [
-            'Kementerian Keuangan',
-            'Kementerian Pendidikan, Kebudayaan, Riset, dan Teknologi',
-            'Kementerian Kesehatan',
-            'Kementerian Dalam Negeri',
-            'Kementerian Luar Negeri',
-            'Kementerian Agama',
-            'Kementerian Pertahanan',
-            'Kementerian Hukum dan Hak Asasi Manusia',
-            'Badan Perencanaan Pembangunan Nasional (BAPPENAS)',
-            'Badan Kepegawaian Negara (BKN)',
-            'Badan Riset dan Inovasi Nasional (BRIN)',
-            'Pemerintah Provinsi DKI Jakarta',
-            'Pemerintah Provinsi Jawa Barat',
-            'Pemerintah Kota Bandung',
-            'Pemerintah Kabupaten Bogor',
-        ];
-
         // Mengambil agenda_id secara acak dari tabel agendas
         // Pastikan tabel agendas sudah terisi data sebelum menjalankan seeder ini
         $agenda = Agenda::inRandomOrder()->first();
+        
+        // Mengambil opd_id secara acak dari tabel opd untuk kolom instansi
+        // Pastikan tabel opd sudah terisi data sebelum menjalankan seeder ini
+        $opd = DB::table('opd')->inRandomOrder()->first();
 
         return [
             // Membuat NIP unik yang terdiri dari 8 angka
@@ -55,8 +41,8 @@ class TamuFactory extends Factory
             // Menggunakan faker untuk nama (untuk nama spesifik Indonesia, atur locale di config/app.php)
             'nama_tamu' => $this->faker->name(), 
             
-            // Memilih instansi secara acak dari daftar di atas
-            'instansi' => $this->faker->randomElement($instansiPemerintah),
+            // Menggunakan opd_id sebagai foreign key ke tabel opd
+            'instansi' => $opd->opd_id,
             
             // Memilih jenis kelamin secara acak
             'jk' => $this->faker->randomElement(['Laki-laki', 'Perempuan']),

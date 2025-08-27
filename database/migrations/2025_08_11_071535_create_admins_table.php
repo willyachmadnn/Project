@@ -22,6 +22,7 @@ return new class extends Migration {
             $table->string('nama_admin');
 
             // Kolom untuk menyimpan nama OPD (Organisasi Perangkat Daerah) dari admin (tipe data string).
+            // Catatan: Kolom ini akan diubah menjadi foreign key melalui migrasi terpisah
             $table->string('opd_admin');
 
             // Kolom untuk menyimpan password admin yang sudah di-hash (tipe data string).
