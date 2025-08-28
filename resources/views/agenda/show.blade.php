@@ -192,6 +192,12 @@
         },
         openQrModal() {
             this.showQrModal = true;
+            // Call the global generateQrCodes function to ensure QR codes are generated
+            if (typeof window.generateQrCodes === 'function') {
+                setTimeout(() => {
+                    window.generateQrCodes();
+                }, 100);
+            }
         },
         closeModal() {
             // Close modal with smooth animation
@@ -224,39 +230,70 @@
         class="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-indigo-50/50 relative overflow-hidden">
 
         <!-- Header Halaman -->
-        <div class="relative bg-white/80 backdrop-blur-xl border-b border-gray-200/50 shadow-sm">
-            <!-- Decorative background elements -->
-            <div class="absolute inset-0 bg-gradient-to-r from-blue-600/5 via-indigo-600/5 to-purple-600/5"></div>
-            <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500"></div>
+        <div class="relative bg-white border-b border-gray-200 shadow-sm">
+            <!-- Government theme background -->
+            <div class="absolute inset-0 bg-gradient-to-r from-red-50/30 via-white to-slate-50/30"></div>
             
-            <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                <div class="flex flex-col lg:flex-row lg:justify-between lg:items-center gap-6">
-                    <div class="space-y-3">
-                        <div class="flex items-center space-x-3">
-                            <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-xl flex items-center justify-center shadow-lg">
-                                <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+            <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <!-- Breadcrumb Navigation -->
+                
+
+                <!-- Main Header Content -->
+                <div class="py-6">
+                    <div class="flex flex-col lg:flex-row lg:items-start gap-6">
+                        <!-- Left Section: Title and Info -->
+                        <div class="flex-1 space-y-4">
+                            <!-- Title with Government Icon -->
+                            <div class="flex items-center space-x-4">
+                                <div class="w-14 h-14 bg-gradient-to-br from-[#ac1616] to-red-700 rounded-lg flex items-center justify-center shadow-lg">
+                                    <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <h1 class="text-2xl lg:text-3xl font-bold text-slate-800 leading-tight">
+                                        Detail Agenda Pemerintah
+                                    </h1>
+                                </div>
+                            </div>
+
+                            <!-- Agenda Info Card -->
+                            <div class="w-304 bg-gradient-to-r from-slate-50 to-gray-50 rounded-lg px-5 py-4 border border-gray-200 shadow-xl">
+                                <div class="flex items-center space-x-5">
+                                    <div class="w-8 h-8 bg-cyan-500 rounded-full flex items-center justify-center flex-shrink-0">
+                                        <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3a1 1 0 011-1h6a1 1 0 011 1v4h3a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9a2 2 0 012-2h3z"></path>
+                                        </svg>
+                                    </div>
+                                    <div class="flex-center min-w-0">
+                                        <h2 class="font-bold text-lg text-slate-800 mb-1 leading-tight">{{ $agenda->nama_agenda }}</h2>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right Section: Action Buttons -->
+                        <div class="flex flex-col sm:flex-row items-start sm:items-center space-y-3 sm:space-y-0 sm:space-x-3 lg:flex-shrink-0">
+                            <a href="{{ route('agenda.index') }}"
+                                class="group inline-flex items-center px-5 py-2.5 bg-[#ac1616] hover:bg-red-700 text-white font-medium rounded-lg shadow-sm hover:shadow-md transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#ac1616] focus:ring-offset-2">
+                                <svg class="w-4 h-4 mr-2 group-hover:-translate-x-0.5 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
                                 </svg>
-                            </div>
-                            <div>
-                                <h1 class="text-3xl lg:text-4xl font-bold bg-gradient-to-r from-gray-900 via-blue-800 to-indigo-800 bg-clip-text text-transparent leading-tight">
-                                    Detail Agenda
-                                </h1>
-                            </div>
+                                Kembali ke Daftar
+                            </a>
+                            
+                            @auth('admin')
+                                @if(auth('admin')->user()->opd_admin === $agenda->opd_penyelenggara || auth('admin')->user()->role === 'super_admin')
+                                    <a href="{{ route('agenda.edit', $agenda->agenda_id) }}"
+                                        class="group inline-flex items-center px-5 py-2.5 bg-[#ac1616] hover:bg-red-700 text-white font-medium rounded-lg shadow-sm hover:shadow-md transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#ac1616] focus:ring-offset-2">
+                                        <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                        </svg>
+                                        Edit Agenda
+                                    </a>
+                                @endif
+                            @endauth
                         </div>
-                        <div class="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-4 border border-blue-100">
-                            <h2 class="text-xl font-semibold text-gray-800 mb-1">{{ $agenda->nama_agenda }}</h2>
-                            <p class="text-gray-600 text-sm">Informasi lengkap agenda dan daftar peserta yang hadir</p>
-                        </div>
-                    </div>
-                    <div class="flex items-center space-x-3">
-                        <a href="{{ route('agenda.index') }}"
-                            class="group inline-flex items-center px-6 py-3 bg-gradient-to-r from-gray-700 to-gray-800 hover:from-gray-800 hover:to-gray-900 text-white font-medium rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2">
-                            <svg class="w-5 h-5 mr-2 group-hover:-translate-x-1 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-                            </svg>
-                            Kembali ke Daftar
-                        </a>
                     </div>
                 </div>
             </div>
