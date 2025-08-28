@@ -15,7 +15,8 @@ class DatabaseSeeder extends Seeder
         // Urutan ini penting karena AgendaSeeder memerlukan data di tabel admins
         $this->call([
             OpdSeeder::class,
-            AdminSeeder::class,   // Seeder baru untuk membuat 25 agenda per admin OPD
+            AdminSeeder::class, // Seeder baru untuk membuat 25 agenda per admin OPD
+            PegawaiSeeder::class,
             TamuSeeder::class
         ]);
     }
