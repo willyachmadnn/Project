@@ -38,6 +38,12 @@ class Admin extends Authenticatable
         return $this->hasMany(Agenda::class, 'admin_id', 'admin_id');
     }
 
+    /** Relasi: admin belongs to OPD */
+    public function opd()
+    {
+        return $this->belongsTo(Opd::class, 'opd_admin', 'opd_id');
+    }
+
     /**
      * Mutator: kalau di-set pakai plaintext, otomatis di-hash.
      */
