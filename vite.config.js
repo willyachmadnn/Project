@@ -10,7 +10,8 @@ export default defineConfig({
                 'resources/js/app.js',
                 'resources/js/alert-handler.js',
                 'resources/js/landing.js',
-                'resources/css/landing.css'
+                'resources/css/landing.css',
+                'resources/js/edge-time-fix.js'
             ],
             refresh: true,
         }),

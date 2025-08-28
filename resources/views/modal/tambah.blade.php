@@ -15,27 +15,7 @@
         transform-origin: center;
     }
     
-    /* Force 24-hour format for modal time inputs */
-    .time-picker-container input[type="time"] {
-        -webkit-appearance: none;
-        -moz-appearance: textfield;
-    }
-    
-    /* Hide AM/PM in modal time inputs */
-    .time-picker-container input[type="time"]::-webkit-datetime-edit-ampm-field,
-    .time-picker-container input[type="time"]::-webkit-datetime-edit-meridiem-field {
-        display: none !important;
-        visibility: hidden !important;
-        width: 0 !important;
-        height: 0 !important;
-        opacity: 0 !important;
-    }
-    
-    /* Hide seconds and milliseconds */
-    .time-picker-container input[type="time"]::-webkit-datetime-edit-second-field,
-    .time-picker-container input[type="time"]::-webkit-datetime-edit-millisecond-field {
-        display: none !important;
-    }
+    /* Modal-specific styles */
 </style>
 
 {{-- Modal Dinamis untuk Tambah/Edit Agenda --}}
@@ -155,9 +135,7 @@
                                 id="agenda_jam_mulai" 
                                 class="block w-full rounded-md border-2 border-gray-200 bg-white/60 backdrop-blur-sm px-4 py-3 text-gray-900 focus:border-gray-300 focus:outline-none transition-all duration-200 cursor-pointer hover:border-gray-300" 
                                 step="60"
-                                onclick="this.showPicker(); force24HourFormatModal(this);"
-                                onfocus="force24HourFormatModal(this);"
-                                onchange="force24HourFormatModal(this);"
+
                                 required
                                 x-model="isEditModalOpen ? editAgenda.jam_mulai : ''"
                                 :value="!isEditModalOpen ? '{{ old('jam_mulai', '00:00') }}' : ''"
@@ -171,9 +149,7 @@
                                 id="agenda_jam_selesai" 
                                 class="block w-full rounded-md border-2 border-gray-200 bg-white/60 backdrop-blur-sm px-4 py-3 text-gray-900 focus:border-gray-300 focus:outline-none transition-all duration-200 cursor-pointer hover:border-gray-300" 
                                 step="60"
-                                onclick="this.showPicker(); force24HourFormatModal(this);"
-                                onfocus="force24HourFormatModal(this);"
-                                onchange="force24HourFormatModal(this);"
+
                                 required
                                 x-model="isEditModalOpen ? editAgenda.jam_selesai : ''"
                                 :value="!isEditModalOpen ? '{{ old('jam_selesai', '00:00') }}' : ''"
@@ -209,76 +185,3 @@
         </div>
     </div>
 </template>
-
-<script>
-/**
- * Force 24-hour format specifically for modal time inputs
- */
-function force24HourFormatModal(input) {
-    if (!input || input.type !== 'time') return;
-    
-    // Set attributes for 24-hour format
-    input.setAttribute('data-time-format', '24');
-    input.setAttribute('step', '60');
-    
-    // Force 24-hour format by setting a default value if empty
-    if (!input.value) {
-        input.value = '00:00';
-    }
-    
-    // Hide AM/PM elements with aggressive approach
-    setTimeout(() => {
-        // Try to access shadow DOM if available
-        if (input.shadowRoot) {
-            const ampmElements = input.shadowRoot.querySelectorAll('[part*="ampm"], [part*="meridiem"]');
-            ampmElements.forEach(el => {
-                el.style.display = 'none';
-                el.style.visibility = 'hidden';
-                el.style.width = '0';
-                el.style.height = '0';
-            });
-        }
-        
-        // Hide AM/PM elements in main DOM
-        const modalContainer = input.closest('.modal-container');
-        if (modalContainer) {
-            modalContainer.querySelectorAll('[data-testid*="ampm"], [class*="ampm"], [class*="meridiem"], [aria-label*="AM"], [aria-label*="PM"]').forEach(el => {
-                el.style.display = 'none !important';
-                el.style.visibility = 'hidden !important';
-            });
-        }
-    }, 50);
-}
-
-// Apply 24-hour format to all modal time inputs when modal opens
-document.addEventListener('DOMContentLoaded', function() {
-    // Observer for modal time inputs
-    const observer = new MutationObserver(function(mutations) {
-        mutations.forEach(function(mutation) {
-            if (mutation.type === 'childList') {
-                mutation.addedNodes.forEach(function(node) {
-                    if (node.nodeType === 1) { // Element node
-                        // Check if it's a modal container
-                        if (node.classList && node.classList.contains('modal-container')) {
-                            const timeInputs = node.querySelectorAll('input[type="time"]');
-                            timeInputs.forEach(force24HourFormatModal);
-                        }
-                        // Check for time inputs in added nodes
-                        const timeInputs = node.querySelectorAll ? node.querySelectorAll('input[type="time"]') : [];
-                        timeInputs.forEach(force24HourFormatModal);
-                    }
-                });
-            }
-        });
-    });
-    
-    observer.observe(document.body, {
-        childList: true,
-        subtree: true
-    });
-    
-    // Also apply to existing time inputs in modals
-    const existingTimeInputs = document.querySelectorAll('.modal-container input[type="time"], .time-picker-container input[type="time"]');
-    existingTimeInputs.forEach(force24HourFormatModal);
-});
-</script>

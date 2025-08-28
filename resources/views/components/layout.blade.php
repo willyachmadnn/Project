@@ -1,47 +1,15 @@
 @props(['title' => 'Agenda Pemerintah Kabupaten Mojokerto'])
 
 <!doctype html>
-<html lang="id-ID" class="h-full overflow-x-hidden" data-time-format="24">
+<html lang="id-ID" class="h-full overflow-x-hidden">
 
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Sistem Manajemen Agenda Pemerintah Kabupaten Mojokerto">
+
     
-    {{-- Force 24-hour time format globally --}}
-    <meta name="time-format" content="24">
-    <meta name="locale" content="id-ID">
-    <meta name="time-locale" content="id-ID">
-    <meta name="datetime-format" content="24h">
-    
-    {{-- Critical inline CSS for 24-hour format - Highest priority --}}
-    <style>
-        /* CRITICAL: Hide AM/PM immediately before any other CSS loads */
-        input[type="time"]::-webkit-datetime-edit-ampm-field,
-        input[type="time"]::-webkit-datetime-edit-meridiem-field {
-            display: none !important;
-            visibility: hidden !important;
-            opacity: 0 !important;
-            width: 0 !important;
-            height: 0 !important;
-            position: absolute !important;
-            left: -9999px !important;
-            pointer-events: none !important;
-        }
-        
-        /* Hide any AM/PM elements globally */
-        [data-testid*="ampm"], [class*="ampm"], [class*="meridiem"],
-        [aria-label*="AM"], [aria-label*="PM"], .ampm, .meridiem {
-            display: none !important;
-            visibility: hidden !important;
-            opacity: 0 !important;
-        }
-        
-        /* Force 24-hour appearance */
-        input[type="time"] {
-            font-variant-numeric: tabular-nums !important;
-        }
-    </style>
+
     
     <title>{{ $title }}</title>
 
@@ -58,6 +26,8 @@
     
     {{-- Critical CSS first --}}
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    
+
     
     {{-- Non-critical CSS with preload --}}
     <link rel="preload" href="https://rsms.me/inter/inter.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
@@ -307,115 +277,6 @@
     @endif
 
     @stack('scripts')
-    
-    {{-- Global 24-hour time format script --}}
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Fungsi untuk memaksa format 24 jam
-        function force24HourFormat(input) {
-            // Set atribut HTML5 untuk format 24 jam
-            input.setAttribute('step', '60'); // Hilangkan detik
-            input.setAttribute('data-time-format', '24');
-            input.setAttribute('pattern', '[0-9]{2}:[0-9]{2}');
-            input.setAttribute('placeholder', 'HH:MM');
-            
-            // Paksa nilai default jika kosong
-            if (!input.value) {
-                input.value = '00:00';
-            }
-            
-            // Override browser behavior dengan JavaScript
-            input.addEventListener('input', function(e) {
-                let value = this.value;
-                
-                // Pastikan format HH:MM
-                if (value && value.includes(':')) {
-                    const parts = value.split(':');
-                    if (parts.length >= 2) {
-                        let hours = parseInt(parts[0]) || 0;
-                        let minutes = parseInt(parts[1]) || 0;
-                        
-                        // Konversi dari format 12 jam ke 24 jam jika diperlukan
-                        if (hours > 23) hours = hours % 24;
-                        if (minutes > 59) minutes = 59;
-                        
-                        // Format ulang nilai
-                        this.value = String(hours).padStart(2, '0') + ':' + String(minutes).padStart(2, '0');
-                    }
-                }
-            });
-            
-            // Paksa format saat focus
-            input.addEventListener('focus', function() {
-                this.setAttribute('data-format', '24');
-                
-                // Hilangkan AM/PM dengan delay
-                setTimeout(() => {
-                    // Sembunyikan semua elemen AM/PM yang mungkin muncul
-                    const shadowRoot = this.shadowRoot;
-                    if (shadowRoot) {
-                        const ampmElements = shadowRoot.querySelectorAll('[part*="ampm"], [part*="meridiem"]');
-                        ampmElements.forEach(el => el.style.display = 'none');
-                    }
-                    
-                    // Sembunyikan elemen AM/PM di DOM utama
-                    document.querySelectorAll('[data-testid*="ampm"], [class*="ampm"], [class*="meridiem"], [aria-label*="AM"], [aria-label*="PM"]').forEach(el => {
-                        el.style.display = 'none !important';
-                        el.style.visibility = 'hidden !important';
-                        el.style.opacity = '0 !important';
-                        el.remove();
-                    });
-                }, 50);
-            });
-            
-            // Validasi saat blur
-            input.addEventListener('blur', function() {
-                if (this.value && !this.value.match(/^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/)) {
-                    this.value = '00:00';
-                }
-            });
-        }
-        
-        // Terapkan ke semua input time yang ada
-        const timeInputs = document.querySelectorAll('input[type="time"]');
-        timeInputs.forEach(force24HourFormat);
-        
-        // Observer untuk input time yang ditambahkan secara dinamis
-        const observer = new MutationObserver(function(mutations) {
-            mutations.forEach(function(mutation) {
-                mutation.addedNodes.forEach(function(node) {
-                    if (node.nodeType === 1) {
-                        // Cek node itu sendiri
-                        if (node.type === 'time') {
-                            force24HourFormat(node);
-                        }
-                        // Cek child nodes
-                        const newTimeInputs = node.querySelectorAll ? node.querySelectorAll('input[type="time"]') : [];
-                        newTimeInputs.forEach(force24HourFormat);
-                    }
-                });
-            });
-        });
-        
-        observer.observe(document.body, {
-            childList: true,
-            subtree: true,
-            attributes: true,
-            attributeFilter: ['type']
-        });
-        
-        // Paksa override sistem locale untuk time input
-        if (typeof Intl !== 'undefined') {
-            const originalTimeFormat = Intl.DateTimeFormat;
-            Intl.DateTimeFormat = function(locale, options) {
-                if (options && (options.hour || options.minute)) {
-                    options.hour12 = false;
-                }
-                return new originalTimeFormat(locale, options);
-            };
-        }
-    });
-    </script>
 </body>
 
 </html>

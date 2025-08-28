@@ -475,7 +475,7 @@
                                 id="edit_jam_mulai" 
                                 class="block w-full rounded-md border-2 border-gray-200 bg-white/60 backdrop-blur-sm px-4 py-3 text-gray-900 focus:border-gray-300 focus:outline-none transition-all duration-200 cursor-pointer hover:border-gray-300" 
                                 step="60"
-                                onclick="this.showPicker()"
+
                                 required
                                 x-model="editAgenda.jam_mulai"
                             >
@@ -488,7 +488,7 @@
                                 id="edit_jam_selesai" 
                                 class="block w-full rounded-md border-2 border-gray-200 bg-white/60 backdrop-blur-sm px-4 py-3 text-gray-900 focus:border-gray-300 focus:outline-none transition-all duration-200 cursor-pointer hover:border-gray-300" 
                                 step="60"
-                                onclick="this.showPicker()"
+
                                 required
                                 x-model="editAgenda.jam_selesai"
                             >
@@ -648,7 +648,7 @@
         </div>
     </template>
 
-<!-- Time format handling is done globally in layout.blade.php -->
+
 
 <style class="ignore-pdf">
     /* Override any oklch colors with fallbacks for PDF generation */
