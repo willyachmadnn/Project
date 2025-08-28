@@ -223,7 +223,7 @@
 
               // PIC
               $namaAdmin = data_get($agenda, 'admin.nama_admin') ?? '-';
-              $opdAdmin = data_get($agenda, 'admin.opd_admin') ?? '-';
+              $opdAdmin = data_get($agenda, 'admin.opd.nama_opd') ?? '-';
               
               // Format: <nama_admin> (hitam bold) - <opd_admin> (abu-abu)
               if ($namaAdmin !== '-' && $opdAdmin !== '-') {

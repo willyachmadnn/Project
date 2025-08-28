@@ -54,7 +54,7 @@
     $adminName = $admin->check()
         ? $adminUser->nama_admin ?? ($adminUser->name ?? ($adminUser->username ?? 'User'))
         : null;
-    $adminOpd = $admin->check() ? $adminUser->opd_admin ?? null : null;
+    $adminOpd = $admin->check() ? $adminUser->opd->nama_opd ?? null : null;
 @endphp
 
 <body class="min-h-screen overflow-x-hidden bg-white text-slate-900 antialiased">
