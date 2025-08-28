@@ -172,6 +172,17 @@
         showDeleteConfirm: false,
         pendingAction: null,
         activeTab: 'detail',
+        
+        init() {
+            // Check for URL fragment or sessionStorage to set active tab
+            const urlFragment = window.location.hash.substring(1);
+            const storedTab = sessionStorage.getItem('activeTab');
+            
+            if (urlFragment === 'notulen' || storedTab === 'notulen') {
+                this.activeTab = 'notulen';
+                sessionStorage.removeItem('activeTab'); // Clear after use
+            }
+        },
     
         openEditModal() {
             this.editAgenda = {
@@ -373,7 +384,7 @@
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.5L15.232 5.232z"></path>
                                         </svg>
                                     </div>
-                                    <h3 class="text-3xl font-bold bg-gradient-to-r from-gray-800 to-gray-600 bg-clip-text text-transparent mb-4">Manajemen Notulen</h3>
+                                    <h3 class="text-3xl font-bold text-gray-800 mb-4">Manajemen Notulen</h3>
                                     <p class="text-gray-600 text-lg leading-relaxed mb-8">Kelola dan edit notulen rapat untuk agenda ini dengan mudah melalui editor yang tersedia.</p>
                                     
                                     @php

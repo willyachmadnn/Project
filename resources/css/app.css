@@ -87,6 +87,190 @@ table { width: 100%; border-collapse: collapse; }
 nav[role="navigation"] { display: flex; flex-wrap: wrap; gap: .5rem; justify-content: center; }
 nav[role="navigation"] ul { display: flex; flex-wrap: wrap; gap: .25rem; }
 
+/* ====== GLOBAL 24-HOUR TIME FORMAT ====== */
+/* Force 24-hour format for all time inputs and hide AM/PM */
+input[type="time"], 
+input[type="time"]:focus,
+input[type="time"]:active,
+input[type="time"]:hover {
+    -webkit-appearance: none !important;
+    -moz-appearance: textfield !important;
+    appearance: none !important;
+    font-family: monospace !important;
+    font-feature-settings: "tnum" !important;
+    text-align: left !important;
+    font-variant-numeric: tabular-nums !important;
+}
+
+/* Hide calendar picker completely */
+input[type="time"]::-webkit-calendar-picker-indicator {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    width: 0 !important;
+    height: 0 !important;
+    position: absolute !important;
+    left: -9999px !important;
+    pointer-events: none !important;
+}
+
+/* ULTRA AGGRESSIVE AM/PM HIDING - All possible selectors */
+input[type="time"]::-webkit-datetime-edit-ampm-field,
+input[type="time"]::-webkit-datetime-edit-ampm-field:focus,
+input[type="time"]::-webkit-datetime-edit-ampm-field:active,
+input[type="time"]::-webkit-datetime-edit-ampm-field:hover,
+input[type="time"]::-webkit-datetime-edit-ampm-field *,
+input[type="time"] ::-webkit-datetime-edit-ampm-field,
+input[type="time"] ::-webkit-datetime-edit-ampm-field *,
+input[type="time"]::-webkit-datetime-edit-meridiem-field,
+input[type="time"]::-webkit-datetime-edit-meridiem-field:focus,
+input[type="time"]::-webkit-datetime-edit-meridiem-field:active,
+input[type="time"]::-webkit-datetime-edit-meridiem-field:hover,
+input[type="time"]::-webkit-datetime-edit-meridiem-field *,
+input[type="time"] ::-webkit-datetime-edit-meridiem-field,
+input[type="time"] ::-webkit-datetime-edit-meridiem-field * {
+    display: none !important;
+    visibility: hidden !important;
+    width: 0 !important;
+    height: 0 !important;
+    opacity: 0 !important;
+    position: absolute !important;
+    left: -9999px !important;
+    top: -9999px !important;
+    overflow: hidden !important;
+    clip: rect(0,0,0,0) !important;
+    clip-path: inset(100%) !important;
+    content: '' !important;
+    font-size: 0 !important;
+    line-height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    background: transparent !important;
+    color: transparent !important;
+    text-indent: -9999px !important;
+    pointer-events: none !important;
+    user-select: none !important;
+    -webkit-user-select: none !important;
+    -moz-user-select: none !important;
+    -ms-user-select: none !important;
+}
+
+/* Hide seconds and milliseconds */
+input[type="time"]::-webkit-datetime-edit-second-field,
+input[type="time"]::-webkit-datetime-edit-millisecond-field {
+    display: none !important;
+    visibility: hidden !important;
+    width: 0 !important;
+    height: 0 !important;
+    opacity: 0 !important;
+    position: absolute !important;
+    left: -9999px !important;
+}
+
+/* Force hour and minute fields to be visible */
+input[type="time"]::-webkit-datetime-edit-hour-field,
+input[type="time"]::-webkit-datetime-edit-minute-field {
+    -webkit-appearance: none !important;
+    color: inherit !important;
+    background: transparent !important;
+    border: none !important;
+    outline: none !important;
+}
+
+/* Force text appearance for the entire edit area */
+input[type="time"]::-webkit-datetime-edit {
+    -webkit-appearance: none !important;
+    color: inherit !important;
+    background: transparent !important;
+    font-family: inherit !important;
+}
+
+/* Additional browser compatibility and system overrides */
+@media screen {
+    input[type="time"]::-webkit-datetime-edit-ampm-field,
+    input[type="time"]::-webkit-datetime-edit-meridiem-field {
+        content: '' !important;
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        width: 0 !important;
+        height: 0 !important;
+    }
+}
+
+/* Firefox specific hiding */
+@-moz-document url-prefix() {
+    input[type="time"] {
+        -moz-appearance: textfield !important;
+    }
+}
+
+/* Hide any AM/PM related elements globally */
+[data-testid*="ampm"],
+[class*="ampm"],
+[class*="meridiem"],
+[aria-label*="AM"],
+[aria-label*="PM"],
+.ampm,
+.meridiem,
+.time-ampm,
+.time-meridiem {
+    display: none !important;
+    visibility: hidden !important;
+    opacity: 0 !important;
+    width: 0 !important;
+    height: 0 !important;
+    position: absolute !important;
+    left: -9999px !important;
+    pointer-events: none !important;
+}
+
+/* JavaScript untuk memastikan format 24 jam */
+/* Tambahkan script ini ke layout utama atau setiap halaman yang menggunakan input time */
+/*
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Force 24-hour format untuk semua input time
+    const timeInputs = document.querySelectorAll('input[type="time"]');
+    
+    timeInputs.forEach(function(input) {
+        // Set atribut untuk memaksa format 24 jam
+        input.setAttribute('data-time-format', '24');
+        input.setAttribute('step', '60'); // Hilangkan detik
+        
+        // Event listener untuk memastikan format tetap 24 jam
+        input.addEventListener('input', function() {
+            // Pastikan nilai dalam format HH:MM
+            if (this.value && this.value.length === 5) {
+                const parts = this.value.split(':');
+                if (parts.length === 2) {
+                    const hours = parseInt(parts[0]);
+                    const minutes = parseInt(parts[1]);
+                    
+                    if (hours >= 0 && hours <= 23 && minutes >= 0 && minutes <= 59) {
+                        this.value = String(hours).padStart(2, '0') + ':' + String(minutes).padStart(2, '0');
+                    }
+                }
+            }
+        });
+        
+        // Hilangkan AM/PM secara paksa
+        input.addEventListener('focus', function() {
+            setTimeout(() => {
+                const ampmElements = document.querySelectorAll('[data-testid="time-input-ampm"], .ampm, [class*="ampm"], [class*="meridiem"]');
+                ampmElements.forEach(el => {
+                    el.style.display = 'none';
+                    el.style.visibility = 'hidden';
+                    el.style.opacity = '0';
+                });
+            }, 100);
+        });
+    });
+});
+</script>
+*/
+
 /* ====== TIME PICKER DROPDOWN POSITIONING ====== */
 /* Time picker positioning */
 .time-picker-container {

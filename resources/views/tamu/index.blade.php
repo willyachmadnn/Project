@@ -41,7 +41,7 @@
         }
         
         .back-btn {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #ac1616;
             color: white;
             border: none;
             border-radius: 8px;
@@ -54,8 +54,11 @@
         }
         
         .back-btn:hover {
+            background: #7e0f0f;
             color: white;
             text-decoration: none;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(172, 22, 22, 0.3);
         }
         
         .add-btn {

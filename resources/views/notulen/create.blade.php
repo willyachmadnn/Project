@@ -23,13 +23,59 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.3.2/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.3.1/jspdf.umd.min.js"></script>
 </head>
-<body class="bg-gray-100">
+<body class="bg-gray-100 min-h-screen overflow-x-hidden">
+    <style>
+        /* CSS untuk mengoptimalkan layout dan mencegah scrollbar tidak perlu */
+        html, body {
+            height: 100%;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+        
+        .main-container {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .content-wrapper {
+            flex: 1;
+            max-width: 100%;
+        }
+        
+        /* Optimasi untuk Summernote */
+        .note-editor {
+            max-width: 100% !important;
+        }
+        
+        .note-editing-area {
+            max-height: 60vh !important;
+            overflow-y: auto !important;
+        }
+        
+        /* Responsive adjustments */
+        @media (max-height: 600px) {
+            .note-editing-area {
+                max-height: 40vh !important;
+            }
+        }
+        
+        @media (min-height: 900px) {
+            .note-editing-area {
+                max-height: 50vh !important;
+            }
+        }
+    </style>
 
-    <div class="container mx-auto p-4 sm:p-8">
+    <div class="main-container">
+        <div class="content-wrapper container mx-auto p-4 sm:p-8">
         {{-- Tombol Kembali ke Halaman Detail Agenda --}}
         <div class="mb-6">
-            <a href="{{ route('agenda.show', $agenda->agenda_id) }}" class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-md font-semibold text-xs text-gray-700 uppercase tracking-widest shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-25 transition ease-in-out duration-150">
-                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+            <a href="{{ route('agenda.show', $agenda->agenda_id) }}#notulen" onclick="sessionStorage.setItem('activeTab', 'notulen');"
+                class="group inline-flex items-center px-5 py-2.5 bg-[#ac1616] hover:bg-red-700 text-white font-medium rounded-lg shadow-sm hover:shadow-md transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#ac1616] focus:ring-offset-2">
+                <svg class="w-4 h-4 mr-2 group-hover:-translate-x-0.5 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                </svg>
                 Kembali ke Detail Agenda
             </a>
         </div>
@@ -37,6 +83,7 @@
         {{-- Memanggil komponen isiNotulen yang berisi editor dan fungsionalitasnya --}}
         <div class="bg-white p-6 rounded-lg shadow-xl">
             <x-isiNotulen :agenda="$agenda" />
+        </div>
         </div>
     </div>
 
@@ -48,7 +95,7 @@
                 editor.summernote({
                     placeholder: 'Tulis isi notulen di sini...',
                     tabsize: 2,
-                    height: 500,
+                    height: Math.min(400, Math.max(300, window.innerHeight * 0.4)),
                     focus: true,
                     lang: 'id-ID',
                     toolbar: [
@@ -67,6 +114,61 @@
                             console.log('Summernote berhasil diinisialisasi di halaman create.');
                         }
                     }
+                });
+                
+                // Function untuk menghitung tinggi responsif
+                function updateEditorHeight() {
+                    const newHeight = Math.min(400, Math.max(300, window.innerHeight * 0.4));
+                    if (editor.hasClass('note-editor')) {
+                        editor.summernote('option', 'height', newHeight);
+                    }
+                }
+                
+                // Event listener untuk resize window
+                $(window).on('resize', function() {
+                    clearTimeout(window.resizeTimer);
+                    window.resizeTimer = setTimeout(updateEditorHeight, 150);
+                });
+                
+                // Initial height adjustment
+                setTimeout(updateEditorHeight, 100);
+                
+                // Optimasi scrollbar logic
+                function optimizeScrollBehavior() {
+                    const body = document.body;
+                    const html = document.documentElement;
+                    const windowHeight = window.innerHeight;
+                    const documentHeight = Math.max(
+                        body.scrollHeight, body.offsetHeight,
+                        html.clientHeight, html.scrollHeight, html.offsetHeight
+                    );
+                    
+                    // Hanya tampilkan scrollbar vertikal jika konten melebihi viewport
+                    if (documentHeight <= windowHeight) {
+                        body.style.overflowY = 'hidden';
+                    } else {
+                        body.style.overflowY = 'auto';
+                    }
+                }
+                
+                // Jalankan optimasi saat load dan resize
+                optimizeScrollBehavior();
+                $(window).on('resize', function() {
+                    clearTimeout(window.scrollTimer);
+                    window.scrollTimer = setTimeout(optimizeScrollBehavior, 100);
+                });
+                
+                // Monitor perubahan konten
+                const observer = new MutationObserver(function() {
+                    clearTimeout(window.contentTimer);
+                    window.contentTimer = setTimeout(optimizeScrollBehavior, 200);
+                });
+                
+                observer.observe(document.body, {
+                    childList: true,
+                    subtree: true,
+                    attributes: true,
+                    attributeFilter: ['style', 'class']
                 });
             }
         });

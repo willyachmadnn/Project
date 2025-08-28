@@ -5,14 +5,60 @@
     /* CSS spesifik untuk komponen ini */
     .notulen-container {
         background: transparent;
+        max-width: 100%;
+        overflow-x: hidden;
     }
+    
     .notulen-form-group .note-editor.note-frame {
         border: 1px solid #ccc;
         box-shadow: 0 1px 5px rgba(0,0,0,0.05);
     }
+    
+    /* Optimasi untuk Summernote responsif */
+    .note-editor {
+        max-width: 100% !important;
+        overflow-x: hidden !important;
+    }
+    
+    .note-toolbar {
+        max-width: 100% !important;
+        overflow-x: auto !important;
+        white-space: nowrap;
+    }
+    
+    .note-editing-area {
+        max-width: 100% !important;
+        overflow-x: hidden !important;
+    }
+    
+    /* Responsive toolbar untuk mobile */
+    @media (max-width: 768px) {
+        .note-toolbar .btn-group {
+            margin-bottom: 5px;
+        }
+        
+        .note-toolbar {
+            flex-wrap: wrap;
+            height: auto !important;
+        }
+    }
+    
+    /* Prevent horizontal overflow */
+    * {
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+    
+    /* Smooth resize behavior */
+    .notulen-container,
+    .note-editor,
+    .note-editing-area {
+        transition: all 0.3s ease;
+        resize: vertical;
+    }
 </style>
 
-<div class="notulen-container bg-gradient-to-br from-white via-blue-50/30 to-indigo-50/50 rounded-3xl shadow-2xl border border-gray-200/50 p-8 mb-8 backdrop-blur-sm">
+<div class="notulen-container bg-gradient-to-br from-white via-blue-50/30 to-indigo-50/50 rounded-3xl shadow-2xl border border-gray-200/50 p-4 sm:p-6 lg:p-8 mb-4 sm:mb-6 lg:mb-8 backdrop-blur-sm max-w-full overflow-hidden">
     <div class="mb-8">
         <div class="flex items-center space-x-4 mb-6">
             <div class="w-16 h-16 bg-gradient-to-r from-blue-600 to-indigo-700 rounded-2xl flex items-center justify-center shadow-lg">
@@ -21,11 +67,11 @@
                 </svg>
             </div>
             <div>
-                <h3 class="text-3xl font-bold bg-gradient-to-r from-blue-600 to-indigo-700 bg-clip-text text-transparent">Notulen Rapat</h3>
+                <h3 class="text-3xl font-bold text-blue-700">Notulen Rapat</h3>
                 <p class="text-gray-600 mt-2 text-lg">Dokumentasi lengkap hasil rapat dan keputusan penting</p>
             </div>
         </div>
-        <div class="bg-gradient-to-r from-blue-100 to-indigo-100 rounded-2xl p-6 border border-blue-200/50">
+        <div class="bg-gradient-to-r from-blue-100 to-indigo-100 rounded-2xl p-4 sm:p-6 border border-blue-200/50">
             <div class="flex items-start space-x-3">
                 <svg class="w-6 h-6 text-blue-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
@@ -91,7 +137,7 @@
                 Isi Notulen
                 <span class="text-red-500 ml-1">*</span>
             </label>
-            <div class="bg-white border-2 border-blue-200 rounded-xl shadow-sm overflow-hidden">
+            <div class="bg-white border-2 border-blue-200 rounded-xl shadow-sm overflow-hidden w-full">
                 <textarea id="summernote-editor" name="isi_notulen" class="summernote">
                     {!! old('isi_notulen', $agenda->notulen->isi_notulen ?? '') !!}
                 </textarea>
@@ -99,7 +145,7 @@
         </div>
             
             {{-- Tombol Aksi --}}
-            <div class="bg-gradient-to-r from-gray-50 to-gray-100 rounded-2xl p-6 border border-gray-200/50">
+            <div class="bg-gradient-to-r from-gray-50 to-gray-100 rounded-2xl p-4 sm:p-6 border border-gray-200/50">
                 <div class="flex flex-col lg:flex-row gap-6 justify-between items-center">
                     <div class="text-sm text-gray-600">
                         <p class="font-medium flex items-center">
