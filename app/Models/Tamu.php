@@ -22,21 +22,21 @@ class Tamu extends Model
      *
      * @var string
      */
-    protected $primaryKey = 'NIP';
+    protected $primaryKey = 'id_tamu';
 
     /**
-     * Menunjukkan bahwa primary key bukan auto-incrementing.
+     * Menunjukkan bahwa primary key adalah auto-incrementing.
      *
      * @var bool
      */
-    public $incrementing = false;
+    public $incrementing = true;
 
     /**
      * Menentukan tipe data dari primary key.
      *
      * @var string
      */
-    protected $keyType = 'string';
+    protected $keyType = 'int';
     
     /**
      * Atribut yang dapat diisi secara massal.
@@ -61,5 +61,17 @@ class Tamu extends Model
         // Foreign key di tabel ini adalah 'agenda_id'
         // Primary key di tabel agendas adalah 'agenda_id'
         return $this->belongsTo(Agenda::class, 'agenda_id', 'agenda_id');
+    }
+
+    /**
+     * Mendefinisikan relasi "belongsTo" ke model Opd.
+     * Setiap tamu terhubung ke satu OPD melalui kolom instansi.
+     */
+    public function opd(): BelongsTo
+    {
+        // Menghubungkan model Tamu dengan model Opd
+        // Foreign key di tabel ini adalah 'instansi'
+        // Primary key di tabel opd adalah 'opd_id'
+        return $this->belongsTo(Opd::class, 'instansi', 'opd_id');
     }
 }
