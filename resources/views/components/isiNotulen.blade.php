@@ -49,12 +49,16 @@
         box-sizing: border-box;
     }
     
-    /* Smooth resize behavior */
-    .notulen-container,
+    /* Smooth resize behavior - hanya untuk container utama */
+    .notulen-container {
+        transition: all 0.3s ease;
+    }
+    
+    /* Mencegah duplikasi resize pada editor */
     .note-editor,
     .note-editing-area {
         transition: all 0.3s ease;
-        resize: vertical;
+        resize: none !important;
     }
 </style>
 
@@ -137,7 +141,7 @@
                 Isi Notulen
                 <span class="text-red-500 ml-1">*</span>
             </label>
-            <div class="bg-white border-2 border-blue-200 rounded-xl shadow-sm overflow-hidden w-full">
+            <div class="bg-white border-blue-200 rounded-xl shadow-sm overflow-hidden w-full">
                 <textarea id="summernote-editor" name="isi_notulen" class="summernote">
                     {!! old('isi_notulen', $agenda->notulen->isi_notulen ?? '') !!}
                 </textarea>
