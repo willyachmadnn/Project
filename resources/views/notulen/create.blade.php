@@ -43,17 +43,17 @@
             max-width: 100%;
         }
         
-        /* Optimasi untuk Summernote */
+        /* Optimasi layout untuk halaman create - menghindari duplikasi dengan isiNotulen.blade.php */
         .note-editor {
             max-width: 100% !important;
         }
         
+        /* Responsive height adjustment untuk create page */
         .note-editing-area {
             max-height: 60vh !important;
             overflow-y: auto !important;
         }
         
-        /* Responsive adjustments */
         @media (max-height: 600px) {
             .note-editing-area {
                 max-height: 40vh !important;
@@ -70,9 +70,9 @@
     <div class="main-container">
         <div class="content-wrapper container mx-auto p-4 sm:p-8">
         {{-- Tombol Kembali ke Halaman Detail Agenda --}}
-        <div class="mb-6">
+        <div class="mb-2 ml-6">
             <a href="{{ route('agenda.show', $agenda->agenda_id) }}#notulen" onclick="sessionStorage.setItem('activeTab', 'notulen');"
-                class="group inline-flex items-center px-5 py-2.5 bg-[#ac1616] hover:bg-red-700 text-white font-medium rounded-lg shadow-sm hover:shadow-md transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#ac1616] focus:ring-offset-2">
+                class="group inline-flex items-center px-5 py-2.5 bg-[#ac1616] hover:bg-red-700 text-white hover:text-amber-50 font-medium rounded-lg shadow-sm hover:shadow-md transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#ac1616] focus:ring-offset-2">
                 <svg class="w-4 h-4 mr-2 group-hover:-translate-x-0.5 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
                 </svg>
@@ -81,7 +81,7 @@
         </div>
 
         {{-- Memanggil komponen isiNotulen yang berisi editor dan fungsionalitasnya --}}
-        <div class="bg-white p-6 rounded-lg shadow-xl">
+        <div class="bg-transparent p-6 rounded-lg">
             <x-isiNotulen :agenda="$agenda" />
         </div>
         </div>
@@ -116,22 +116,16 @@
                     }
                 });
                 
-                // Function untuk menghitung tinggi responsif
-                function updateEditorHeight() {
-                    const newHeight = Math.min(400, Math.max(300, window.innerHeight * 0.4));
+                // Simplified height management - menghindari konflik dengan CSS resize
+                function setInitialHeight() {
+                    const initialHeight = Math.min(400, Math.max(300, window.innerHeight * 0.4));
                     if (editor.hasClass('note-editor')) {
-                        editor.summernote('option', 'height', newHeight);
+                        editor.summernote('option', 'height', initialHeight);
                     }
                 }
                 
-                // Event listener untuk resize window
-                $(window).on('resize', function() {
-                    clearTimeout(window.resizeTimer);
-                    window.resizeTimer = setTimeout(updateEditorHeight, 150);
-                });
-                
-                // Initial height adjustment
-                setTimeout(updateEditorHeight, 100);
+                // Set initial height only once
+                setTimeout(setInitialHeight, 100);
                 
                 // Optimasi scrollbar logic
                 function optimizeScrollBehavior() {
