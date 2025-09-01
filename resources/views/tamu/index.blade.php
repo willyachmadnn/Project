@@ -95,8 +95,8 @@
         openEditModal(tamu) {
             this.editTamu = tamu;
             const form = document.getElementById('editForm');
-            const actionUrl = '{{ route('agenda.tamu.update', ['agendaId' => $agenda->agenda_id, 'tamu' => ':nip']) }}';
-            form.action = actionUrl.replace(':nip', tamu.NIP);
+            const actionUrl = '{{ route('agenda.tamu.update', ['agendaId' => $agenda->agenda_id, 'tamu' => ':id_tamu']) }}';
+            form.action = actionUrl.replace(':id_tamu', tamu.id_tamu);
             this.isEditModalOpen = true;
         }
     }">
@@ -159,7 +159,7 @@
                                             <button @click="openEditModal({{ json_encode($item) }})" class="text-yellow-600 hover:text-yellow-900">Edit</button>
                                             
                                             {{-- Form Hapus: Mengirim request DELETE ke server. Konfirmasi JS sederhana digunakan untuk mencegah penghapusan yang tidak disengaja. --}}
-                                            <form action="{{ route('agenda.tamu.destroy', ['agendaId' => $agenda->agenda_id, 'tamu' => $item->NIP]) }}" method="POST" class="inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus tamu ini?')">
+                                            <form action="{{ route('agenda.tamu.destroy', ['agendaId' => $agenda->agenda_id, 'tamu' => $item->id_tamu]) }}" method="POST" class="inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus tamu ini?')">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="text-red-600 hover:text-red-900">Hapus</button>
@@ -212,7 +212,7 @@
                         @csrf
                         <div>
                             <label for="create_NIP" class="block text-sm font-medium text-gray-700">NIP <span class="text-red-400">*</span></label>
-                            <input type="text" name="NIP" id="create_NIP" value="{{ old('NIP') }}" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" required maxlength="8">
+                            <input type="text" name="NIP" id="create_NIP" value="{{ old('NIP') }}" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" required maxlength="18">
                         </div>
                         <div>
                             <label for="create_nama_tamu" class="block text-sm font-medium text-gray-700">Nama Tamu <span class="text-red-400">*</span></label>
