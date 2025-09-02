@@ -161,46 +161,32 @@ class TamuController extends Controller
     public function storePublic(Request $request)
     {
         // Validasi parameter wajib
-        if (!$request->has('agenda_id') || !$request->has('type')) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Parameter agenda_id dan type diperlukan'
-            ], 400);
-        }
+        $validated = $request->validate([
+            'agenda_id' => 'required|exists:agendas,agenda_id',
+            'type' => 'required|in:pegawai,non-pegawai',
+        ]);
 
-        $agendaId = $request->get('agenda_id');
-        $type = $request->get('type');
+        $agendaId = $validated['agenda_id'];
+        $type = $validated['type'];
 
         // Pastikan agenda exists dan masih aktif
         $agenda = Agenda::findOrFail($agendaId);
         if ($agenda->status === 'selesai') {
-            return response()->json([
-                'success' => false,
-                'message' => 'Agenda sudah selesai'
-            ], 400);
+            // Redirect back with an error message
+            return redirect()->back()->withErrors(['general' => 'Maaf, agenda ini sudah selesai dan tidak menerima pendaftaran lagi.'])->withInput();
         }
 
         // Validasi berdasarkan type
         if ($type === 'pegawai') {
-            $validator = Validator::make($request->all(), [
-                'nip' => 'required|string|size:18|exists:pegawai,NIP',
-                'agenda_id' => 'required|exists:agendas,agenda_id',
-                'type' => 'required|in:pegawai'
+            $pegawaiValidator = Validator::make($request->all(), [
+                'nip' => 'required|string|exists:pegawai,NIP',
             ], [
-                'nip.required' => 'NIP wajib diisi',
-                'nip.size' => 'NIP harus 18 karakter',
-                'nip.exists' => 'Pegawai dengan NIP tersebut tidak ditemukan',
-                'agenda_id.required' => 'Agenda ID diperlukan',
-                'agenda_id.exists' => 'Agenda tidak ditemukan',
-                'type.required' => 'Tipe tamu diperlukan',
-                'type.in' => 'Tipe tamu tidak valid'
+                'nip.required' => 'NIP wajib diisi.',
+                'nip.exists' => 'Pegawai dengan NIP tersebut tidak ditemukan.',
             ]);
 
-            if ($validator->fails()) {
-                return response()->json([
-                    'success' => false,
-                    'errors' => $validator->errors()
-                ], 422);
+            if ($pegawaiValidator->fails()) {
+                return redirect()->back()->withErrors($pegawaiValidator)->withInput();
             }
 
             // Cek apakah pegawai sudah terdaftar untuk agenda ini
@@ -209,10 +195,7 @@ class TamuController extends Controller
                                 ->first();
             
             if ($existingTamu) {
-                return response()->json([
-                    'success' => false,
-                    'errors' => ['nip' => ['Pegawai sudah terdaftar untuk agenda ini']]
-                ], 422);
+                return redirect()->back()->withErrors(['nip' => 'Pegawai dengan NIP ini sudah terdaftar untuk agenda ini.'])->withInput();
             }
 
             // Ambil data pegawai dari tabel pegawai
@@ -227,34 +210,29 @@ class TamuController extends Controller
                 'agenda_id' => $agendaId
             ]);
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Berhasil mendaftar',
-                'nip' => $tamu->NIP
-            ]);
+            // Redirect ke halaman sukses
+            return redirect()->route('tamu.success', ['nip' => $tamu->NIP]);
 
         } elseif ($type === 'non-pegawai') {
-            $validator = Validator::make($request->all(), [
-                'nama_lengkap' => 'required|string|max:255',
-                'jk' => 'required|in:L,P',
-                'agenda_id' => 'required|exists:agendas,agenda_id',
-                'type' => 'required|in:non-pegawai'
+            $nonPegawaiValidator = Validator::make($request->all(), [
+                'nama' => 'required|string|max:255',
+                'gender' => 'required|in:L,P',
             ], [
-                'nama_lengkap.required' => 'Nama lengkap wajib diisi',
-                'nama_lengkap.max' => 'Nama lengkap maksimal 255 karakter',
-                'jk.required' => 'Jenis kelamin wajib dipilih',
-                'jk.in' => 'Jenis kelamin harus dipilih (L atau P)',
-                'agenda_id.required' => 'Agenda ID diperlukan',
-                'agenda_id.exists' => 'Agenda tidak ditemukan',
-                'type.required' => 'Tipe tamu diperlukan',
-                'type.in' => 'Tipe tamu tidak valid'
+                'nama.required' => 'Nama lengkap wajib diisi.',
+                'gender.required' => 'Jenis kelamin wajib dipilih.',
             ]);
 
-            if ($validator->fails()) {
-                return response()->json([
-                    'success' => false,
-                    'errors' => $validator->errors()
-                ], 422);
+            if ($nonPegawaiValidator->fails()) {
+                return redirect()->back()->withErrors($nonPegawaiValidator)->withInput();
+            }
+
+            // Cek apakah nama sudah terdaftar untuk agenda ini
+            $existingTamu = Tamu::where('nama_tamu', $request->nama)
+                                ->where('agenda_id', $agendaId)
+                                ->first();
+
+            if ($existingTamu) {
+                return redirect()->back()->withErrors(['nama' => 'Tamu dengan nama ini sudah terdaftar untuk agenda ini.'])->withInput();
             }
 
             // Generate NIP unik untuk non-pegawai
@@ -266,23 +244,18 @@ class TamuController extends Controller
             // Simpan data tamu non-pegawai
             $tamu = Tamu::create([
                 'NIP' => $nip,
-                'nama_tamu' => $request->nama_lengkap,
+                'nama_tamu' => $request->nama,
                 'instansi' => 58, // ID OPD 'Umum' untuk tamu non-pegawai
-                'jk' => $request->jk === 'L' ? 'Laki-laki' : 'Perempuan',
+                'jk' => $request->gender === 'L' ? 'Laki-laki' : 'Perempuan',
                 'agenda_id' => $agendaId
             ]);
 
-            return response()->json([
-                'success' => true,
-                'message' => 'Berhasil mendaftar',
-                'nip' => $tamu->NIP
-            ]);
-        } else {
-            return response()->json([
-                'success' => false,
-                'message' => 'Type tidak valid'
-            ], 400);
+            // Redirect ke halaman sukses
+            return redirect()->route('tamu.success', ['nip' => $tamu->NIP]);
         }
+        
+        // Fallback for invalid type, though validation should prevent this
+        return redirect()->back()->withErrors(['general' => 'Tipe tamu tidak valid.'])->withInput();
     }
 
     /**
