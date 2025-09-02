@@ -50,7 +50,7 @@
         }
         
         .container {
-            height: 100vh;
+            min-height: 100vh;
             width: 100vw;
             display: flex;
             align-items: center;
@@ -61,20 +61,26 @@
             position: fixed;
             top: 0;
             left: 0;
-            overflow: auto;
+            overflow-y: auto;
+            overflow-x: hidden;
+            box-sizing: border-box;
         }
         
         .form-wrapper {
             width: 100%;
-            max-width: 420px;
+            max-width: 450px;
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(20px);
             border-radius: 24px;
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(255, 255, 255, 0.2);
             padding: 2.5rem;
-            margin: 0;
+            margin: auto;
             position: relative;
             border: 1px solid rgba(255, 255, 255, 0.2);
+            transform: translateY(0);
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+            box-sizing: border-box;
         }
         
         /* Enhanced input styling */
@@ -118,6 +124,26 @@
             box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.2);
         }
         
+        /* Preview container styles to prevent flickering */
+        .preview-container {
+            min-height: 0;
+            overflow: hidden;
+            transition: min-height 0.3s ease;
+        }
+        
+        .preview-container.preview-visible {
+            min-height: 140px;
+        }
+        
+        .preview-content {
+            transform-origin: top center;
+        }
+        
+        /* Form stability */
+        .form-wrapper form {
+            position: relative;
+        }
+        
         /* Responsive adjustments */
         @media (max-width: 640px) {
             .form-wrapper {
@@ -127,6 +153,10 @@
                 border-radius: 1rem;
                 transform: translateY(-1vh);
             }
+            
+            .preview-container.preview-visible {
+                min-height: 120px;
+            }
         }
         
         @media (max-width: 480px) {
@@ -134,6 +164,10 @@
                 width: 98%;
                 padding: 1rem;
                 transform: translateY(0);
+            }
+            
+            .preview-container.preview-visible {
+                min-height: 110px;
             }
         }
     </style>
@@ -224,24 +258,33 @@
                 </div>
 
                 <!-- Preview Info -->
-                <div x-show="form.nama && form.jk" x-transition class="bg-gray-50 rounded-lg p-4 border border-gray-200">
-                    <h3 class="text-sm font-semibold text-gray-700 mb-3 flex items-center">
-                        <i class="fas fa-eye text-green-600 mr-2"></i>
-                        Preview Data
-                    </h3>
-                    <div class="space-y-2 text-sm">
-                        <div class="flex justify-between">
-                            <span class="text-gray-600">Nama:</span>
-                            <span class="font-medium" x-text="form.nama"></span>
-                        </div>
-                        <div class="flex justify-between">
-                            <span class="text-gray-600">Jenis Kelamin:</span>
-                            <span class="font-medium" x-text="form.jk === 'L' ? 'Laki-laki' : 'Perempuan'"></span>
-                        </div>
-                        
-                        <div class="flex justify-center">
-                            <span class="text-gray-600"></span>
-                            <span class="font-medium">Masyarakat Umum</span>
+                <div class="preview-container" :class="{'preview-visible': form.nama && form.jk}">
+                    <div class="bg-gray-50 rounded-lg p-4 border border-gray-200 preview-content" 
+                         x-show="form.nama && form.jk" 
+                         x-transition:enter="transition ease-out duration-300"
+                         x-transition:enter-start="opacity-0 transform scale-95"
+                         x-transition:enter-end="opacity-100 transform scale-100"
+                         x-transition:leave="transition ease-in duration-200"
+                         x-transition:leave-start="opacity-100 transform scale-100"
+                         x-transition:leave-end="opacity-0 transform scale-95">
+                        <h3 class="text-sm font-semibold text-gray-700 mb-3 flex items-center">
+                            <i class="fas fa-eye text-green-600 mr-2"></i>
+                            Preview Data
+                        </h3>
+                        <div class="space-y-2 text-sm">
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Nama:</span>
+                                <span class="font-medium" x-text="form.nama"></span>
+                            </div>
+                            <div class="flex justify-between">
+                                <span class="text-gray-600">Jenis Kelamin:</span>
+                                <span class="font-medium" x-text="form.jk === 'L' ? 'Laki-laki' : 'Perempuan'"></span>
+                            </div>
+                            
+                            <div class="flex justify-center">
+                                <span class="text-gray-600"></span>
+                                <span class="font-medium">Masyarakat Umum</span>
+                            </div>
                         </div>
                     </div>
                 </div>
