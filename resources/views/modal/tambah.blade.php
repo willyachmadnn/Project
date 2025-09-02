@@ -52,7 +52,7 @@
         >
             {{-- Kontainer Form (Kotak Putih) --}}
             <div 
-                class="bg-white/95 backdrop-blur-md rounded-md px-4 pt-3 pb-3 overflow-y-auto shadow-2xl border border-black/30 mb-2 mt-2" 
+                class="bg-white/95 backdrop-blur-md rounded-lg px-4 pt-3 pb-3 overflow-y-auto shadow-2xl border border-black/30 mb-2 mt-2" 
                 style="max-height: 88vh;"
             >
                 <div class="flex items-center justify-center mb-6 pb-2 pt-2 relative">
@@ -65,7 +65,7 @@
                     <button 
                         type="button" 
                         @click="closeModal()" 
-                        class="absolute right-0 text-gray-400 hover:text-gray-600 hover:scale-110 transition-all duration-200 ease-out rounded-full p-1 hover:bg-gray-100"
+                        class="absolute right-0 text-gray-400 hover:text-gray-600 hover:scale-110 transition-all duration-200 ease-out rounded-lg p-1 hover:bg-gray-100"
                     >
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
@@ -92,7 +92,7 @@
                             name="nama_agenda" 
                             id="agenda_nama_agenda" 
                             rows="3" 
-                            class="block w-full rounded-md border-2 border-gray-200 bg-white/60 backdrop-blur-sm px-4 py-3 text-gray-900 placeholder-gray-500 focus:border-gray-300 focus:outline-none transition-all duration-200 resizable-textarea hover:border-gray-300" 
+                            class="block w-full rounded-lg border-2 border-gray-200 bg-white/60 backdrop-blur-sm px-4 py-3 text-gray-900 placeholder-gray-500 focus:border-gray-300 focus:outline-none transition-all duration-200 resizable-textarea hover:border-gray-300" 
                             placeholder="Masukkan nama agenda" 
                             required
                             x-model="isEditModalOpen ? editAgenda.nama_agenda : ''"
@@ -105,7 +105,7 @@
                             type="text" 
                             name="tempat" 
                             id="agenda_tempat" 
-                            class="block w-full rounded-md border-2 border-gray-200 bg-white/60 backdrop-blur-sm px-4 py-3 text-gray-900 placeholder-gray-500 focus:border-gray-300 focus:outline-none transition-all duration-200 hover:border-gray-300" 
+                            class="block w-full rounded-lg border-2 border-gray-200 bg-white/60 backdrop-blur-sm px-4 py-3 text-gray-900 placeholder-gray-500 focus:border-gray-300 focus:outline-none transition-all duration-200 hover:border-gray-300" 
                             placeholder="Masukkan lokasi agenda" 
                             required
                             x-model="isEditModalOpen ? editAgenda.tempat : ''"
@@ -119,7 +119,7 @@
                             type="date" 
                             name="tanggal" 
                             id="agenda_tanggal" 
-                            class="block w-full rounded-md border-2 border-gray-200 bg-white/60 backdrop-blur-sm px-4 py-3 text-gray-900 focus:border-gray-300 focus:outline-none transition-all duration-200 hover:border-gray-300" 
+                            class="block w-full rounded-lg border-2 border-gray-200 bg-white/60 backdrop-blur-sm px-4 py-3 text-gray-900 focus:border-gray-300 focus:outline-none transition-all duration-200 hover:border-gray-300" 
                             required
                             x-model="isEditModalOpen ? editAgenda.tanggal : ''"
                             :value="!isEditModalOpen ? '{{ old('tanggal') }}' : ''"
@@ -133,7 +133,7 @@
                                 type="time" 
                                 name="jam_mulai" 
                                 id="agenda_jam_mulai" 
-                                class="block w-full rounded-md border-2 border-gray-200 bg-white/60 backdrop-blur-sm px-4 py-3 text-gray-900 focus:border-gray-300 focus:outline-none transition-all duration-200 cursor-pointer hover:border-gray-300" 
+                                class="block w-full rounded-lg border-2 border-gray-200 bg-white/60 backdrop-blur-sm px-4 py-3 text-gray-900 focus:border-gray-300 focus:outline-none transition-all duration-200 cursor-pointer hover:border-gray-300" 
                                 step="60"
 
                                 required
@@ -163,7 +163,7 @@
                             name="dihadiri" 
                             id="agenda_dihadiri" 
                             rows="3" 
-                            class="block w-full rounded-md border-2 border-gray-200 bg-white/60 backdrop-blur-sm px-4 py-3 text-gray-900 placeholder-gray-500 focus:border-gray-300 focus:outline-none transition-all duration-200 resizable-textarea hover:border-gray-300" 
+                            class="block w-full rounded-lg border-2 border-gray-200 bg-white/60 backdrop-blur-sm px-4 py-3 text-gray-900 placeholder-gray-500 focus:border-gray-300 focus:outline-none transition-all duration-200 resizable-textarea hover:border-gray-300" 
                             placeholder="Masukkan daftar yang hadir dalam agenda ini" 
                             required
                             x-model="isEditModalOpen ? editAgenda.dihadiri : ''"
@@ -177,7 +177,7 @@
                 <button 
                     type="button" 
                     @click="isEditModalOpen ? confirmEditAgenda() : confirmCreateAgenda()" 
-                    class="px-3 py-1 bg-gradient-to-r from-red-600 to-red-700 text-white rounded-md text-base font-semibold hover:from-red-700 hover:to-red-800 focus:outline-none focus:ring-4 focus:ring-red-500/30 shadow-lg hover:shadow-xl transition-all duration-200 ease-out transform hover:scale-105 active:scale-95 border-2 border-red-500/20"
+                    class="px-3 py-1 bg-gradient-to-r from-red-600 to-red-700 text-white rounded-lg text-base font-semibold hover:from-red-700 hover:to-red-800 focus:outline-none focus:ring-4 focus:ring-red-500/30 shadow-lg hover:shadow-xl transition-all duration-200 ease-out transform hover:scale-105 active:scale-95 border-2 border-red-500/20"
                 >
                     <span x-text="isEditModalOpen ? 'Simpan Perubahan' : 'Simpan Agenda'" class="transition-all duration-150"></span>
                 </button>
