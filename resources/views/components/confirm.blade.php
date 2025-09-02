@@ -20,10 +20,10 @@
              x-transition:leave="transition ease-in duration-200 transform" 
              x-transition:leave-start="opacity-100 scale-100" 
              x-transition:leave-end="opacity-0 scale-95"
-             class="relative w-full max-w-md transform overflow-hidden rounded-2xl bg-white/95 backdrop-blur-xl p-6 shadow-2xl transition-all border border-white/20">
+             class="relative w-full max-w-md transform overflow-hidden rounded-lg bg-white/95 backdrop-blur-xl p-6 shadow-2xl transition-all border border-white/20">
             
             {{-- Icon --}}
-            <div class="flex items-center justify-center w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-full">
+            <div class="flex items-center justify-center w-16 h-16 mx-auto mb-4 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-lg">
                 <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
                 </svg>
@@ -44,14 +44,14 @@
                 {{-- Cancel Button --}}
                 <button type="button" 
                         @click="$dispatch('cancel')"
-                        class="flex-1 px-4 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded-md transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-gray-300/50">
+                        class="flex-1 px-4 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold rounded-lg transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-gray-300/50">
                     {{ $cancelText }}
                 </button>
                 
                 {{-- Confirm Button --}}
                 <button type="button" 
                         @click="$dispatch('confirm')"
-                        class="flex-1 px-4 py-3 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-semibold rounded-md transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-red-500/30 shadow-lg hover:shadow-xl transform hover:scale-105">
+                        class="flex-1 px-4 py-3 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-semibold rounded-lg transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-red-500/30 shadow-lg hover:shadow-xl transform hover:scale-105">
                     {{ $confirmText }}
                 </button>
             </div>

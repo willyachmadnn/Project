@@ -53,10 +53,10 @@
     submitDeleteForm() {
         document.getElementById('delete-agenda-form').submit();
     }
-}" class="bg-white/90 backdrop-blur-sm rounded-2xl p-8 h-full overflow-y-auto shadow-lg border border-gray-200">
+}" class="bg-white/90 backdrop-blur-sm rounded-lg p-8 h-full overflow-y-auto shadow-lg border border-gray-200">
     <div class="flex flex-col lg:flex-row lg:justify-between lg:items-start gap-6 mb-8">
         <div class="flex items-center space-x-4">
-            <div class="w-12 h-12 bg-gradient-to-br from-red-600 to-red-700 rounded-2xl flex items-center justify-center shadow-lg">
+            <div class="w-12 h-12 bg-gradient-to-br from-red-600 to-red-700 rounded-lg flex items-center justify-center shadow-lg">
                 <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
             </div>
             <div>
@@ -64,28 +64,28 @@
             </div>
         </div>
         <div class="flex flex-wrap gap-3">
-            <button @click="showQrModal = true; openQrModal()" class="group px-5 py-3 bg-gradient-to-r from-cyan-500 to-cyan-600 hover:from-cyan-600 hover:to-cyan-700 text-white rounded-xl shadow-lg hover:shadow-cyan-500/25 transform hover:scale-105 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-cyan-500/50 flex items-center font-semibold">
+            <button @click="showQrModal = true; openQrModal()" class="group px-3 py-2 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-lg shadow-lg hover:shadow-blue-500/25 transform hover:scale-105 transition-all duration-200 focus:outline-none focus:ring-0 focus:ring-blue-500/50 flex items-center font-semibold">
                 <svg class="w-5 h-5 mr-2 group-hover:rotate-12 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M12 12h-4.01M12 12v4m6-4h.01M12 8h.01M12 8h4.01M12 8H7.99M12 8V4m0 0H7.99M12 4h4.01"></path></svg>
                 QR Code
             </button>
-             <button @click="openEditModal()" class="group px-5 py-3 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white rounded-xl shadow-lg hover:shadow-green-500/25 transform hover:scale-105 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-green-500/50 flex items-center font-semibold">
+             <button @click="openEditModal()" class="group px-3 py-2 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white rounded-lg shadow-lg hover:shadow-green-500/25 transform hover:scale-105 transition-all duration-200 focus:outline-none focus:ring-0 focus:ring-green-500/50 flex items-center font-semibold">
                 <svg class="w-5 h-5 mr-2 group-hover:rotate-12 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002 2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path></svg>
                 Edit
             </button>
             {{-- PERBAIKAN FINAL: Menggunakan $dispatch untuk mengirim sinyal --}}
-            <button @click="openDeleteModal()" class="group px-5 py-3 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white rounded-xl shadow-lg hover:shadow-red-500/25 transform hover:scale-105 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-red-500/50 flex items-center font-semibold">
+            <button @click="openDeleteModal()" class="group px-3 py-2 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white rounded-lg shadow-lg hover:shadow-red-500/25 transform hover:scale-105 transition-all duration-200 focus:outline-none focus:ring-0 focus:ring-red-500/50 flex items-center font-semibold">
                 <svg class="w-5 h-5 mr-2 group-hover:rotate-12 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                 Hapus
             </button>
         </div>
     </div>
     {{-- Tabel Detail Agenda --}}
-    <div class="bg-white rounded-2xl shadow-lg border border-gray-200/50 overflow-hidden">
+    <div class="bg-white rounded-lg shadow-lg border border-gray-200/50 overflow-hidden">
         <div class="divide-y divide-gray-200">
             {{-- Baris Tempat --}}
             <div class="px-6 py-4 hover:bg-gray-50/50 transition-colors duration-200">
                 <div class="flex items-center space-x-4">
-                    <div class="w-10 h-10 bg-red-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                    <div class="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center flex-shrink-0">
                         <svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
@@ -101,8 +101,8 @@
             {{-- Baris Tanggal --}}
             <div class="px-6 py-4 hover:bg-gray-50/50 transition-colors duration-200">
                 <div class="flex items-center space-x-4">
-                    <div class="w-10 h-10 bg-cyan-100 rounded-xl flex items-center justify-center flex-shrink-0">
-                        <svg class="w-5 h-5 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3a1 1 0 011-1h6a1 1 0 011 1v4m-6 0h6m-6 0V7a1 1 0 00-1 1v11a2 2 0 002 2h6a2 2 0 002-2V8a1 1 0 00-1-1V7"></path>
                         </svg>
                     </div>
@@ -116,7 +116,7 @@
             {{-- Baris Waktu --}}
             <div class="px-6 py-4 hover:bg-gray-50/50 transition-colors duration-200">
                 <div class="flex items-center space-x-4">
-                    <div class="w-10 h-10 bg-green-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                    <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
                         <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
@@ -131,7 +131,7 @@
             {{-- Baris Nama Admin --}}
             <div class="px-6 py-4 hover:bg-gray-50/50 transition-colors duration-200">
                 <div class="flex items-center space-x-4">
-                    <div class="w-10 h-10 bg-red-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                    <div class="w-10 h-10 bg-red-100 rounded-lg flex items-center justify-center flex-shrink-0">
                         <svg class="w-5 h-5 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                         </svg>
@@ -146,8 +146,8 @@
             {{-- Baris OPD Admin --}}
             <div class="px-6 py-4 hover:bg-gray-50/50 transition-colors duration-200">
                 <div class="flex items-center space-x-4">
-                    <div class="w-10 h-10 bg-cyan-100 rounded-xl flex items-center justify-center flex-shrink-0">
-                        <svg class="w-5 h-5 text-cyan-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                        <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
                         </svg>
                     </div>
@@ -161,7 +161,7 @@
             {{-- Baris Dihadiri --}}
             <div class="px-6 py-4 hover:bg-gray-50/50 transition-colors duration-200">
                 <div class="flex items-start space-x-4">
-                    <div class="w-10 h-10 bg-green-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                    <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
                         <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
                         </svg>
@@ -180,8 +180,8 @@
         </div>
         <div class="text-center">
             @if($agenda->status === 'Menunggu')
-                <div class="inline-flex items-center justify-center w-44 py-3 rounded-xl bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg hover:shadow-red-500/25 transform hover:scale-105 transition-all duration-200">
-                    <div class="w-5 h-5 bg-white/20 rounded-full flex items-center justify-center mr-3">
+                <div class="inline-flex items-center justify-center w-44 py-2 rounded-lg bg-gradient-to-r from-blue-500 to-blue-600 text-white shadow-lg hover:shadow-blue-500/25 transform hover:scale-105 transition-all duration-200">
+                    <div class="w-5 h-5 bg-white/20 rounded-lg flex items-center justify-center mr-3">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
@@ -189,8 +189,8 @@
                     <span class="font-bold text-base">Menunggu</span>
                 </div>
             @elseif($agenda->status === 'Berlangsung')
-                <div class="inline-flex items-center justify-center w-44 py-3 rounded-xl bg-gradient-to-r from-green-500 to-green-600 text-white shadow-lg hover:shadow-cyan-500/25 transform hover:scale-105 transition-all duration-200 animate-pulse">
-                    <div class="w-5 h-5 bg-white/20 rounded-full flex items-center justify-center mr-3">
+                <div class="inline-flex items-center justify-center w-44 py-2 rounded-lg bg-gradient-to-r from-green-500 to-green-600 text-white shadow-lg hover:shadow-green-500/25 transform hover:scale-105 transition-all duration-200 animate-pulse">
+                    <div class="w-5 h-5 bg-white/20 rounded-lg flex items-center justify-center mr-3">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.636 18.364a9 9 0 010-12.728m12.728 0a9 9 0 010 12.728m-9.9-2.829a5 5 0 010-7.07m7.072 0a5 5 0 010 7.07M13 12a1 1 0 11-2 0 1 1 0 012 0z"></path>
                         </svg>
@@ -198,8 +198,8 @@
                     <span class="font-bold text-base">Berlangsung</span>
                 </div>
             @else
-                <div class="inline-flex items-center justify-center w-44 py-3 rounded-xl bg-gradient-to-r from-red-500 to-red-600 text-white shadow-lg hover:shadow-green-500/25 transform hover:scale-105 transition-all duration-200">
-                    <div class="w-5 h-5 bg-white/20 rounded-full flex items-center justify-center mr-3">
+                <div class="inline-flex items-center justify-center w-44 py-2 rounded-lg bg-gradient-to-r from-red-500 to-red-600 text-white shadow-lg hover:shadow-red-500/25 transform hover:scale-105 transition-all duration-200">
+                    <div class="w-5 h-5 bg-white/20 rounded-lg flex items-center justify-center mr-3">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                         </svg>
@@ -231,10 +231,10 @@
                  x-transition:leave="transition ease-in duration-200 transform" 
                  x-transition:leave-start="opacity-100 scale-100 translate-y-0" 
                  x-transition:leave-end="opacity-0 scale-95 translate-y-4" 
-                 class="relative z-[1002] bg-white rounded-2xl shadow-2xl border border-gray-200 w-full max-w-6xl max-h-[95vh] flex flex-col overflow-hidden">
+                 class="relative z-[1002] bg-white rounded-lg shadow-2xl border border-gray-200 w-full max-w-6xl max-h-[95vh] flex flex-col overflow-hidden">
             
             <!-- Modal Header -->
-            <div class="bg-gradient-to-r from-[#ac1616] to-red-700 p-6 text-white relative overflow-hidden flex-shrink-0 -m-0.5 pt-7 px-7 rounded-t-2xl">
+            <div class="bg-gradient-to-r from-[#ac1616] to-red-700 p-6 text-white relative overflow-hidden flex-shrink-0 -m-0.5 pt-7 px-7 rounded-t-lg">
                 <!-- Background Pattern -->
                 <div class="absolute inset-0 opacity-10">
                     <svg class="w-full h-full" viewBox="0 0 100 100" fill="none">
@@ -248,7 +248,7 @@
                 <div class="relative flex items-center justify-between">
                     <div class="flex items-center space-x-4">
                         <!-- Government Emblem -->
-                        <div class="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center backdrop-blur-sm border border-white/30">
+                        <div class="w-16 h-16 bg-white/20 rounded-lg flex items-center justify-center backdrop-blur-sm border border-white/30">
                             <svg class="w-8 h-8 text-white" fill="currentColor" viewBox="0 0 24 24">
                                 <path d="M12 2L2 7v10c0 5.55 3.84 9.74 9 11 5.16-1.26 9-5.45 9-11V7l-10-5z"/>
                                 <path d="M12 4.5L4.5 8.5v8c0 4.2 2.9 7.4 7.5 8.5 4.6-1.1 7.5-4.3 7.5-8.5v-8L12 4.5z" fill="#ac1616"/>
@@ -260,7 +260,7 @@
                         </div>
                     </div>
                     <button type="button" @click="showQrModal = false" 
-                            class="w-12 h-12 bg-white/20 hover:bg-white/30 rounded-2xl flex items-center justify-center transition-all duration-200 backdrop-blur-sm border border-white/30 hover:scale-105">
+                            class="w-12 h-12 bg-white/20 hover:bg-white/30 rounded-lg flex items-center justify-center transition-all duration-200 backdrop-blur-sm border border-white/30 hover:scale-105">
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
                         </svg>
@@ -276,14 +276,14 @@
                 <!-- QR Codes Container -->
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                     <!-- QR Code Pegawai -->
-                    <div class="bg-white rounded-2xl shadow-lg border border-gray-200 p-8">
+                    <div class="bg-white rounded-lg shadow-lg border border-gray-200 p-8">
                         <div class="text-center mb-6">
                             <h4 class="text-lg font-bold text-slate-800 mb-2">Pegawai Pemerintah</h4>
                             <p class="text-slate-600 text-sm">Khusus untuk ASN & Pegawai Kontrak</p>
                         </div>
                         
                         <div class="flex justify-center mb-6">
-                            <div id="qr-pegawai" class="p-4 bg-gray-50 rounded-2xl shadow-inner border-2 border-dashed border-gray-300"></div>
+                            <div id="qr-pegawai" class="p-4 bg-gray-50 rounded-lg shadow-inner border-2 border-dashed border-gray-300"></div>
                         </div>
                         
                         <div class="text-center">
@@ -292,14 +292,14 @@
                     </div>
                     
                     <!-- QR Code Non Pegawai -->
-                    <div class="bg-white rounded-2xl shadow-lg border border-gray-200 p-8">
+                    <div class="bg-white rounded-lg shadow-lg border border-gray-200 p-8">
                         <div class="text-center mb-6">
                             <h4 class="text-lg font-bold text-slate-800 mb-2">Tamu Undangan</h4>
                             <p class="text-slate-600 text-sm">Untuk Masyarakat & Instansi Lain</p>
                         </div>
                         
                         <div class="flex justify-center mb-6">
-                            <div id="qr-non-pegawai" class="p-4 bg-gray-50 rounded-2xl shadow-inner border-2 border-dashed border-gray-300"></div>
+                            <div id="qr-non-pegawai" class="p-4 bg-gray-50 rounded-lg shadow-inner border-2 border-dashed border-gray-300"></div>
                         </div>
                         
                         <div class="text-center">
@@ -311,11 +311,11 @@
             </div>
             
             <!-- Modal Footer -->
-            <div class="flex-shrink-0 bg-gradient-to-r from-slate-100 to-slate-200 border-t border-slate-300 p-4 rounded-b-2xl">
+            <div class="flex-shrink-0 bg-gradient-to-r from-slate-100 to-slate-200 border-t border-slate-300 p-4 rounded-b-lg">
                 <div class="flex flex-col lg:flex-row items-center justify-between space-y-3 lg:space-y-0">
                     <!-- Tips Section -->
                     <div class="flex items-center space-x-3 text-slate-600">
-                        <div class="w-8 h-8 bg-amber-100 rounded-2xl flex items-center justify-center">
+                        <div class="w-8 h-8 bg-amber-100 rounded-lg flex items-center justify-center">
                             <svg class="w-4 h-4 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
                             </svg>
@@ -330,22 +330,14 @@
                     <div class="flex items-center space-x-3">
                         <!-- Download PDF Button -->
                         <button id="downloadQrPdfBtn" type="button" 
-                                class="group inline-flex items-center px-5 py-2.5 bg-gradient-to-r from-[#ac1616] to-red-700 hover:from-red-700 hover:to-red-800 disabled:from-red-400 disabled:to-red-500 text-white font-semibold rounded-2xl shadow-md hover:shadow-lg transition-all duration-200 focus:outline-none focus:ring-3 focus:ring-red-500/50">
+                                class="group inline-flex items-center px-5 py-2.5 bg-gradient-to-r from-[#ac1616] to-red-700 hover:from-red-700 hover:to-red-800 disabled:from-red-400 disabled:to-red-500 text-white font-semibold rounded-lg shadow-md hover:shadow-lg transition-all duration-200 focus:outline-none focus:ring-3 focus:ring-red-500/50">
                             <svg class="w-4 h-4 mr-2 group-hover:scale-110 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                             </svg>
                             <span class="text-sm">Unduh PDF</span>
                         </button>
                         
-                        <!-- Print Button -->
-                        <button type="button" onclick="window.print()" 
-                                class="group inline-flex items-center px-5 py-2.5 bg-gradient-to-r from-slate-600 to-slate-700 hover:from-slate-700 hover:to-slate-800 text-white font-semibold rounded-2xl shadow-md hover:shadow-lg transition-all duration-200 focus:outline-none focus:ring-3 focus:ring-slate-500/50">
-                            <svg class="w-4 h-4 mr-2 group-hover:scale-110 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
-                            </svg>
-                            <span class="text-sm">Cetak</span>
-                        </button>
-                        
+
 
                     </div>
                 </div>
@@ -397,7 +389,7 @@
             >
                 {{-- Kontainer Form (Kotak Putih) --}}
                 <div 
-                    class="bg-white/95 backdrop-blur-md rounded-md px-4 pt-3 pb-3 overflow-y-auto shadow-2xl border border-black/30 mb-2 mt-2" 
+                    class="bg-white/95 backdrop-blur-md rounded-lg px-4 pt-3 pb-3 overflow-y-auto shadow-2xl border border-black/30 mb-2 mt-2" 
                     style="max-height: 88vh;"
                 >
                     <div class="flex items-center justify-center mb-6 pb-2 pt-2 relative">
@@ -410,7 +402,7 @@
                         <button 
                             type="button" 
                             @click="closeModal()" 
-                            class="absolute right-0 text-gray-400 hover:text-gray-600 hover:scale-110 transition-all duration-200 ease-out rounded-full p-1 hover:bg-gray-100"
+                            class="absolute right-0 text-gray-400 hover:text-gray-600 hover:scale-110 transition-all duration-200 ease-out rounded-lg p-1 hover:bg-gray-100"
                         >
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
@@ -434,7 +426,7 @@
                                 name="nama_agenda" 
                                 id="edit_nama_agenda" 
                                 rows="3" 
-                                class="block w-full rounded-md border-2 border-gray-200 bg-white/60 backdrop-blur-sm px-4 py-3 text-gray-900 placeholder-gray-500 focus:border-gray-300 focus:outline-none transition-all duration-200 resizable-textarea hover:border-gray-300" 
+                                class="block w-full rounded-lg border-2 border-gray-200 bg-white/60 backdrop-blur-sm px-4 py-3 text-gray-900 placeholder-gray-500 focus:border-gray-300 focus:outline-none transition-all duration-200 resizable-textarea hover:border-gray-300" 
                                 placeholder="Masukkan nama agenda" 
                                 required
                                 x-model="editAgenda.nama_agenda"
@@ -447,7 +439,7 @@
                                 type="text" 
                                 name="tempat" 
                                 id="edit_tempat" 
-                                class="block w-full rounded-md border-2 border-gray-200 bg-white/60 backdrop-blur-sm px-4 py-3 text-gray-900 placeholder-gray-500 focus:border-gray-300 focus:outline-none transition-all duration-200 hover:border-gray-300" 
+                                class="block w-full rounded-lg border-2 border-gray-200 bg-white/60 backdrop-blur-sm px-4 py-3 text-gray-900 placeholder-gray-500 focus:border-gray-300 focus:outline-none transition-all duration-200 hover:border-gray-300" 
                                 placeholder="Masukkan lokasi agenda" 
                                 required
                                 x-model="editAgenda.tempat"
@@ -926,4 +918,10 @@
             console.log('PDF generation process completed');
         }
     }
+
+
+
+
+    
+
 </script>

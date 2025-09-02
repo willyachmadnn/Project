@@ -15,7 +15,7 @@
         <span>Show:</span>
         <div class="relative">
           {{-- NAMA DIUBAH MENJADI perPage --}}
-          <select id="perPageSelect" name="perPage" class="appearance-none h-8 w-20 rounded border border-gray-300 bg-white pl-3 pr-8 text-sm focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500">
+          <select id="perPageSelect" name="perPage" class="appearance-none h-8 w-20 rounded-lg border border-gray-300 bg-white pl-3 pr-8 text-sm focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500">
             @foreach ([10,25,50,100] as $n)
               <option value="{{ $n }}" @selected((int)request('perPage', 10) === $n)>{{ $n }}</option>
             @endforeach
@@ -28,7 +28,7 @@
       </div>
 
       <div class="flex items-center gap-2 md:gap-3">
-        <div class="group relative flex items-center w-96 rounded-md bg-white ring-1 ring-inset ring-red-700/50 hover:ring-red-700/80 focus-within:ring-2 focus-within:ring-red-600">
+        <div class="group relative flex items-center w-96 rounded-lg bg-white ring-1 ring-inset ring-red-700/50 hover:ring-red-700/80 focus-within:ring-2 focus-within:ring-red-600">
           <svg class="ml-3 mr-2 h-4 w-4 stroke-slate-400" fill="none" viewBox="0 0 24 24" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
           <input id="searchInput" name="search" value="{{ request('search', request('q')) }}" type="search" autocomplete="off" placeholder="Cari Nama Agenda, Tempat, Dihadiri" class="block w-full appearance-none bg-transparent py-2 pr-3 text-base text-gray-700 placeholder:text-gray-400 focus:outline-none sm:text-sm sm:leading-6"/>
         </div>
@@ -51,7 +51,7 @@
             
             <input type="hidden" name="status" x-model="status">
 
-            <button @click="open = !open" @click.away="open = false" type="button" class="inline-flex w-40 items-center rounded-md bg-red-700 px-3 py-2 text-sm font-medium text-white shadow-sm hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-red-800">
+            <button @click="open = !open" @click.away="open = false" type="button" class="inline-flex w-40 items-center rounded-lg bg-red-700 px-3 py-2 text-sm font-medium text-white shadow-sm hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-red-800">
                 {{-- PERUBAHAN: Mengganti ikon filter dengan ikon "sort" --}}
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
                   <path d="M3 3a1 1 0 000 2h14a1 1 0 000-2H3zm0 4a1 1 0 000 2h10a1 1 0 000-2H3zm0 4a1 1 0 000 2h6a1 1 0 000-2H3z" />
@@ -69,7 +69,7 @@
                  x-transition:leave="transition ease-in duration-75" 
                  x-transition:leave-start="transform opacity-100 scale-100" 
                  x-transition:leave-end="transform opacity-0 scale-95" 
-                 class="absolute right-0 z-10 mt-2 w-full origin-top-right rounded-md bg-white shadow-lg border border-slate-300 focus:outline-none"
+                 class="absolute right-0 z-10 mt-2 w-full origin-top-right rounded-lg bg-white shadow-lg border border-slate-300 focus:outline-none"
                  style="display: none;">
                 <div class="py-1" role="menu" aria-orientation="vertical">
                     <a href="#" @click.prevent="status=''; label='Add Filter'; open=false; $nextTick(() => { $el.closest('form').dispatchEvent(new Event('change', { bubbles: true })) })" class="block px-4 py-2 text-sm text-gray-700 hover:bg-red-100 hover:text-red-900 hover:border-l-4 hover:border-red-500 transition-all duration-200" role="menuitem">Semua</a>
@@ -101,21 +101,21 @@
             <col class="w-[10%]" />                 {{-- Tempat --}}
             <col class="w-[10%]" />                 {{-- Tanggal --}}
             <col class="w-[10%]" />                 {{-- Waktu --}}
-            <col class="w-[10%]" />                 {{-- Penanggung Jawab --}}
+            <col class="w-[15%]" />                 {{-- Penanggung Jawab --}}
             <col class="w-[16%]" />                 {{-- Dihadiri --}}
             <col class="w-[12%]" />                 {{-- Status --}}
           </colgroup>
 
           <thead class="bg-red-700 text-white">
             <tr>
-              <th class="px-4 py-3 font-semibold rounded-tl-lg">No</th>
+              <th class="px-4 py-3 font-semibold rounded-lg">No</th>
               <th class="px-4 py-3 font-semibold">Nama Agenda</th>
               <th class="px-4 py-3 font-semibold">Tempat</th>
               <th class="px-4 py-3 font-semibold">Tanggal</th>
               <th class="px-4 py-3 font-semibold">Waktu</th>
-              <th class="px-4 py-3 font-semibold">Admin OPD</th>
+              <th class="px-4 py-3 font-semibold">OPD Pembuat</th>
               <th class="px-4 py-3 font-semibold">Dihadiri</th>
-              <th class="px-4 py-3 font-semibold rounded-tr-lg">Status</th>
+              <th class="px-4 py-3 font-semibold rounded-lg">Status</th>
             </tr>
           </thead>
 
@@ -178,15 +178,9 @@
 
               $waktuText = ($wMulai || $wSelesai) ? collect([$wMulai, $wSelesai])->filter()->implode(' - ') : ($wSatu ?? '-');
 
-              // PIC
-              $picText = data_get($agenda, 'admin.opd_admin') ?? $agenda->admin_id ?? null;
-              foreach (['pic','PIC','nama_pic','penanggung_jawab','petugas','user.name','creator.name','created_by_name','dibuat_oleh'] as $key) {
-                $val = data_get($agenda, $key);
-                if (is_string($val) && trim($val)!=='') { $picText = trim($val); break; }
-                if (is_object($val))   { $n = data_get($val,'name') ?? data_get($val,'nama') ?? data_get($val,'title'); if (is_string($n) && trim($n)!=='') { $picText = trim($n); break; } }
-                if (is_array($val))    { $n = $val['name'] ?? $val['nama'] ?? $val['title'] ?? null; if (is_string($n) && trim($n)!=='') { $picText = trim($n); break; } }
-              }
-              if (is_numeric($picText)) $picText = '-';
+              // ADMIN OPD - hanya menampilkan nama OPD
+              $opdAdmin = data_get($agenda, 'admin.opd.nama_opd') ?? '-';
+              $picText = $opdAdmin;
 
               // DIHADIRI
               $dihadiriText = data_get($agenda,'dihadiri') ?? data_get($agenda,'dihadiri_oleh') ?? data_get($agenda,'dihadiri_oleh_text') ?? '-';
@@ -216,7 +210,7 @@
               <td class="border-b border-slate-400 px-4 py-3 text-sm text-slate-800">{{ $picText }}</td>
               <td class="border-b border-slate-400 px-4 py-3 text-sm text-slate-800">{{ $dihadiriText }}</td>
               <td class="border-b border-slate-400 px-4 py-3">
-                <span class="inline-flex items-center rounded-md px-2 py-1 text-xs font-medium ring-1 ring-inset {{ $badgeClass }}">
+                <span class="inline-flex items-center rounded-lg px-2 py-1 text-xs font-medium ring-1 ring-inset {{ $badgeClass }}">
                   {{ ucfirst($labelStatus) }}
                 </span>
               </td>
@@ -230,7 +224,7 @@
 
       {{-- Pagination - Improved styling to appear integrated but separate --}}
       @if (method_exists($agendas, 'links'))
-        <div class="flex flex-col gap-3 border-t border-slate-200 px-2 py-4 bg-gray-50 rounded-b-lg">
+        <div class="flex flex-col gap-3 border-t border-slate-200 px-2 py-4 bg-gray-50 rounded-lg">
           <p class="text-sm text-slate-600 self-start">
             Menampilkan <span class="font-medium">{{ $agendas->firstItem() }}</span> –
             <span class="font-medium">{{ $agendas->lastItem() }}</span> dari

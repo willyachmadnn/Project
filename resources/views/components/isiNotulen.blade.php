@@ -62,10 +62,10 @@
     }
 </style>
 
-<div class="notulen-container bg-gradient-to-br from-white via-blue-50/30 to-indigo-50/50 rounded-3xl shadow-2xl border border-gray-200/50 p-4 sm:p-6 lg:p-8 mb-4 sm:mb-6 lg:mb-8 backdrop-blur-sm max-w-full overflow-hidden">
+<div class="notulen-container bg-gradient-to-br from-white via-blue-50/30 to-indigo-50/50 rounded-lg shadow-2xl border border-gray-200/50 p-4 sm:p-6 lg:p-8 mb-4 sm:mb-6 lg:mb-8 backdrop-blur-sm max-w-full overflow-hidden">
     <div class="mb-8">
         <div class="flex items-center space-x-4 mb-6">
-            <div class="w-16 h-16 bg-gradient-to-r from-blue-600 to-indigo-700 rounded-2xl flex items-center justify-center shadow-lg">
+            <div class="w-16 h-16 bg-gradient-to-r from-blue-600 to-indigo-700 rounded-lg flex items-center justify-center shadow-lg">
                 <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                 </svg>
@@ -75,7 +75,7 @@
                 <p class="text-gray-600 mt-2 text-lg">Dokumentasi lengkap hasil rapat dan keputusan penting</p>
             </div>
         </div>
-        <div class="bg-gradient-to-r from-blue-100 to-indigo-100 rounded-2xl p-4 sm:p-6 border border-blue-200/50">
+        <div class="bg-gradient-to-r from-blue-100 to-indigo-100 rounded-lg p-4 sm:p-6 border border-blue-200/50">
             <div class="flex items-start space-x-3">
                 <svg class="w-6 h-6 text-blue-600 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
@@ -116,7 +116,7 @@
                        id="pimpinan_rapat_ttd" 
                        name="pimpinan_rapat_ttd" 
                        value="{{''}}" 
-                       class="w-full px-4 py-4 pl-12 bg-white border-2 border-purple-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-200 hover:border-purple-300 text-gray-800 font-medium shadow-sm" 
+                       class="w-full px-4 py-4 pl-12 bg-white border-2 border-purple-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-200 hover:border-purple-300 text-gray-800 font-medium shadow-sm" 
                        placeholder="Masukkan nama lengkap pimpinan rapat">
                 <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                     <svg class="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -124,7 +124,7 @@
                     </svg>
                 </div>
             </div>
-            <p class="text-sm text-gray-600 bg-purple-50/50 p-4 rounded-xl border border-purple-200/50 flex items-start">
+            <p class="text-sm text-gray-600 bg-purple-50/50 p-4 rounded-lg border border-purple-200/50 flex items-start">
                 <svg class="w-4 h-4 mr-2 text-purple-500 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                 </svg>
@@ -141,7 +141,7 @@
                 Isi Notulen
                 <span class="text-red-500 ml-1">*</span>
             </label>
-            <div class="bg-white border-blue-200 rounded-xl shadow-sm overflow-hidden w-full">
+            <div class="bg-white border-blue-200 rounded-lg shadow-sm overflow-hidden w-full">
                 <textarea id="summernote-editor" name="isi_notulen" class="summernote">
                     {!! old('isi_notulen', $agenda->notulen->isi_notulen ?? '') !!}
                 </textarea>
@@ -149,7 +149,7 @@
         </div>
             
             {{-- Tombol Aksi --}}
-            <div class="bg-gradient-to-r from-gray-50 to-gray-100 rounded-2xl p-4 sm:p-6 border border-gray-200/50">
+            <div class="bg-gradient-to-r from-gray-50 to-gray-100 rounded-lg p-4 sm:p-6 border border-gray-200/50">
                 <div class="flex flex-col lg:flex-row gap-6 justify-between items-center">
                     <div class="text-sm text-gray-600">
                         <p class="font-medium flex items-center">
@@ -161,14 +161,14 @@
                     </div>
                     <div class="flex flex-col sm:flex-row gap-4 w-full lg:w-auto">
                         <button type="button" id="downloadPdfBtn"
-                            class="group w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-semibold rounded-xl shadow-lg hover:shadow-red-500/25 transform hover:scale-105 transition-all duration-200 flex items-center justify-center focus:outline-none focus:ring-4 focus:ring-red-500/50">
+                            class="group w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-semibold rounded-lg shadow-lg hover:shadow-red-500/25 transform hover:scale-105 transition-all duration-200 flex items-center justify-center focus:outline-none focus:ring-4 focus:ring-red-500/50">
                             <svg class="w-5 h-5 mr-3 group-hover:rotate-12 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                             </svg>
                             Download PDF
                         </button>
                         <button type="submit"
-                            class="group w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-semibold rounded-xl shadow-lg hover:shadow-green-500/25 transform hover:scale-105 transition-all duration-200 flex items-center justify-center focus:outline-none focus:ring-4 focus:ring-green-500/50">
+                            class="group w-full sm:w-auto px-8 py-4 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-semibold rounded-lg shadow-lg hover:shadow-green-500/25 transform hover:scale-105 transition-all duration-200 flex items-center justify-center focus:outline-none focus:ring-4 focus:ring-green-500/50">
                             <svg class="w-5 h-5 mr-3 group-hover:rotate-12 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                             </svg>

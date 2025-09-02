@@ -14,7 +14,7 @@
     
     <title>{{ $title }}</title>
 
-    {{-- Preload critical resources --}}
+    {{-- Preload criticazl resources --}}
     <link rel="preconnect" href="https://rsms.me">
     <link rel="preconnect" href="https://cdn.jsdelivr.net">
     <link rel="dns-prefetch" href="https://rsms.me">
@@ -39,6 +39,12 @@
     
     {{-- jQuery for PDF functionality --}}
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    {{-- SweetAlert2 for beautiful alerts --}}
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    {{-- Animate.css for smooth animations --}}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
     
     {{-- QR Code and PDF Libraries --}}
      <script src="https://cdn.jsdelivr.net/npm/qrious@4.0.2/dist/qrious.min.js"></script>

@@ -49,11 +49,11 @@
         'ring-0 ring-offset-0 ring-cyan-500' => in_array($kpiActive, ['menunggu', 'pending']),
     ])>
       {{-- Garis warna samping --}}
-      <div class="absolute left-0 top-0 bottom-0 w-4 rounded-l-lg bg-cyan-500"></div>
+      <div class="absolute left-0 top-0 bottom-0 w-4 rounded-l-lg bg-blue-600"></div>
       
       <div class="ml-3">
         <h3 class="text-slate-800 text-base font-semibold">Agenda Menunggu</h3>
-        <p class="mt-1 text-3xl font-bold text-cyan-600">{{ $pendingAgendasCount ?? 0 }}</p>
+        <p class="mt-1 text-3xl font-bold text-blue-600">{{ $pendingAgendasCount ?? 0 }}</p>
         @auth('admin')
         <p class="mt-2 text-sm text-gray-700 font-medium">Menunggu jadwal pelaksanaan</p>
         @endauth
@@ -72,7 +72,7 @@
 
       <div class="ml-3">
         <h3 class="text-slate-800 text-base font-semibold">Agenda Berlangsung</h3>
-        <p class="mt-1 text-3xl font-bold text-green-700">{{ $ongoingAgendasCount ?? 0 }}</p>
+        <p class="mt-1 text-3xl font-bold text-green-600">{{ $ongoingAgendasCount ?? 0 }}</p>
         @auth('admin')
         <p class="mt-2 text-sm text-gray-700 font-medium">Agenda aktif saat ini</p>
         @endauth
@@ -91,7 +91,7 @@
       
       <div class="ml-3">
         <h3 class="text-slate-800 text-base font-semibold">Agenda Berakhir</h3>
-        <p class="mt-1 text-3xl font-bold text-red-800">{{ $finishedAgendasCount ?? 0 }}</p>
+        <p class="mt-1 text-3xl font-bold text-red-700">{{ $finishedAgendasCount ?? 0 }}</p>
         @auth('admin')
         <p class="mt-2 text-sm text-gray-700 font-medium">Riwayat agenda terlaksana</p>
         @endauth
