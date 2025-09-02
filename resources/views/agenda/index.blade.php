@@ -134,7 +134,7 @@
 
                 <button type="button"
                     @click="isCreateModalOpen = true"
-                    class="group inline-flex w-40 items-center rounded-md  bg-red-700 px-3 py-2 text-sm font-medium text-white shadow-sm hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-red-800 transition-all duration-300 ease-in-out">
+                    class="group inline-flex w-40 items-center rounded-lg  bg-red-700 px-3 py-2 text-sm font-medium text-white shadow-sm hover:bg-red-800 focus:outline-none focus:ring-2 focus:ring-red-800 transition-all duration-300 ease-in-out">
                     <span class="mr-1 transition-transform duration-300 transform group-hover:rotate-90">+</span>
                     <span class="flex-grow text-center mx-2">Tambah Agenda</span>
                 </button>
@@ -144,13 +144,13 @@
                 <section class="relative z-20 mx-auto mb-10">
                   <div class="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
                     {{-- 1. Kartu Agenda Menunggu --}}
-                    <div class="modern-card relative bg-white p-6 rounded-md overflow-hidden transition-all duration-300 [box-shadow:0_4px_12px_-5px_rgba(0,0,0,0.4)] hover:shadow-2xl">
+                    <div class="modern-card relative bg-white p-6 rounded-lg overflow-hidden transition-all duration-300 [box-shadow:0_4px_12px_-5px_rgba(0,0,0,0.4)] hover:shadow-2xl">
                       {{-- Garis warna samping --}}
-                      <div class="absolute left-0 top-0 bottom-0 w-4 rounded-l-lg bg-cyan-500"></div>
+                      <div class="absolute left-0 top-0 bottom-0 w-4 rounded-l-lg bg-blue-600"></div>
                       
                       <div class="ml-3">
                         <h3 class="text-slate-800 text-base font-semibold">Agenda Menunggu</h3>
-                        <p class="mt-1 text-3xl font-bold text-cyan-600">{{ $pendingAgendasCount ?? 0 }}</p>
+                        <p class="mt-1 text-3xl font-bold text-blue-600">{{ $pendingAgendasCount ?? 0 }}</p>
                         @auth('admin')
                         <p class="mt-2 text-sm text-gray-700 font-medium">Menunggu jadwal pelaksanaan</p>
                         @endauth
@@ -158,13 +158,13 @@
                     </div>
 
                     {{-- 2. Kartu Agenda Berlangsung --}}
-                    <div class="modern-card relative bg-white p-6 rounded-md overflow-hidden transition-all duration-300 [box-shadow:0_4px_12px_-5px_rgba(0,0,0,0.4)] hover:shadow-2xl">
+                    <div class="modern-card relative bg-white p-6 rounded-lg overflow-hidden transition-all duration-300 [box-shadow:0_4px_12px_-5px_rgba(0,0,0,0.4)] hover:shadow-2xl">
                       {{-- Garis warna samping --}}
                       <div class="absolute left-0 top-0 bottom-0 w-4 rounded-l-lg bg-green-600"></div>
 
                       <div class="ml-3">
                         <h3 class="text-slate-800 text-base font-semibold">Agenda Berlangsung</h3>
-                        <p class="mt-1 text-3xl font-bold text-green-700">{{ $ongoingAgendasCount ?? 0 }}</p>
+                        <p class="mt-1 text-3xl font-bold text-green-600">{{ $ongoingAgendasCount ?? 0 }}</p>
                         @auth('admin')
                         <p class="mt-2 text-sm text-gray-700 font-medium">Agenda aktif saat ini</p>
                         @endauth
@@ -172,13 +172,13 @@
                     </div>
 
                     {{-- 3. Kartu Agenda Berakhir --}}
-                    <div class="modern-card relative bg-white p-6 rounded-md overflow-hidden transition-all duration-300 [box-shadow:0_4px_12px_-5px_rgba(0,0,0,0.4)] hover:shadow-2xl">
+                    <div class="modern-card relative bg-white p-6 rounded-lg overflow-hidden transition-all duration-300 [box-shadow:0_4px_12px_-5px_rgba(0,0,0,0.4)] hover:shadow-2xl">
                       {{-- Garis warna samping --}}
                       <div class="absolute left-0 top-0 bottom-0 w-4 rounded-l-lg bg-red-700"></div>
                       
                       <div class="ml-3">
                         <h3 class="text-slate-800 text-base font-semibold">Agenda Berakhir</h3>
-                        <p class="mt-1 text-3xl font-bold text-red-800">{{ $finishedAgendasCount ?? 0 }}</p>
+                        <p class="mt-1 text-3xl font-bold text-red-700">{{ $finishedAgendasCount ?? 0 }}</p>
                         @auth('admin')
                         <p class="mt-2 text-sm text-gray-700 font-medium">Riwayat agenda terlaksana</p>
                         @endauth
