@@ -69,7 +69,7 @@
         <div class="w-full max-w-md">
             <!-- Success Icon -->
             <div class="text-center mb-6">
-                <div class="mx-auto success-icon h-16 w-16 bg-green-600 rounded-full flex items-center justify-center mb-4">
+                <div class="mx-auto success-icon h-16 w-16 bg-green-600 rounded-lg flex items-center justify-center mb-4">
                     <svg class="h-8 w-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                     </svg>
@@ -79,7 +79,7 @@
             </div>
 
             <!-- Success Card -->
-            <div class="bg-white rounded-2xl shadow-xl success-card p-6">
+            <div class="bg-white rounded-lg shadow-xl success-card p-6">
                 <div class="text-center space-y-4">
                     <div class="bg-green-50 border border-green-200 rounded-lg p-3">
                         <h3 class="text-base font-semibold text-green-800 mb-2">{{ $tamu->agenda->nama_agenda }}</h3>

@@ -143,7 +143,7 @@
         <div class="form-wrapper">
         <!-- Header -->
         <div class="text-center mb-8">
-            <div class="mx-auto h-16 w-16 bg-green-600 rounded-full flex items-center justify-center mb-4">
+            <div class="mx-auto h-16 w-16 bg-green-600 rounded-lg flex items-center justify-center mb-4">
                 <svg class="h-8 w-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path>
                 </svg>
@@ -153,7 +153,7 @@
         </div>
 
         <!-- Form Card -->
-        <div class="rounded-3xl shadow-2xl p-8 bg-gradient-to-br from-white/90 to-white/70 backdrop-blur-xl border border-white/30" x-data="nonPegawaiForm()" style="background: linear-gradient(145deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.85) 100%); box-shadow: 0 25px 50px rgba(0,0,0,0.1), inset 0 1px 0 rgba(255,255,255,0.6);">
+        <div class="rounded-lg shadow-2xl p-8 bg-gradient-to-br from-white/90 to-white/70 backdrop-blur-xl border border-white/30" x-data="nonPegawaiForm()" style="background: linear-gradient(145deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.85) 100%); box-shadow: 0 25px 50px rgba(0,0,0,0.1), inset 0 1px 0 rgba(255,255,255,0.6);">
             <form @submit.prevent="submitForm" class="space-y-6">
                 @csrf
                 
@@ -254,19 +254,19 @@
                     type="submit" 
                     :disabled="!isFormValid() || submitting"
                     @click="console.log('Submit button clicked!')"
-                    class="w-full bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 disabled:from-gray-400 disabled:to-gray-500 disabled:cursor-not-allowed text-white font-bold py-4 px-8 rounded-2xl transition-all duration-300 transform hover:scale-[1.02] hover:shadow-xl active:scale-[0.98] flex items-center justify-center space-x-2 shadow-lg"
+                    class="w-full bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 disabled:from-gray-400 disabled:to-gray-500 disabled:cursor-not-allowed text-white font-bold py-4 px-8 rounded-lg transition-all duration-300 transform hover:scale-[1.02] hover:shadow-xl active:scale-[0.98] flex items-center justify-center space-x-2 shadow-lg"
                     style="background: linear-gradient(135deg, #ac1616 0%, #dc2626 50%, #b91c1c 100%); box-shadow: 0 10px 25px rgba(172, 22, 22, 0.3);"
                 >
                     <span x-show="!submitting">Daftar Kehadiran</span>
                     <span x-show="submitting" class="flex items-center space-x-2">
-                        <div class="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full"></div>
+                        <div class="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-lg"></div>
                         <span>Mendaftar...</span>
                     </span>
                 </button>
             </form>
 
             <!-- Success Message -->
-            <div x-show="success" x-transition class="mt-6 bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200/50 rounded-2xl p-6 shadow-lg backdrop-blur-sm" style="background: linear-gradient(135deg, rgba(34, 197, 94, 0.1) 0%, rgba(16, 185, 129, 0.05) 100%); border: 1px solid rgba(34, 197, 94, 0.2);">
+            <div x-show="success" x-transition class="mt-6 bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200/50 rounded-lg p-6 shadow-lg backdrop-blur-sm" style="background: linear-gradient(135deg, rgba(34, 197, 94, 0.1) 0%, rgba(16, 185, 129, 0.05) 100%); border: 1px solid rgba(34, 197, 94, 0.2);">
                 <div class="flex items-center">
                     <svg class="h-5 w-5 text-green-600 mr-2" fill="currentColor" viewBox="0 0 20 20">
                         <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>

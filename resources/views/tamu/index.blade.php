@@ -212,15 +212,15 @@
                         @csrf
                         <div>
                             <label for="create_NIP" class="block text-sm font-medium text-gray-700">NIP <span class="text-red-400">*</span></label>
-                            <input type="text" name="NIP" id="create_NIP" value="{{ old('NIP') }}" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" required maxlength="18">
+                            <input type="text" name="NIP" id="create_NIP" value="{{ old('NIP') }}" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-lg" required maxlength="18">
                         </div>
                         <div>
                             <label for="create_nama_tamu" class="block text-sm font-medium text-gray-700">Nama Tamu <span class="text-red-400">*</span></label>
-                            <input type="text" name="nama_tamu" id="create_nama_tamu" value="{{ old('nama_tamu') }}" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" required>
+                            <input type="text" name="nama_tamu" id="create_nama_tamu" value="{{ old('nama_tamu') }}" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-lg" required>
                         </div>
                         <div>
                             <label for="create_instansi" class="block text-sm font-medium text-gray-700">Instansi <span class="text-red-400">*</span></label>
-                            <input type="text" name="instansi" id="create_instansi" value="{{ old('instansi') }}" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" required>
+                            <input type="text" name="instansi" id="create_instansi" value="{{ old('instansi') }}" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-lg" required>
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Jenis Kelamin <span class="text-red-400">*</span></label>
@@ -236,10 +236,10 @@
                             </div>
                         </div>
                         <div class="pt-4 flex justify-end space-x-2">
-                            <button type="button" @click="isCreateModalOpen = false" class="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                            <button type="button" @click="isCreateModalOpen = false" class="bg-white py-2 px-4 border border-gray-300 rounded-lg shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                                 Batal
                             </button>
-                            <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                            <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-lg text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                                 Simpan
                             </button>
                         </div>
@@ -265,15 +265,15 @@
                         <div>
                             <label for="edit_NIP" class="block text-sm font-medium text-gray-700">NIP</label>
                             {{-- 'x-model' mengikat nilai input ini ke properti 'NIP' dari objek 'editTamu'. NIP dibuat 'readonly' karena merupakan primary key. --}}
-                            <input type="text" name="NIP" id="edit_NIP" x-model="editTamu.NIP" class="mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md bg-gray-100" readonly>
+                            <input type="text" name="NIP" id="edit_NIP" x-model="editTamu.NIP" class="mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-lg bg-gray-100" readonly>
                         </div>
                         <div>
                             <label for="edit_nama_tamu" class="block text-sm font-medium text-gray-700">Nama Tamu <span class="text-red-400">*</span></label>
-                            <input type="text" name="nama_tamu" id="edit_nama_tamu" x-model="editTamu.nama_tamu" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" required>
+                            <input type="text" name="nama_tamu" id="edit_nama_tamu" x-model="editTamu.nama_tamu" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-lg" required>
                         </div>
                         <div>
                             <label for="edit_instansi" class="block text-sm font-medium text-gray-700">Instansi <span class="text-red-400">*</span></label>
-                            <input type="text" name="instansi" id="edit_instansi" x-model="editTamu.instansi" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md" required>
+                            <input type="text" name="instansi" id="edit_instansi" x-model="editTamu.instansi" class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-lg" required>
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Jenis Kelamin <span class="text-red-400">*</span></label>
@@ -290,10 +290,10 @@
                             </div>
                         </div>
                         <div class="pt-4 flex justify-end space-x-2">
-                            <button type="button" @click="isEditModalOpen = false" class="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                            <button type="button" @click="isEditModalOpen = false" class="bg-white py-2 px-4 border border-gray-300 rounded-lg shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                                 Batal
                             </button>
-                            <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                            <button type="submit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-lg text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                                 Simpan Perubahan
                             </button>
                         </div>
