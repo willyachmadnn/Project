@@ -69,7 +69,7 @@ class AuthController extends Controller
         // Dapatkan informasi admin yang login
         $admin = $guard->user();
         $adminName = $admin->nama_admin ?? 'Admin';
-        $adminOpd = $admin->opd_admin ?? '';
+        $adminOpd = $admin->opd->nama_opd ?? 'OPD Tidak Diketahui';
         
         // Tambahkan pesan selamat datang
         return redirect()->intended(route('agenda.index'))

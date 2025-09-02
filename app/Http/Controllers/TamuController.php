@@ -324,8 +324,7 @@ class TamuController extends Controller
 
     /**
      * Menampilkan halaman tambah OPD untuk agenda tertentu.
-     */
-    public function tambahOpd(string $agendaId)
+     */    public function tambahOpd(string $agendaId)
     {
         $agenda = Agenda::findOrFail($agendaId);
         
@@ -335,8 +334,9 @@ class TamuController extends Controller
             ->pluck('opd_id')
             ->toArray();
         
-        // Mengambil semua OPD kecuali yang sudah ditambahkan
+        // Mengambil semua OPD kecuali yang sudah ditambahkan DAN KECUALI OPD ID 58
         $opds = \App\Models\Opd::whereNotIn('opd_id', $opdSudahDitambahkan)
+                                ->where('opd_id', '!=', 58) // <--- TAMBAHKAN BARIS INI
                                 ->orderBy('nama_opd', 'asc')
                                 ->get();
 
@@ -387,7 +387,7 @@ class TamuController extends Controller
      */
     public function opdDiundang($agendaId)
     {
-        $agenda = Agenda::where('agenda_id', $agendaId)->firstOrFail();
+        $agenda = Agenda::with('tamu')->where('agenda_id', $agendaId)->firstOrFail();
         
         $opdDiundang = DB::table('agenda_opd')
             ->join('opd', 'agenda_opd.opd_id', '=', 'opd.opd_id')
