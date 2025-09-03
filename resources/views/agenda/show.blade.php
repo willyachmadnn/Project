@@ -160,7 +160,7 @@
         </script>
     @endif
 
-    <div x-data="{
+    <div id="agendaTabComponent" x-data="{
         isCreateModalOpen: false,
         isEditModalOpen: false,
         isDeleteModalOpen: false,
@@ -173,19 +173,31 @@
         pendingAction: null,
         activeTab: 'detail',
         
-        init() {
-            // Check for URL fragment or sessionStorage to set active tab
-            const urlFragment = window.location.hash.substring(1);
-            const storedTab = sessionStorage.getItem('activeTab');
-            
-            if (urlFragment === 'notulen' || storedTab === 'notulen') {
-                this.activeTab = 'notulen';
-                sessionStorage.removeItem('activeTab'); // Clear after use
-            } else if (urlFragment === 'tamu' || storedTab === 'tamu') {
-                this.activeTab = 'tamu';
-                sessionStorage.removeItem('activeTab'); // Clear after use
-            }
-        },
+        // ... di dalam x-data ...
+init() {
+    // PRIORITAS 1: Baca parameter '?tab=' dari URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const tabFromUrl = urlParams.get('tab');
+
+    if (tabFromUrl === 'notulen' || tabFromUrl === 'tamu') {
+        this.activeTab = tabFromUrl;
+        return; // Hentikan jika tab sudah diatur dari parameter URL
+    }
+    
+    // PRIORITAS 2 (Fallback): Logika lama Anda untuk hash (#) dan sessionStorage
+    const urlFragment = window.location.hash.substring(1);
+    const storedTab = sessionStorage.getItem('activeTab');
+    
+    if (urlFragment === 'notulen' || storedTab === 'notulen') {
+        this.activeTab = 'notulen';
+    } else if (urlFragment === 'tamu' || storedTab === 'tamu') {
+        this.activeTab = 'tamu';
+    }
+
+    // Selalu hapus sessionStorage setelah digunakan
+    sessionStorage.removeItem('activeTab');
+},
+// ...,
     
         openEditModal() {
             this.editAgenda = {
@@ -492,4 +504,6 @@
 
     <x-slot:scripts>
     </x-slot:scripts>
+    {{-- Di dalam file resources/views/agenda/show.blade.php --}}
+
 </x-layout>

@@ -26,7 +26,7 @@
     <link rel="preload" href="{{ asset('img/hero-bg.jpg') }}" as="image" fetchpriority="high">
     
     {{-- Critical CSS first --}}
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @vite(['resources/css/app.css', 'resources/css/responsive-mobile.css', 'resources/js/app.js'])
     
 
     

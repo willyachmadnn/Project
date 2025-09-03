@@ -2,8 +2,8 @@
   <x-slot:title>Login Admin</x-slot:title>
 
   <!-- Pusatkan seluruh konten -->
-  <div class="min-h-[calc(100vh-4rem)] w-full grid place-items-center bg-gray-100 px-6 py-12 lg:px-8">
-    <div class="w-full max-w-md">
+  <div class="min-h-screen w-full grid place-items-center bg-gray-100 px-4 py-8 sm:px-6 sm:py-12 lg:px-8">
+    <div class="w-full max-w-md mx-2">
 
       <!-- BRAND: logo kiri + teks kanan, rata TENGAH (horizontal) -->
       <div class="flex items-center justify-center gap-3 mb-6">

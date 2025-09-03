@@ -7,6 +7,7 @@ export default defineConfig({
         laravel({
             input: [
                 'resources/css/app.css', 
+                'resources/css/responsive-mobile.css',
                 'resources/js/app.js',
                 'resources/js/alert-handler.js',
                 'resources/js/landing.js',

@@ -44,12 +44,11 @@ class NotulenController extends Controller
         $notulen = new Notulen();
         $notulen->agenda_id = $agenda->agenda_id;
         $notulen->isi_notulen = $request->isi_notulen;
-        // Mengambil nama pembuat dari user yang sedang login
         $notulen->pembuat = auth('admin')->user()->nama_admin;
         $notulen->save();
 
         // Redirect ke halaman detail agenda dengan pesan sukses
-        return redirect()->route('agenda.show', ['agenda' => $agenda])
+        return redirect()->route('agenda.show', ['agenda' => $agenda, 'tab' => 'notulen'])
             ->with('success', 'Notulen berhasil ditambahkan.');
     }
 
@@ -80,10 +79,10 @@ class NotulenController extends Controller
         $notulenData = $request->only(['isi_notulen']);
         // Mengupdate nama pembuat dengan user yang sedang login saat update
         $notulenData['pembuat'] = auth('admin')->user()->nama_admin;
-        
+
         $notulen->update($notulenData);
 
-        return redirect()->route('agenda.show', ['agenda' => $agenda])
+        return redirect()->route('agenda.show', ['agenda' => $agenda, 'tab' => 'notulen'])
             ->with('success', 'Notulen berhasil diperbarui.');
     }
 
@@ -94,7 +93,7 @@ class NotulenController extends Controller
     {
         $notulen->delete();
 
-        return redirect()->route('agenda.show', ['agenda' => $agenda])
+        return redirect()->route('agenda.show', ['agenda' => $agenda, 'tab' => 'notulen'])
             ->with('success', 'Notulen berhasil dihapus.');
     }
 }

@@ -1,0 +1,185 @@
+/* ===== RESPONSIVE MOBILE CSS ===== */
+/* File ini berisi gaya responsif untuk perangkat mobile */
+
+/* ===== BREAKPOINTS UTAMA ===== */
+/* Small devices (phones, 480px and down) */
+@media (max-width: 480px) {
+    body {
+        font-size: 14px;
+    }
+    
+    h1 {
+        font-size: 1.5rem;
+    }
+    
+    h2 {
+        font-size: 1.25rem;
+    }
+    
+    h3 {
+        font-size: 1.125rem;
+    }
+    
+    .container {
+        padding-left: 0.75rem;
+        padding-right: 0.75rem;
+    }
+    
+    /* Penyesuaian padding untuk konten */
+    .px-4 {
+        padding-left: 0.75rem !important;
+        padding-right: 0.75rem !important;
+    }
+    
+    .py-4 {
+        padding-top: 0.75rem !important;
+        padding-bottom: 0.75rem !important;
+    }
+    
+    /* Penyesuaian modal untuk layar kecil */
+    .modal-container {
+        width: 95% !important;
+        max-width: 100% !important;
+    }
+}
+
+/* Medium devices (tablets, 768px and down) */
+@media (max-width: 768px) {
+    /* Penyesuaian container */
+    .container {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+    
+    /* Penyesuaian grid untuk mobile */
+    .grid {
+        grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
+    }
+    
+    .grid-cols-2, .grid-cols-3, .grid-cols-4 {
+        grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
+    }
+    
+    /* Ubah arah flex untuk mobile */
+    .flex-row-mobile-col {
+        flex-direction: column !important;
+    }
+    
+    /* Penyesuaian spasi untuk mobile */
+    .space-y-mobile-4 > * + * {
+        margin-top: 1rem !important;
+    }
+    
+    /* Penyesuaian lebar elemen untuk mobile */
+    .w-full-mobile {
+        width: 100% !important;
+    }
+    
+    /* Penyesuaian padding untuk konten */
+    .p-mobile-reduced {
+        padding: 0.75rem !important;
+    }
+    
+    /* Penyesuaian tabel untuk mobile */
+    table {
+        display: block;
+        overflow-x: auto;
+        white-space: nowrap;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    /* Penyesuaian ukuran font untuk tabel */
+    table th, table td {
+        font-size: 0.875rem;
+        padding: 0.5rem !important;
+    }
+    
+    /* Penyesuaian untuk form input */
+    input, select, textarea {
+        font-size: 16px !important; /* Mencegah zoom pada iOS */
+        min-height: 44px;
+    }
+    
+    /* Penyesuaian untuk tombol */
+    button, .btn {
+        min-height: 44px;
+        min-width: 44px;
+        padding: 0.5rem 1rem !important;
+    }
+    
+    /* Penyesuaian modal untuk tablet */
+    .modal-container {
+        width: 90% !important;
+        max-width: 600px !important;
+    }
+    
+    /* Penyesuaian untuk kartu */
+    .card {
+        padding: 1rem !important;
+    }
+}
+
+/* Large devices (desktops, 1024px and down) */
+@media (max-width: 1024px) {
+    /* Penyesuaian untuk sidebar */
+    .sidebar {
+        width: 100%;
+        position: static;
+    }
+    
+    /* Penyesuaian untuk konten utama dengan sidebar */
+    .has-sidebar {
+        margin-left: 0 !important;
+    }
+}
+
+/* ===== UTILITAS RESPONSIF ===== */
+/* Sembunyikan elemen pada mobile */
+@media (max-width: 768px) {
+    .hidden-mobile {
+        display: none !important;
+    }
+    
+    .block-mobile {
+        display: block !important;
+    }
+    
+    /* Penyesuaian teks untuk mobile */
+    .text-center-mobile {
+        text-align: center !important;
+    }
+    
+    /* Penyesuaian margin untuk mobile */
+    .mx-auto-mobile {
+        margin-left: auto !important;
+        margin-right: auto !important;
+    }
+}
+
+/* ===== ORIENTASI LANDSCAPE ===== */
+@media (max-width: 768px) and (orientation: landscape) {
+    /* Penyesuaian untuk modal dalam orientasi landscape */
+    .modal-container {
+        max-height: 80vh !important;
+    }
+}
+
+/* ===== PRINT STYLES ===== */
+@media print {
+    /* Sembunyikan elemen yang tidak perlu dicetak */
+    .no-print {
+        display: none !important;
+    }
+    
+    /* Pastikan konten tercetak dengan benar */
+    body {
+        font-size: 12pt;
+    }
+    
+    /* Pastikan background dan warna tercetak */
+    * {
+        -webkit-print-color-adjust: exact !important;
+        color-adjust: exact !important;
+        print-color-adjust: exact !important;
+    }
+}
