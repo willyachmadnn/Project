@@ -42,10 +42,10 @@ Route::middleware('auth:admin')->group(function () {
         Route::post('/', [TamuController::class, 'store'])->name('store');
         Route::put('/{tamu:id_tamu}', [TamuController::class, 'update'])->name('update');
         Route::delete('/{tamu:id_tamu}', [TamuController::class, 'destroy'])->name('destroy');
-        
+
         // Route untuk halaman kelola tamu
         Route::get('/kelola', [TamuController::class, 'kelolaTamu'])->name('kelola');
-        
+
         // Route untuk halaman tambah OPD
         Route::get('/tambah-opd', [TamuController::class, 'tambahOpd'])->name('tambah-opd');
         Route::get('/opd-diundang', [TamuController::class, 'opdDiundang'])->name('opd-diundang');
