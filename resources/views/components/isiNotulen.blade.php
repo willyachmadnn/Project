@@ -115,9 +115,10 @@
                 <input type="text" 
                        id="pimpinan_rapat_ttd" 
                        name="pimpinan_rapat_ttd" 
-                       value="{{''}}" 
+                       value="{{ old('pimpinan_rapat_ttd', $agenda->notulen->pimpinan_rapat_ttd ?? '') }}" 
                        class="w-full px-4 py-4 pl-12 bg-white border-2 border-purple-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-all duration-200 hover:border-purple-300 text-gray-800 font-medium shadow-sm" 
-                       placeholder="Masukkan nama lengkap pimpinan rapat">
+                       placeholder="Masukkan nama lengkap pimpinan rapat" 
+                       required>
                 <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
                     <svg class="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
@@ -240,13 +241,20 @@
         $(document).on('click', '#downloadPdfBtn', function() {
             const button = $(this);
             const originalText = button.html();
+            
+            // Validasi nama pimpinan rapat wajib diisi
+            const pimpinanName = $('#pimpinan_rapat_ttd').val().trim();
+            if (!pimpinanName) {
+                alert('Nama Pimpinan Rapat wajib diisi untuk dapat mengunduh PDF!');
+                $('#pimpinan_rapat_ttd').focus();
+                return;
+            }
+            
             button.html('<i class="fas fa-spinner fa-spin mr-2"></i>Mempersiapkan...').prop('disabled', true);
 
             try {
-                const pimpinanName = $('#pimpinan_rapat_ttd').val();
-                
-                $('#pdf_pimpinan_name_detail').text(pimpinanName || 'Pimpinan Rapat');
-                $('#pdf_pimpinan_name_signature').text(pimpinanName || '(_____________________)');
+                $('#pdf_pimpinan_name_detail').text(pimpinanName);
+                $('#pdf_pimpinan_name_signature').text(pimpinanName);
 
                 const editorContent = $('#summernote-editor').summernote('code');
                 $('#pdf-content-body').html(editorContent);

@@ -26,6 +26,7 @@ class Notulen extends Model
         'agenda_id',
         'pembuat',
         'isi_notulen',
+        'pimpinan_rapat_ttd',
     ];
 
     /**
