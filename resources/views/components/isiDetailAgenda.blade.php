@@ -13,6 +13,63 @@
     editFormAction: '',
     showEditConfirm: false,
     
+    checkQrTimeValidity() {
+        // Mendapatkan waktu saat ini
+        const now = new Date();
+        
+        // Mendapatkan tanggal, waktu mulai, dan waktu selesai agenda
+        const agendaDate = new Date('{{ $agenda->tanggal->format('Y-m-d') }}');
+        const startTime = '{{ \Carbon\Carbon::parse($agenda->jam_mulai)->format('H:i') }}';
+        const endTime = '{{ \Carbon\Carbon::parse($agenda->jam_selesai)->format('H:i') }}';
+        
+        // Mengatur tanggal agenda dengan waktu mulai (dikurangi 1 jam) dan waktu selesai
+        const [startHour, startMinute] = startTime.split(':').map(Number);
+        const [endHour, endMinute] = endTime.split(':').map(Number);
+        
+        const agendaStartTime = new Date(agendaDate);
+        agendaStartTime.setHours(startHour, startMinute, 0);
+        
+        // Kurangi 1 jam dari waktu mulai untuk rentang validitas
+        const validStartTime = new Date(agendaStartTime);
+        validStartTime.setHours(validStartTime.getHours() - 1);
+        
+        const agendaEndTime = new Date(agendaDate);
+        agendaEndTime.setHours(endHour, endMinute, 0);
+        
+        // Cek apakah tanggal saat ini sama dengan tanggal agenda
+        const isSameDate = now.toDateString() === agendaDate.toDateString();
+        
+        // Cek apakah waktu saat ini berada dalam rentang waktu yang valid
+        const isWithinTimeRange = now >= validStartTime && now <= agendaEndTime;
+        
+        // Debug info
+        console.log('QR Time Validation:', {
+            now: now.toLocaleString(),
+            agendaDate: agendaDate.toDateString(),
+            startTime,
+            endTime,
+            validStartTime: validStartTime.toLocaleString(),
+            agendaEndTime: agendaEndTime.toLocaleString(),
+            isSameDate,
+            isWithinTimeRange
+        });
+        
+        // Jika dalam rentang waktu yang valid, tampilkan modal QR
+        if (isSameDate && isWithinTimeRange) {
+            this.showQrModal = true;
+            openQrModal();
+        } else {
+            // Jika tidak dalam rentang waktu yang valid, tampilkan pesan error dengan SweetAlert2
+            Swal.fire({
+                title: 'Tidak Dapat Menampilkan QR Code',
+                text: 'Kode QR tidak dapat digenerate karena Anda diluar rentang waktu agenda',
+                icon: 'error',
+                confirmButtonText: 'Tutup',
+                confirmButtonColor: '#ac1616'
+            });
+        }
+    },
+    
     openEditModal() {
         this.editAgenda = {
             agenda_id: {{ json_encode($agenda->agenda_id) }},
@@ -64,7 +121,7 @@
             </div>
         </div>
         <div class="flex flex-wrap gap-3">
-            <button @click="showQrModal = true; openQrModal()" class="group px-3 py-2 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-lg shadow-lg hover:shadow-blue-500/25 transform hover:scale-105 transition-all duration-200 focus:outline-none focus:ring-0 focus:ring-blue-500/50 flex items-center font-semibold">
+            <button @click="checkQrTimeValidity()" class="group px-3 py-2 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-lg shadow-lg hover:shadow-blue-500/25 transform hover:scale-105 transition-all duration-200 focus:outline-none focus:ring-0 focus:ring-blue-500/50 flex items-center font-semibold">
                 <svg class="w-5 h-5 mr-2 group-hover:rotate-12 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M12 12h-4.01M12 12v4m6-4h.01M12 8h.01M12 8h4.01M12 8H7.99M12 8V4m0 0H7.99M12 4h4.01"></path></svg>
                 QR Code
             </button>
@@ -710,6 +767,49 @@
             }, 100);
         }
     }
+    
+    /**
+     * Fungsi untuk testing validasi waktu QR dengan offset waktu tertentu
+     * Hanya untuk keperluan pengembangan/debugging
+     */
+    function testQrTimeValidation(hourOffset = 0) {
+        // Mendapatkan elemen Alpine.js
+        const alpineEl = document.querySelector('[x-data]').__x.$data;
+        
+        // Simpan fungsi asli Date
+        const OriginalDate = Date;
+        
+        try {
+            // Mock Date constructor untuk testing
+            Date = class extends OriginalDate {
+                constructor(...args) {
+                    if (args.length === 0) {
+                        // Jika dipanggil tanpa argumen, buat tanggal saat ini dengan offset
+                        const now = new OriginalDate();
+                        now.setHours(now.getHours() + hourOffset);
+                        return now;
+                    }
+                    return new OriginalDate(...args);
+                }
+                
+                // Pastikan toDateString dan lainnya tetap berfungsi
+                static now() {
+                    return new OriginalDate().getTime();
+                }
+            };
+            
+            // Panggil fungsi validasi waktu
+            console.log(`Testing QR validation with hour offset: ${hourOffset}`);
+            alpineEl.checkQrTimeValidity();
+            
+        } finally {
+            // Kembalikan fungsi Date asli
+            Date = OriginalDate;
+        }
+    }
+    
+    // Tambahkan fungsi ke window untuk testing di konsol browser
+    window.testQrTimeValidation = testQrTimeValidation;
     
     /**
      * Fungsi untuk generate QR codes
