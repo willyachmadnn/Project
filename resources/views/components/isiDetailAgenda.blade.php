@@ -335,8 +335,8 @@
                     <!-- QR Code Pegawai -->
                     <div class="bg-white rounded-lg shadow-lg border border-gray-200 p-8">
                         <div class="text-center mb-6">
-                            <h4 class="text-lg font-bold text-slate-800 mb-2">Pegawai Pemerintah</h4>
-                            <p class="text-slate-600 text-sm">Khusus untuk ASN & Pegawai Kontrak</p>
+                            <h4 class="text-lg font-bold text-slate-800 mb-2">QR Code Pegawai </h4>
+                            
                         </div>
                         
                         <div class="flex justify-center mb-6">
@@ -351,8 +351,8 @@
                     <!-- QR Code Non Pegawai -->
                     <div class="bg-white rounded-lg shadow-lg border border-gray-200 p-8">
                         <div class="text-center mb-6">
-                            <h4 class="text-lg font-bold text-slate-800 mb-2">Tamu Undangan</h4>
-                            <p class="text-slate-600 text-sm">Untuk Masyarakat & Instansi Lain</p>
+                            <h4 class="text-lg font-bold text-slate-800 mb-2">QR Code Non Pegawai</h4>
+            
                         </div>
                         
                         <div class="flex justify-center mb-6">
