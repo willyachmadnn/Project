@@ -26,7 +26,7 @@
         <div class="hero-text-content">
             <div class="slide-in-wrapper">
                 <h1 id="hero-title"
-                                                                                                                                                        class="animate-item text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold tracking-tight mb-3 sm:mb-4 text-white text-shadow leading-tight">
+                    class="animate-item text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight mb-4 text-white text-shadow">
                     Sistem Informasi E-Agenda Pemerintah Kabupaten Mojokerto 
                 </h1>
             </div>
