@@ -148,188 +148,269 @@
     </div>
 </div>
 
+{{-- ====================== UNDuh PDF: sesuai contoh Mojokerto (FINAL: text center + standar logo) ====================== --}}
 <script>
-// Global variables untuk search dan filter
-let currentSearchQuery = '';
-let currentFilter = '';
-
-// Fungsi untuk update search
-function updateSearch(query) {
-    currentSearchQuery = query;
-    filterTamu();
-}
-
-// Fungsi untuk update filter
-function updateFilter(filter, label) {
-    currentFilter = filter;
-    // Update label di dropdown
-    const labelElement = document.querySelector('[x-text="label"]');
-    if (labelElement) {
-        labelElement.textContent = label;
-    }
-    filterTamu();
-}
-
-// Fungsi untuk filter tamu
-function filterTamu() {
-    const rows = document.querySelectorAll('tbody tr');
-    
-    rows.forEach(row => {
-        const nip = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
-        const nama = row.querySelector('td:nth-child(3)').textContent.toLowerCase();
-        const jenisKelamin = row.querySelector('td:nth-child(4)').textContent.toLowerCase();
-        const instansi = row.querySelector('td:nth-child(5)').textContent.toLowerCase();
-        const tipe = row.querySelector('td:nth-child(6)').textContent.toLowerCase();
-        
-        const searchText = currentSearchQuery.toLowerCase();
-        const matchesSearch = !searchText || 
-            nip.includes(searchText) || 
-            nama.includes(searchText) || 
-            jenisKelamin.includes(searchText) || 
-            instansi.includes(searchText);
-        
-        const matchesFilter = !currentFilter || 
-            (currentFilter === 'pegawai' && tipe.includes('pegawai') && !tipe.includes('non')) ||
-            (currentFilter === 'non-pegawai' && tipe.includes('non-pegawai'));
-        
-        if (matchesSearch && matchesFilter) {
-            row.style.display = '';
-        } else {
-            row.style.display = 'none';
+    // Fungsi utility: garis titik-titik (fallback jika setLineDash tidak tersedia)
+    function drawDottedLine(doc, x1, y, x2, segment = 1.6, gap = 1.2) {
+        if (typeof doc.setLineDash === 'function') {
+            doc.setLineDash([1.5, 1.5], 0);
+            doc.line(x1, y, x2, y);
+            doc.setLineDash(); // reset
+            return;
         }
-    });
-}
-
-// Fungsi untuk download PDF daftar tamu
-function downloadTamuPDF() {
-    // Validasi: Cek apakah ada tamu yang hadir
-    const tamuRows = document.querySelectorAll('tbody tr');
-    if (tamuRows.length === 0) {
-        // Tampilkan alert error dengan styling yang menarik dan animasi smooth
-        Swal.fire({
-            icon: 'error',
-            title: 'Tidak Ada Tamu!',
-            text: 'Belum ada tamu yang hadir. PDF tidak dapat diunduh karena tidak ada data tamu untuk ditampilkan.',
-            confirmButtonText: 'Mengerti',
-            confirmButtonColor: '#dc2626',
-            background: '#fff',
-            backdrop: 'rgba(0,0,0,0.4)',
-            allowOutsideClick: false,
-            allowEscapeKey: true,
-            showClass: {
-                popup: 'animate__animated animate__fadeIn animate__faster',
-                backdrop: 'animate__animated animate__fadeIn animate__faster'
-            },
-            hideClass: {
-                popup: 'animate__animated animate__fadeOut animate__faster',
-                backdrop: 'animate__animated animate__fadeOut animate__faster'
-            },
-            customClass: {
-                popup: 'rounded-lg shadow-xl',
-                title: 'text-red-600 font-bold',
-                content: 'text-gray-700'
-            },
-            didOpen: () => {
-                // Mencegah scroll pada body saat modal terbuka
-                document.body.style.overflow = 'hidden';
-            },
-            willClose: () => {
-                // Mengembalikan scroll pada body saat modal ditutup
-                document.body.style.overflow = 'auto';
-            }
-        })
-        return;
-    }
-    
-    // Pastikan library jsPDF tersedia
-    if (typeof window.jspdf === 'undefined') {
-        alert('Library PDF tidak tersedia. Silakan refresh halaman dan coba lagi.');
-        return;
-    }
-    
-    const { jsPDF } = window.jspdf;
-    const pdf = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a4' });
-    
-    // Header PDF
-    pdf.setFontSize(16);
-    pdf.text('PEMERINTAH KABUPATEN MOJOKERTO', 148, 20, { align: 'center' });
-    pdf.setFontSize(14);
-    pdf.text('DAFTAR TAMU AGENDA', 148, 30, { align: 'center' });
-    pdf.setFontSize(12);
-    pdf.text('{{ $agenda->nama_agenda }}', 148, 40, { align: 'center' });
-    pdf.text('{{ $agenda->tempat }} • {{ \Carbon\Carbon::parse($agenda->tanggal)->format('d M Y') }} • {{ $agenda->jam_mulai }} - {{ $agenda->jam_selesai }}', 148, 50, { align: 'center' });
-    
-    // Ambil data tamu yang terlihat (tidak di-filter)
-    const visibleRows = Array.from(document.querySelectorAll('tbody tr')).filter(row => row.style.display !== 'none');
-    
-    if (visibleRows.length === 0) {
-        alert('Tidak ada data tamu untuk diunduh.');
-        return;
-    }
-    
-    // Header tabel
-    const headers = ['No', 'NIP', 'Nama', 'Jenis Kelamin', 'Instansi', 'Tipe', 'Waktu Daftar'];
-    const startY = 70;
-    let currentY = startY;
-    
-    // Gambar header tabel
-    pdf.setFontSize(10);
-    pdf.setFont(undefined, 'bold');
-    const colWidths = [15, 35, 50, 30, 60, 25, 40];
-    let currentX = 20;
-    
-    headers.forEach((header, index) => {
-        pdf.rect(currentX, currentY, colWidths[index], 8);
-        pdf.text(header, currentX + colWidths[index]/2, currentY + 5, { align: 'center' });
-        currentX += colWidths[index];
-    });
-    
-    currentY += 8;
-    pdf.setFont(undefined, 'normal');
-    
-    // Gambar data tamu
-    visibleRows.forEach((row, index) => {
-        if (currentY > 180) { // Jika mendekati batas halaman
-            pdf.addPage();
-            currentY = 20;
+        for (let x = x1; x < x2; x += (segment + gap)) {
+            const end = Math.min(x + segment, x2);
+            doc.line(x, y, end, y);
         }
-        
-        const cells = row.querySelectorAll('td');
-        currentX = 20;
-        
-        cells.forEach((cell, cellIndex) => {
-            if (cellIndex < 7) { // Hanya ambil 7 kolom pertama
-                let text = cell.textContent.trim();
-                if (cellIndex === 0) text = (index + 1).toString(); // Nomor urut
-                
-                pdf.rect(currentX, currentY, colWidths[cellIndex], 8);
-                
-                // Potong teks jika terlalu panjang
-                if (text.length > 20) {
-                    text = text.substring(0, 17) + '...';
-                }
-                
-                pdf.text(text, currentX + colWidths[cellIndex]/2, currentY + 5, { align: 'center' });
-                currentX += colWidths[cellIndex];
+    }
+
+    // =======================
+    // TOMBOL: downloadTamuPDF
+    // =======================
+    function downloadTamuPDF() {
+        const visibleRows = Array.from(document.querySelectorAll('tbody tr'))
+            .filter(row => row.style.display !== 'none');
+
+        if (visibleRows.length === 0) {
+            if (typeof Swal !== 'undefined') {
+                Swal.fire({ icon: 'error', title: 'Tidak Ada Data', text: 'Tidak ada tamu yang dapat diunduh.' });
+            } else {
+                alert('Tidak ada tamu yang dapat diunduh.');
             }
+            return;
+        }
+
+        const doc = new jspdf.jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+        const pageW = doc.internal.pageSize.getWidth();   // 210
+        const pageH = doc.internal.pageSize.getHeight();  // 297
+        const margin = 18;          // kiri/kanan
+        const topMargin = 18;
+        const bottomMargin = 16;
+        const usableW = pageW - margin * 2;
+
+        // Kolom tabel (NO | NAMA | L/P | INSTANSI/JABATAN)
+        const colNo   = 10;
+        const colNama = 60;
+        const colLP   = 10;
+        const colInst = usableW - (colNo + colNama + colLP);
+
+        // Util vertical-center (untuk single line)
+        const vCenter = (y, h, fontSize = doc.getFontSize()) =>
+            y + (h / 2) + (fontSize * 0.35 / 2.0);
+
+        // ===== Centering helper untuk cell multi-line =====
+        const LINE_H = 4.8;       // tinggi 1 baris (mm) @ font 10
+        const BASELINE_FIX = 3.4; // koreksi baseline agar optik pas @ font 10
+
+        function drawCenteredCellText(doc, text, cellX, cellY, cellW, cellH) {
+            const lines  = doc.splitTextToSize(text || '', cellW - 2);
+            const blockH = Math.max(1, lines.length) * LINE_H;
+            const startY = cellY + (cellH - blockH) / 2 + BASELINE_FIX;
+            doc.text(lines, cellX + (cellW / 2), startY, { align: 'center' });
+        }
+
+        // Hitung tinggi baris dinamis (sinkron dengan helper di atas)
+        function computeRowH(nama, instansi) {
+            doc.setFont('helvetica', 'normal'); doc.setFontSize(10);
+            const linesNama = doc.splitTextToSize(nama || '', colNama - 2).length;
+            const linesInst = doc.splitTextToSize(instansi || '', colInst - 2).length;
+            const maxLines  = Math.max(linesNama, linesInst, 1);
+            return Math.max(12, maxLines * LINE_H + 2); // minimal 12mm
+        }
+
+        // Header pertama (kop + judul + garis)
+        function drawKop() {
+            let y = topMargin;
+
+            // ===== Logo standar (20mm, posisi konsisten, rasio aman) =====
+            try {
+                const logo = new Image();
+                logo.src = '{{ asset("img/mojokerto_kab.png") }}';
+
+                const LOGO_W = 20;                // standar lebar logo (mm)
+                const LOGO_H = 20;                // standar tinggi logo (mm)
+                const LOGO_X = margin;            // posisi X
+                const LOGO_Y = topMargin + 0.5;   // posisi Y
+
+                // gambar logo
+                doc.addImage(logo, 'PNG', LOGO_X, LOGO_Y, LOGO_W, LOGO_H, undefined, 'FAST');
+            } catch (e) {
+                // aman bila gagal memuat logo
+            }
+
+            // Teks kop
+            doc.setFont('helvetica', 'bold');  doc.setFontSize(12);
+            doc.text('PEMERINTAH KABUPATEN MOJOKERTO', pageW / 2, y + 2, { align: 'center' });
+            doc.text('DINAS KOMUNIKASI DAN INFORMATIKA', pageW / 2, y + 8, { align: 'center' });
+
+            doc.setFont('helvetica', 'normal'); doc.setFontSize(9);
+            doc.text('Jl. Kyai H. Hasyim Asyari Nomor 12, Kode Pos 61318, Jawa Timur.', pageW / 2, y + 14, { align: 'center' });
+            doc.text('Telp. (0321) 391285 Fax. (0321) 391268', pageW / 2, y + 18, { align: 'center' });
+            doc.text('Website : https://diskominfo.mojokertokab.go.id', pageW / 2, y + 22, { align: 'center' });
+
+            // Garis
+            doc.setLineWidth(0.6);
+            doc.line(margin, y + 25, pageW - margin, y + 25);
+            doc.setLineWidth(0.2);
+
+            // Judul
+            doc.setFont('helvetica', 'bold'); doc.setFontSize(12);
+            doc.text('DAFTAR HADIR', pageW / 2, y + 36, { align: 'center' });
+
+            return y + 40; // Y posisi setelah judul
+        }
+
+        // Blok informasi (Acara/Hari/Pukul/Tempat)
+        function drawInfoBlock(yStart) {
+            let y = yStart;
+            const labelW = 26;
+            doc.setFont('helvetica', 'normal'); doc.setFontSize(10);
+
+            const hariTanggal = '{{ \Carbon\Carbon::parse($agenda->tanggal)->locale("id")->translatedFormat("l, d F Y") }}';
+            const info = [
+                ['Acara', `{{ $agenda->nama_agenda }}`],
+                ['Hari/Tanggal', hariTanggal],
+                ['Pukul', `{{ $agenda->jam_mulai }} - {{ $agenda->jam_selesai }}`],
+                ['Tempat', `{{ $agenda->tempat }}`],
+            ];
+
+            info.forEach(([label, val]) => {
+                const lines = doc.splitTextToSize(String(val || ''), usableW - labelW);
+                doc.text(`${label}  :`, margin, y);
+                doc.text(lines, margin + labelW, y);
+                y += 5 * Math.max(1, lines.length);
+            });
+
+            return y + 3;
+        }
+
+        // Header tabel (hanya di halaman pertama, sesuai contoh)
+        function drawTableHeader(yStart) {
+            const h = 10;
+            let x = margin;
+
+            doc.setFont('helvetica', 'bold'); doc.setFontSize(10);
+            doc.rect(x, yStart, colNo, h);
+            doc.text('NO', x + colNo / 2, vCenter(yStart, h, 10), { align: 'center' });
+            x += colNo;
+
+            doc.rect(x, yStart, colNama, h);
+            doc.text('NAMA', x + colNama / 2, vCenter(yStart, h, 10), { align: 'center' });
+            x += colNama;
+
+            doc.rect(x, yStart, colLP, h);
+            doc.text('L/P', x + colLP / 2, vCenter(yStart, h, 10), { align: 'center' });
+            x += colLP;
+
+            doc.rect(x, yStart, colInst, h);
+            doc.text('INSTANSI / JABATAN', x + colInst / 2, vCenter(yStart, h, 10), { align: 'center' });
+
+            return yStart + h;
+        }
+
+        // Satu baris data
+        function drawRow(idx, nama, jk, instansi, y) {
+            const h = computeRowH(nama, instansi);
+            let x = margin;
+
+            doc.setFont('helvetica', 'normal'); doc.setFontSize(10);
+
+            // NO (center)
+            doc.rect(x, y, colNo, h);
+            doc.text(String(idx), x + colNo / 2, vCenter(y, h, 10), { align: 'center' });
+            x += colNo;
+
+            // NAMA (center horizontal & vertikal)
+            doc.rect(x, y, colNama, h);
+            drawCenteredCellText(doc, nama, x, y, colNama, h);
+            x += colNama;
+
+            // L/P (center)
+            doc.rect(x, y, colLP, h);
+            const gender = ((jk || '').trim().toUpperCase().startsWith('P')) ? 'P' : 'L';
+            doc.text(gender, x + colLP / 2, vCenter(y, h, 10), { align: 'center' });
+            x += colLP;
+
+            // INSTANSI/JABATAN (center horizontal & vertikal)
+            doc.rect(x, y, colInst, h);
+            drawCenteredCellText(doc, instansi, x, y, colInst, h);
+
+            return h;
+        }
+
+        // Footnote bawah tiap halaman
+        function addFootnoteAllPages() {
+            const total = doc.getNumberOfPages();
+            for (let i = 1; i <= total; i++) {
+                doc.setPage(i);
+                doc.setFont('helvetica', 'normal'); doc.setFontSize(8);
+                doc.text('Data ini dihasilkan dari aplikasi https://agenda.mojokertokab.go.id/', pageW / 2, pageH - 6, { align: 'center' });
+            }
+        }
+
+        // Blok tanda tangan "Mengetahui" di halaman terakhir
+        function drawSignatureBlock() {
+            const startY =  pageH - 60; // posisi blok
+            const areaW = 80;           // lebar area tanda tangan
+            const x0 = pageW - margin - areaW;
+
+            doc.setFont('helvetica', 'normal'); doc.setFontSize(10);
+            doc.text('Mengetahui,', x0, startY);
+
+            // Garis titik-titik untuk tanda tangan
+            const line1Y = startY + 25;
+            drawDottedLine(doc, x0, line1Y, x0 + areaW);
+
+            // NIP
+            const line2Y = line1Y + 18;
+            doc.text('NIP.', x0, line2Y - 2);
+            drawDottedLine(doc, x0 + 9, line2Y, x0 + areaW);
+        }
+
+        // ================== Penyusunan halaman ==================
+        let y = drawKop();
+        y = drawInfoBlock(y);
+
+        // Header tabel (hanya halaman pertama)
+        y = drawTableHeader(y);
+
+        // Render baris
+        const spaceForSignature = 60; // mm (blok "Mengetahui")
+
+        visibleRows.forEach((row, idx) => {
+            const tds = row.querySelectorAll('td');
+            const nama = (tds[2]?.textContent || '').trim();
+            const jk   = (tds[3]?.textContent || '').trim();
+            const instansiNama = (tds[4]?.textContent || '').trim();
+
+            // Gabungan / format teks INSTANSI/JABATAN
+            const instansi = instansiNama;
+
+            const neededH = computeRowH(nama, instansi);
+            const limit = pageH - bottomMargin - 4;
+
+            if (y + neededH > limit) {
+                doc.addPage();
+                y = topMargin; // halaman berikutnya tanpa kop/judul (sesuai contoh)
+            }
+
+            const h = drawRow(idx + 1, nama, jk, instansi, y);
+            y += h;
         });
-        
-        currentY += 8;
-    });
-    
-    // Footer
-    const totalPages = pdf.internal.getNumberOfPages();
-    for (let i = 1; i <= totalPages; i++) {
-        pdf.setPage(i);
-        pdf.setFontSize(8);
-        pdf.text(`Halaman ${i} dari ${totalPages}`, 280, 200, { align: 'right' });
-        pdf.text(`Dicetak pada: ${new Date().toLocaleString('id-ID')}`, 20, 200);
+
+        // Pastikan blok tanda tangan muat di halaman terakhir
+        if (y + spaceForSignature > pageH - bottomMargin) {
+            doc.addPage();
+            y = topMargin;
+        }
+        drawSignatureBlock();
+
+        addFootnoteAllPages();
+
+        const fileName =
+            `Daftar_Hadir_{{ \Illuminate\Support\Str::slug($agenda->nama_agenda) }}_{{ \Carbon\Carbon::parse($agenda->tanggal)->format('d_m_Y') }}.pdf`;
+        doc.save(fileName);
     }
-    
-    // Simpan PDF
-    const fileName = `Daftar-Tamu-{{ Str::slug($agenda->nama_agenda) }}.pdf`;
-    pdf.save(fileName);
-}
 </script>
 
 </x-layout>
