@@ -25,11 +25,14 @@
 </head>
 <body class="bg-gray-100">
 
-    <div class="container mx-auto p-4 sm:p-8">
+    <div class="container mx-auto p-4 sm:p-8 z-index: 3000;">
         {{-- Tombol Kembali ke Halaman Detail --}}
-        <div class="mb-6">
-            <a href="{{ route('agenda.show', $agenda->agenda_id) }}#notulen" onclick="sessionStorage.setItem('activeTab', 'notulen');" class="inline-flex items-center px-4 py-2 bg-white border border-gray-300 rounded-lg font-semibold text-xs text-gray-700 uppercase tracking-widest shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-25 transition ease-in-out duration-150">
-                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+        <div class="mb-6 ml-6">
+            <a href="{{ route('agenda.show', $agenda->agenda_id) }}#notulen" onclick="sessionStorage.setItem('activeTab', 'notulen');"
+                class="group inline-flex items-center px-5 py-2.5 bg-[#ac1616] hover:bg-red-700 text-white hover:text-amber-50 font-medium rounded-lg shadow-sm hover:shadow-md transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-[#ac1616] focus:ring-offset-2">
+                <svg class="w-4 h-4 mr-2 group-hover:-translate-x-0.5 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                </svg>
                 Kembali ke Detail Agenda
             </a>
         </div>
