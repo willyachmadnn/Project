@@ -188,19 +188,20 @@
         const bottomMargin = 16;
         const usableW = pageW - margin * 2;
 
-        // Kolom tabel (NO | NAMA | L/P | INSTANSI/JABATAN)
-        const colNo   = 10;
-        const colNama = 60;
-        const colLP   = 10;
-        const colInst = usableW - (colNo + colNama + colLP);
+        // Kolom tabel (NO | NAMA | JENIS KELAMIN (L|P) | INSTANSI / JABATAN)
+        const colNo   = 12;
+        const colNama = 48;
+        const colJKL  = 10;   // Jenis Kelamin L (diperbesar)
+        const colJKP  = 10;   // Jenis Kelamin P (diperbesar)
+        const colInstansiJabatan = usableW - (colNo + colNama + colJKL + colJKP);
 
         // Util vertical-center (untuk single line)
         const vCenter = (y, h, fontSize = doc.getFontSize()) =>
             y + (h / 2) + (fontSize * 0.35 / 2.0);
 
         // ===== Centering helper untuk cell multi-line =====
-        const LINE_H = 4.8;       // tinggi 1 baris (mm) @ font 10
-        const BASELINE_FIX = 3.4; // koreksi baseline agar optik pas @ font 10
+        const LINE_H = 4.2;       // tinggi 1 baris (mm) @ font 9
+        const BASELINE_FIX = 3.0; // koreksi baseline agar optik pas @ font 9
 
         function drawCenteredCellText(doc, text, cellX, cellY, cellW, cellH) {
             const lines  = doc.splitTextToSize(text || '', cellW - 2);
@@ -210,74 +211,76 @@
         }
 
         // Hitung tinggi baris dinamis (sinkron dengan helper di atas)
-        function computeRowH(nama, instansi) {
-            doc.setFont('helvetica', 'normal'); doc.setFontSize(10);
+        function computeRowH(nama, instansiJabatan) {
+            doc.setFont('helvetica', 'normal'); doc.setFontSize(9);
             const linesNama = doc.splitTextToSize(nama || '', colNama - 2).length;
-            const linesInst = doc.splitTextToSize(instansi || '', colInst - 2).length;
-            const maxLines  = Math.max(linesNama, linesInst, 1);
-            return Math.max(12, maxLines * LINE_H + 2); // minimal 12mm
+            const linesInstansiJabatan = doc.splitTextToSize(instansiJabatan || '', colInstansiJabatan - 2).length;
+            const maxLines  = Math.max(linesNama, linesInstansiJabatan, 1);
+            return Math.max(10, maxLines * LINE_H + 2); // minimal 10mm
         }
 
         // Header pertama (kop + judul + garis)
         function drawKop() {
             let y = topMargin;
 
-            // ===== Logo standar (20mm, posisi konsisten, rasio aman) =====
+            // ===== Logo standar (ukuran dan posisi standar pemerintahan) =====
             try {
                 const logo = new Image();
                 logo.src = '{{ asset("img/mojokerto_kab.png") }}';
 
-                const LOGO_W = 20;                // standar lebar logo (mm)
-                const LOGO_H = 20;                // standar tinggi logo (mm)
-                const LOGO_X = margin;            // posisi X
-                const LOGO_Y = topMargin + 0.5;   // posisi Y
+                const LOGO_W = 18;                // standar lebar logo (mm)
+                const LOGO_H = 22;                // standar tinggi logo (mm) - rasio standar
+                const LOGO_X = margin + 2;       // posisi X dengan sedikit margin
+                const LOGO_Y = topMargin - 1;    // posisi Y (digeser ke atas)
 
-                // gambar logo
-                doc.addImage(logo, 'PNG', LOGO_X, LOGO_Y, LOGO_W, LOGO_H, undefined, 'FAST');
+                // gambar logo dengan kualitas standar
+                doc.addImage(logo, 'PNG', LOGO_X, LOGO_Y, LOGO_W, LOGO_H, undefined, 'MEDIUM');
             } catch (e) {
                 // aman bila gagal memuat logo
             }
 
-            // Teks kop
-            doc.setFont('helvetica', 'bold');  doc.setFontSize(12);
-            doc.text('PEMERINTAH KABUPATEN MOJOKERTO', pageW / 2, y + 2, { align: 'center' });
-            doc.text('DINAS KOMUNIKASI DAN INFORMATIKA', pageW / 2, y + 8, { align: 'center' });
+            // Teks kop sesuai format Mojokerto
+            doc.setFont('helvetica', 'bold');  doc.setFontSize(14);
+            doc.text('PEMERINTAH KABUPATEN MOJOKERTO', pageW / 2, y + 4, { align: 'center' });
+            doc.setFontSize(16);
+            doc.text('DINAS KOMUNIKASI DAN INFORMATIKA', pageW / 2, y + 10, { align: 'center' });
 
-            doc.setFont('helvetica', 'normal'); doc.setFontSize(9);
-            doc.text('Jl. Kyai H. Hasyim Asyari Nomor 12, Kode Pos 61318, Jawa Timur.', pageW / 2, y + 14, { align: 'center' });
-            doc.text('Telp. (0321) 391285 Fax. (0321) 391268', pageW / 2, y + 18, { align: 'center' });
-            doc.text('Website : https://diskominfo.mojokertokab.go.id', pageW / 2, y + 22, { align: 'center' });
+            doc.setFont('helvetica', 'normal'); doc.setFontSize(10);
+            doc.text('Jl. Kyai H. Hasyim Ashari Nomor 12, Kode Pos 61318, Jawa Timur.', pageW / 2, y + 16, { align: 'center' });
+            doc.text('Telp. (0321) 391268 Fax. (0321) 391268', pageW / 2, y + 20, { align: 'center' });
+            doc.text('Website : https://diskominfo.mojokertokab.go.id', pageW / 2, y + 24, { align: 'center' });
 
-            // Garis
-            doc.setLineWidth(0.6);
-            doc.line(margin, y + 25, pageW - margin, y + 25);
+            // Garis tebal
+            doc.setLineWidth(1.0);
+            doc.line(margin, y + 28, pageW - margin, y + 28);
             doc.setLineWidth(0.2);
 
             // Judul
-            doc.setFont('helvetica', 'bold'); doc.setFontSize(12);
-            doc.text('DAFTAR HADIR', pageW / 2, y + 36, { align: 'center' });
+            doc.setFont('helvetica', 'bold'); doc.setFontSize(14);
+            doc.text('DAFTAR HADIR PERTEMUAN RAPAT', pageW / 2, y + 38, { align: 'center' });
 
-            return y + 40; // Y posisi setelah judul
+            return y + 44; // Y posisi setelah judul
         }
 
-        // Blok informasi (Acara/Hari/Pukul/Tempat)
+        // Blok informasi (Hari/Tanggal, Waktu, Tempat, Acara)
         function drawInfoBlock(yStart) {
-            let y = yStart;
-            const labelW = 26;
-            doc.setFont('helvetica', 'normal'); doc.setFontSize(10);
+            let y = yStart + 5;
+            const labelW = 30;
+            doc.setFont('helvetica', 'normal'); doc.setFontSize(11);
 
             const hariTanggal = '{{ \Carbon\Carbon::parse($agenda->tanggal)->locale("id")->translatedFormat("l, d F Y") }}';
             const info = [
-                ['Acara', `{{ $agenda->nama_agenda }}`],
-                ['Hari/Tanggal', hariTanggal],
-                ['Pukul', `{{ $agenda->jam_mulai }} - {{ $agenda->jam_selesai }}`],
+                ['Hari / Tanggal', hariTanggal],
+                ['Waktu', `{{ $agenda->jam_mulai }} - {{ $agenda->jam_selesai }}`],
                 ['Tempat', `{{ $agenda->tempat }}`],
+                ['Acara', `{{ $agenda->nama_agenda }}`],
             ];
 
             info.forEach(([label, val]) => {
-                const lines = doc.splitTextToSize(String(val || ''), usableW - labelW);
-                doc.text(`${label}  :`, margin, y);
-                doc.text(lines, margin + labelW, y);
+                const lines = doc.splitTextToSize(String(val || ''), usableW - labelW - 5);
+                doc.text(`${label}`, margin, y);
+                doc.text(':', margin + labelW, y);
+                doc.text(lines, margin + labelW + 5, y);
                 y += 5 * Math.max(1, lines.length);
             });
 
@@ -286,38 +289,53 @@
 
         // Header tabel (hanya di halaman pertama, sesuai contoh)
         function drawTableHeader(yStart) {
-            const h = 10;
+            const h1 = 8;  // tinggi baris pertama
+            const h2 = 6;  // tinggi baris kedua
             let x = margin;
 
-            doc.setFont('helvetica', 'bold'); doc.setFontSize(10);
-            doc.rect(x, yStart, colNo, h);
-            doc.text('NO', x + colNo / 2, vCenter(yStart, h, 10), { align: 'center' });
+            doc.setFont('helvetica', 'bold'); doc.setFontSize(9);
+            
+            // Baris pertama header
+            doc.rect(x, yStart, colNo, h1 + h2);
+            doc.text('NO.', x + colNo / 2, vCenter(yStart, h1 + h2, 9), { align: 'center' });
             x += colNo;
 
-            doc.rect(x, yStart, colNama, h);
-            doc.text('NAMA', x + colNama / 2, vCenter(yStart, h, 10), { align: 'center' });
+            doc.rect(x, yStart, colNama, h1 + h2);
+            doc.text('NAMA', x + colNama / 2, vCenter(yStart, h1 + h2, 9), { align: 'center' });
             x += colNama;
 
-            doc.rect(x, yStart, colLP, h);
-            doc.text('L/P', x + colLP / 2, vCenter(yStart, h, 10), { align: 'center' });
-            x += colLP;
+            // Kolom Jenis Kelamin dengan sub-header L dan P (diperbaiki garis)
+            const jkTotalW = colJKL + colJKP;
+            doc.rect(x, yStart, jkTotalW, h1);
+            doc.text('JENIS', x + jkTotalW / 2, vCenter(yStart, h1, 9) - 1, { align: 'center' });
+            doc.text('KELAMIN', x + jkTotalW / 2, vCenter(yStart, h1, 9) + 2.5, { align: 'center' });
+            
+            // Sub-kolom L dengan garis yang tepat
+            doc.rect(x, yStart + h1, colJKL, h2);
+            doc.text('L', x + colJKL / 2, vCenter(yStart + h1, h2, 9), { align: 'center' });
+            x += colJKL;
+            
+            // Sub-kolom P dengan garis yang tepat
+            doc.rect(x, yStart + h1, colJKP, h2);
+            doc.text('P', x + colJKP / 2, vCenter(yStart + h1, h2, 9), { align: 'center' });
+            x += colJKP;
 
-            doc.rect(x, yStart, colInst, h);
-            doc.text('INSTANSI / JABATAN', x + colInst / 2, vCenter(yStart, h, 10), { align: 'center' });
+            doc.rect(x, yStart, colInstansiJabatan, h1 + h2);
+            doc.text('INSTANSI / JABATAN', x + colInstansiJabatan / 2, vCenter(yStart, h1 + h2, 9), { align: 'center' });
 
-            return yStart + h;
+            return yStart + h1 + h2;
         }
 
         // Satu baris data
-        function drawRow(idx, nama, jk, instansi, y) {
-            const h = computeRowH(nama, instansi);
+        function drawRow(idx, nama, jk, instansiJabatan, y) {
+            const h = computeRowH(nama, instansiJabatan);
             let x = margin;
 
-            doc.setFont('helvetica', 'normal'); doc.setFontSize(10);
+            doc.setFont('helvetica', 'normal'); doc.setFontSize(9);
 
             // NO (center)
             doc.rect(x, y, colNo, h);
-            doc.text(String(idx), x + colNo / 2, vCenter(y, h, 10), { align: 'center' });
+            doc.text(String(idx), x + colNo / 2, vCenter(y, h, 9), { align: 'center' });
             x += colNo;
 
             // NAMA (center horizontal & vertikal)
@@ -325,15 +343,25 @@
             drawCenteredCellText(doc, nama, x, y, colNama, h);
             x += colNama;
 
-            // L/P (center)
-            doc.rect(x, y, colLP, h);
-            const gender = ((jk || '').trim().toUpperCase().startsWith('P')) ? 'P' : 'L';
-            doc.text(gender, x + colLP / 2, vCenter(y, h, 10), { align: 'center' });
-            x += colLP;
+            // Jenis Kelamin L (center)
+            doc.rect(x, y, colJKL, h);
+            const isLaki = ((jk || '').trim().toUpperCase().startsWith('L'));
+            if (isLaki) {
+                doc.text('✓', x + colJKL / 2, vCenter(y, h, 9), { align: 'center' });
+            }
+            x += colJKL;
 
-            // INSTANSI/JABATAN (center horizontal & vertikal)
-            doc.rect(x, y, colInst, h);
-            drawCenteredCellText(doc, instansi, x, y, colInst, h);
+            // Jenis Kelamin P (center)
+            doc.rect(x, y, colJKP, h);
+            const isPerempuan = ((jk || '').trim().toUpperCase().startsWith('P'));
+            if (isPerempuan) {
+                doc.text('✓', x + colJKP / 2, vCenter(y, h, 9), { align: 'center' });
+            }
+            x += colJKP;
+
+            // INSTANSI / JABATAN (center horizontal & vertikal)
+            doc.rect(x, y, colInstansiJabatan, h);
+            drawCenteredCellText(doc, instansiJabatan, x, y, colInstansiJabatan, h);
 
             return h;
         }
@@ -386,7 +414,11 @@
             // Gabungan / format teks INSTANSI/JABATAN
             const instansi = instansiNama;
 
-            const neededH = computeRowH(nama, instansi);
+            const jabatan = 'PESERTA'; // Default jabatan
+            const unitKerja = 'DINAS PENDIDIKAN'; // Default unit kerja
+            const instansiJabatan = `${unitKerja} / ${jabatan}`;
+            
+            const neededH = computeRowH(nama, instansiJabatan);
             const limit = pageH - bottomMargin - 4;
 
             if (y + neededH > limit) {
@@ -394,7 +426,7 @@
                 y = topMargin; // halaman berikutnya tanpa kop/judul (sesuai contoh)
             }
 
-            const h = drawRow(idx + 1, nama, jk, instansi, y);
+            const h = drawRow(idx + 1, nama, jk, instansiJabatan, y);
             y += h;
         });
 
