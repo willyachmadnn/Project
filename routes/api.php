@@ -15,9 +15,7 @@ use App\Http\Controllers\Api\PegawaiController;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+// Removed unused user route - application uses Admin model for authentication
 
 // API untuk mencari pegawai berdasarkan NIP
 Route::get('/pegawai/{nip}', [PegawaiController::class, 'show']);
