@@ -205,8 +205,10 @@ class TamuController extends Controller
             $tamu = Tamu::create([
                 'NIP' => $request->nip,
                 'nama_tamu' => $pegawai->nama_pegawai,
-                'instansi' => $pegawai->instansi,
+                'opd_id' => $pegawai->instansi,
+                'instansi' => null, // Pegawai tidak menggunakan field instansi text
                 'jk' => $pegawai->jk,
+                'status' => 'pegawai', // Default status untuk pegawai
                 'agenda_id' => $agendaId
             ]);
 
@@ -214,13 +216,26 @@ class TamuController extends Controller
             return redirect()->route('tamu.success', ['nip' => $tamu->NIP]);
 
         } elseif ($type === 'non-pegawai') {
-            $nonPegawaiValidator = Validator::make($request->all(), [
+            // Validasi dasar untuk non-pegawai
+            $validationRules = [
                 'nama' => 'required|string|max:255',
                 'gender' => 'required|in:L,P',
-            ], [
+                'status' => 'required|in:non-asn,umum',
+            ];
+            
+            $validationMessages = [
                 'nama.required' => 'Nama lengkap wajib diisi.',
                 'gender.required' => 'Jenis kelamin wajib dipilih.',
-            ]);
+                'status.required' => 'Status wajib dipilih.',
+            ];
+            
+            // Jika status non-asn, instansi wajib diisi
+            if ($request->status === 'non-asn') {
+                $validationRules['instansi'] = 'required|string|max:255';
+                $validationMessages['instansi.required'] = 'Instansi wajib diisi untuk status Non-ASN.';
+            }
+
+            $nonPegawaiValidator = Validator::make($request->all(), $validationRules, $validationMessages);
 
             if ($nonPegawaiValidator->fails()) {
                 return redirect()->back()->withErrors($nonPegawaiValidator)->withInput();
@@ -241,12 +256,24 @@ class TamuController extends Controller
                 $nip = 'NP' . str_pad(rand(1, 999999), 6, '0', STR_PAD_LEFT);
             }
 
+            // Tentukan nilai opd_id dan instansi berdasarkan status
+            $opdId = null; // Non-pegawai tidak terkait dengan OPD
+            $instansiValue = null;
+            
+            if ($request->status === 'non-asn') {
+                $instansiValue = $request->instansi; // Gunakan input text instansi
+            } elseif ($request->status === 'umum') {
+                $instansiValue = null; // Umum tidak perlu instansi
+            }
+
             // Simpan data tamu non-pegawai
             $tamu = Tamu::create([
                 'NIP' => $nip,
                 'nama_tamu' => $request->nama,
-                'instansi' => 58, // ID OPD 'Umum' untuk tamu non-pegawai
+                'opd_id' => $opdId,
+                'instansi' => $instansiValue,
                 'jk' => $request->gender === 'L' ? 'Laki-laki' : 'Perempuan',
+                'status' => $request->status,
                 'agenda_id' => $agendaId
             ]);
 
