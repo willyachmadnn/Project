@@ -9,8 +9,8 @@
         ->where('agenda_opd.agenda_id', $agenda->agenda_id)
         ->get();
     
-    // Ambil tamu non-pegawai (tamu yang instansinya = 58, yaitu OPD 'Umum')
-    $tamuNonPegawai = $agenda->tamu->where('instansi', 58);
+    // Ambil tamu non-pegawai (tamu yang instansinya = 43, yaitu OPD 'Umum')
+    $tamuNonPegawai = $agenda->tamu->where('instansi', 43);
     
     // Total Diundang = jumlah OPD + tamu non-pegawai
     $totalDiundang = $opdDiundang->count() + $tamuNonPegawai->count();
