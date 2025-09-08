@@ -188,7 +188,7 @@
         const bottomMargin = 16;
         const usableW = pageW - margin * 2;
 
-        // Kolom tabel (NO | NAMA | JENIS KELAMIN (L|P) | INSTANSI / JABATAN)
+        // Kolom tabel (NO | NAMA | JENIS KELAMIN (L|P) | INSTANSI)
         const colNo   = 12;
         const colNama = 48;
         const colJKL  = 10;   // Jenis Kelamin L (diperbesar)
@@ -307,8 +307,8 @@
             // Kolom Jenis Kelamin dengan sub-header L dan P (diperbaiki garis)
             const jkTotalW = colJKL + colJKP;
             doc.rect(x, yStart, jkTotalW, h1);
-            doc.text('JENIS', x + jkTotalW / 2, vCenter(yStart, h1, 9) - 1, { align: 'center' });
-            doc.text('KELAMIN', x + jkTotalW / 2, vCenter(yStart, h1, 9) + 2.5, { align: 'center' });
+            doc.text('JENIS', x + jkTotalW / 2, vCenter(yStart, h1, 8) - 1, { align: 'center' });
+            doc.text('KELAMIN', x + jkTotalW / 2, vCenter(yStart, h1, 8) + 2, { align: 'center' });
             
             // Sub-kolom L dengan garis yang tepat
             doc.rect(x, yStart + h1, colJKL, h2);
@@ -321,7 +321,7 @@
             x += colJKP;
 
             doc.rect(x, yStart, colInstansiJabatan, h1 + h2);
-            doc.text('INSTANSI / JABATAN', x + colInstansiJabatan / 2, vCenter(yStart, h1 + h2, 9), { align: 'center' });
+            doc.text('INSTANSI/JABATAN', x + colInstansiJabatan / 2, vCenter(yStart, h1 + h2, 9), { align: 'center' });
 
             return yStart + h1 + h2;
         }
@@ -411,12 +411,9 @@
             const jk   = (tds[3]?.textContent || '').trim();
             const instansiNama = (tds[4]?.textContent || '').trim();
 
-            // Gabungan / format teks INSTANSI/JABATAN
+            // Hanya tampilkan instansi saja
             const instansi = instansiNama;
-
-            const jabatan = 'PESERTA'; // Default jabatan
-            const unitKerja = 'DINAS PENDIDIKAN'; // Default unit kerja
-            const instansiJabatan = `${unitKerja} / ${jabatan}`;
+            const instansiJabatan = instansi || 'INSTANSI TIDAK DIKETAHUI';
             
             const neededH = computeRowH(nama, instansiJabatan);
             const limit = pageH - bottomMargin - 4;
