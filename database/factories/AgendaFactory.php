@@ -3,7 +3,6 @@
 namespace Database\Factories;
 
 use App\Models\Agenda;
-use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Carbon\Carbon;
 
