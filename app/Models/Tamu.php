@@ -46,8 +46,10 @@ class Tamu extends Model
     protected $fillable = [
         'NIP',
         'nama_tamu',
+        'opd_id',
         'instansi',
         'jk',
+        'status',
         'agenda_id',
     ];
     
@@ -65,13 +67,13 @@ class Tamu extends Model
 
     /**
      * Mendefinisikan relasi "belongsTo" ke model Opd.
-     * Setiap tamu terhubung ke satu OPD melalui kolom instansi.
+     * Setiap tamu terhubung ke satu OPD melalui kolom opd_id.
      */
     public function opd(): BelongsTo
     {
         // Menghubungkan model Tamu dengan model Opd
-        // Foreign key di tabel ini adalah 'instansi'
+        // Foreign key di tabel ini adalah 'opd_id'
         // Primary key di tabel opd adalah 'opd_id'
-        return $this->belongsTo(Opd::class, 'instansi', 'opd_id');
+        return $this->belongsTo(Opd::class, 'opd_id', 'opd_id');
     }
 }
