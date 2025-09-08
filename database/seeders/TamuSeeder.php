@@ -79,7 +79,7 @@ class TamuSeeder extends Seeder
                     'NIP' => '#tamu' . str_pad($tamuCounter, 3, '0', STR_PAD_LEFT),
                     'nama_tamu' => $tamu['nama'],
                     'jk' => $tamu['jk'],
-                    'instansi' => 58, // ID instansi untuk tamu non-pegawai
+                    'instansi' => 43, // ID instansi untuk tamu non-pegawai (Umum)
                     'agenda_id' => $agenda->agenda_id,
                 ]);
                 $tamuCounter++;
@@ -104,7 +104,7 @@ class TamuSeeder extends Seeder
                 'NIP' => '#tamu' . str_pad($tamuCounter, 3, '0', STR_PAD_LEFT),
                 'nama_tamu' => $randomName,
                 'jk' => $randomGender,
-                'instansi' => 58,
+                'instansi' => 43, // Umum
                 'agenda_id' => $randomAgenda->agenda_id,
             ]);
             $tamuCounter++;
