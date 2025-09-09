@@ -64,7 +64,7 @@
     </style>
 </head>
 
-<body class="h-full bg-gradient-to-br from-green-50 to-emerald-100">
+<body class="h-full bg-gradient-to-br from-white-50 to-white">
     <div class="h-full flex items-center justify-center success-container px-4">
         <div class="w-full max-w-md">
             <!-- Success Icon -->
@@ -75,17 +75,15 @@
                     </svg>
                 </div>
                 <h1 class="success-title text-2xl font-bold text-gray-900 mb-2">Registrasi Berhasil!</h1>
-                <p class="text-gray-600 text-sm">Kehadiran Anda telah tercatat</p>
             </div>
 
             <!-- Success Card -->
             <div class="bg-white rounded-lg shadow-xl success-card p-6">
                 <div class="text-center space-y-4">
                     <div class="bg-green-50 border border-green-200 rounded-lg p-3">
-                        <h3 class="text-base font-semibold text-green-800 mb-2">{{ $tamu->agenda->nama_agenda }}</h3>
+                        <h3 class="text-base font-semibold text-green-800 mb-2">KEHADIRAN SUDAH TERCATAT DI AGENDA {{ $tamu->agenda->nama_agenda }}</h3>
                         <div class="agenda-info mt-2 text-xs text-green-600 space-y-1">
                             <p><strong>Nama:</strong> {{ $tamu->nama_tamu }}</p>
-                            <p><strong>NIP:</strong> {{ $tamu->NIP }}</p>
                             <p><strong>Tanggal:</strong> {{ \Carbon\Carbon::parse($tamu->agenda->tanggal)->format('d F Y') }}</p>
                             <p><strong>Waktu:</strong> {{ \Carbon\Carbon::parse($tamu->agenda->jam_mulai)->format('H:i') }} - {{ \Carbon\Carbon::parse($tamu->agenda->jam_selesai)->format('H:i') }}</p>
                             <p><strong>Tempat:</strong> {{ $tamu->agenda->tempat }}</p>

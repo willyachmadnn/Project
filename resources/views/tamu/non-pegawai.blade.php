@@ -56,11 +56,66 @@
             </div>
 
             <div>
+                <label class="block text-sm font-medium text-gray-700 mb-3">Status</label>
+                <div class="space-y-2">
+                    <div class="flex items-center">
+                        <input type="radio" id="status_non_asn" name="status" value="non-asn" 
+                               class="h-4 w-4 text-red-600 focus:ring-red-500 border-gray-300" 
+                               {{ old('status') == 'non-asn' ? 'checked' : '' }} required>
+                        <label for="status_non_asn" class="ml-2 block text-sm text-gray-700">Non-ASN</label>
+                    </div>
+                    <div class="flex items-center">
+                        <input type="radio" id="status_umum" name="status" value="umum" 
+                               class="h-4 w-4 text-red-600 focus:ring-red-500 border-gray-300" 
+                               {{ old('status') == 'umum' ? 'checked' : '' }} required>
+                        <label for="status_umum" class="ml-2 block text-sm text-gray-700">Umum</label>
+                    </div>
+                </div>
+            </div>
+
+            <div id="instansi_field" class="hidden">
+                <label for="instansi" class="block text-sm font-medium text-gray-700">Instansi</label>
+                <div class="mt-1">
+                    <input type="text" id="instansi" name="instansi" 
+                        class="w-full px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
+                        placeholder="Masukkan nama instansi..." value="{{ old('instansi') }}">
+                </div>
+            </div>
+
+            <div>
                 <button type="submit" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500">
                     Daftar Kehadiran
                 </button>
             </div>
         </form>
     </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const statusRadios = document.querySelectorAll('input[name="status"]');
+            const instansiField = document.getElementById('instansi_field');
+            const instansiInput = document.getElementById('instansi');
+
+            function toggleInstansiField() {
+                const selectedStatus = document.querySelector('input[name="status"]:checked');
+                
+                if (selectedStatus && selectedStatus.value === 'non-asn') {
+                    instansiField.classList.remove('hidden');
+                    instansiInput.setAttribute('required', 'required');
+                } else {
+                    instansiField.classList.add('hidden');
+                    instansiInput.removeAttribute('required');
+                    instansiInput.value = ''; // Clear the field when hidden
+                }
+            }
+
+            // Add event listeners to radio buttons
+            statusRadios.forEach(radio => {
+                radio.addEventListener('change', toggleInstansiField);
+            });
+
+            // Initialize on page load (for old input values)
+            toggleInstansiField();
+        });
+    </script>
 </body>
 </html>

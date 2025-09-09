@@ -94,7 +94,7 @@
                         <thead class="bg-gray-50">
                             <tr>
                                 <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">No</th>
-                                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">NIP</th>
+                                <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">No. Reg</th>
                                 <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Nama</th>
                                 <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Jenis Kelamin</th>
                                 <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Instansi</th>
@@ -119,7 +119,7 @@
                                         </span>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 text-center">
-                                        {{ $item->opd ? $item->opd->nama_opd : 'Tidak Diketahui' }}
+                                        {{ $item->opd ? $item->opd->nama_opd : ($item->instansi ? $item->instansi : 'Tidak Diketahui') }}
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-center">
                                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-lg text-xs font-medium
@@ -347,7 +347,7 @@
             doc.rect(x, y, colJKL, h);
             const isLaki = ((jk || '').trim().toUpperCase().startsWith('L'));
             if (isLaki) {
-                doc.text('✓', x + colJKL / 2, vCenter(y, h, 9), { align: 'center' });
+                doc.text('L', x + colJKL / 2, vCenter(y, h, 9), { align: 'center' });
             }
             x += colJKL;
 
@@ -355,7 +355,7 @@
             doc.rect(x, y, colJKP, h);
             const isPerempuan = ((jk || '').trim().toUpperCase().startsWith('P'));
             if (isPerempuan) {
-                doc.text('✓', x + colJKP / 2, vCenter(y, h, 9), { align: 'center' });
+                doc.text('P', x + colJKP / 2, vCenter(y, h, 9), { align: 'center' });
             }
             x += colJKP;
 
