@@ -41,7 +41,7 @@
 
         <section class="content-body">
             {{-- PERUBAHAN: Menambahkan div pembungkus dengan ID untuk target AJAX --}}
-            <div id="ajax-content-wrapper" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <div id="ajax-content-wrapper" class="w-full py-8">
                 
                 @php $kpiActive = request('status'); @endphp
                 
