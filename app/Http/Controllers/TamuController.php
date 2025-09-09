@@ -7,6 +7,7 @@ use App\Models\Opd;
 use App\Models\Tamu;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
@@ -290,6 +291,34 @@ class TamuController extends Controller
                 'agenda_id' => $agendaId
             ]);
 
+            // LOGIKA BARU: Validasi dan update status OPD untuk tamu Non-ASN
+            if ($request->status === 'non-asn' && $opdId) {
+                // Periksa apakah OPD yang dipilih terdaftar sebagai "OPD yang Diundang" pada agenda ini
+                $opdDiundang = DB::table('agenda_opd')
+                    ->where('agenda_id', $agendaId)
+                    ->where('opd_id', $opdId)
+                    ->first();
+                
+                if ($opdDiundang) {
+                    // Jika OPD terdaftar sebagai diundang, update status dari "diundang" menjadi "hadir"
+                    DB::table('agenda_opd')
+                        ->where('agenda_id', $agendaId)
+                        ->where('opd_id', $opdId)
+                        ->update([
+                            'status' => 'hadir',
+                            'updated_at' => now()
+                        ]);
+                    
+                    // Log untuk debugging (opsional)
+                    Log::info("Status OPD berhasil diperbarui", [
+                        'agenda_id' => $agendaId,
+                        'opd_id' => $opdId,
+                        'tamu_nama' => $request->nama,
+                        'status_baru' => 'hadir'
+                    ]);
+                }
+            }
+
             // Redirect ke halaman sukses
             return redirect()->route('tamu.success', ['nip' => $tamu->NIP]);
         }
@@ -377,11 +406,12 @@ class TamuController extends Controller
         // Filter OPD baru yang belum ada
         $newOpdIds = array_diff($request->opd_ids, $existingOpdIds);
         
-        // Simpan hanya OPD yang baru
+        // Simpan hanya OPD yang baru dengan status default 'diundang'
         foreach ($newOpdIds as $opdId) {
             DB::table('agenda_opd')->insert([
                 'agenda_id' => $agendaId,
                 'opd_id' => $opdId,
+                'status' => 'diundang', // Status default ketika OPD pertama kali diundang
                 'created_at' => now(),
                 'updated_at' => now()
             ]);
@@ -405,7 +435,7 @@ class TamuController extends Controller
         $opdDiundang = DB::table('agenda_opd')
             ->join('opd', 'agenda_opd.opd_id', '=', 'opd.opd_id')
             ->where('agenda_opd.agenda_id', $agendaId)
-            ->select('opd.*', 'agenda_opd.created_at as tanggal_diundang')
+            ->select('opd.*', 'agenda_opd.created_at as tanggal_diundang', 'agenda_opd.status')
             ->orderBy('opd.nama_opd')
             ->get();
             
