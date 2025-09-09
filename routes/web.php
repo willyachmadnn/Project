@@ -26,7 +26,7 @@ Route::get('/tamu/non-pegawai', [TamuController::class, 'createPublic'])->name('
 
 // Auth (admin)
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
-Route::post('/login', [AuthController::class, 'login']);
+Route::post('/login', [AuthController::class, 'login'])->name('login.post');
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:admin')->name('logout');
 
 //
@@ -62,7 +62,6 @@ Route::middleware('auth:admin')->group(function () {
     Route::prefix('agenda/{agenda}/notulen')->name('agenda.notulen.')->group(function () {
         Route::get('/create', [NotulenController::class, 'create'])->name('create');
         Route::post('/', [NotulenController::class, 'store'])->name('store');
-        Route::get('/{notulen}', [NotulenController::class, 'show'])->name('show');
         Route::get('/{notulen}/edit', [NotulenController::class, 'edit'])->name('edit');
         Route::put('/{notulen}', [NotulenController::class, 'update'])->name('update');
         Route::delete('/{notulen}', [NotulenController::class, 'destroy'])->name('destroy');
