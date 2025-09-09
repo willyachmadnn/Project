@@ -3,10 +3,11 @@
 
 @php
     use Illuminate\Support\Facades\DB;
-    // Ambil data OPD yang diundang untuk agenda ini
+    // Ambil data OPD yang diundang untuk agenda ini dengan status
     $opdDiundang = DB::table('agenda_opd')
         ->join('opd', 'agenda_opd.opd_id', '=', 'opd.opd_id')
         ->where('agenda_opd.agenda_id', $agenda->agenda_id)
+        ->select('opd.*', 'agenda_opd.status')
         ->get();
     
     // Total Diundang = jumlah OPD yang diundang
@@ -15,18 +16,8 @@
     // Total Hadir = jumlah semua tamu yang hadir di agenda ini
     $totalHadir = $agenda->tamu->count();
     
-    // Ambil OPD ID yang diundang
-    $opdIdDiundang = $opdDiundang->pluck('opd_id');
-    
-    // Ambil OPD ID yang sudah ada perwakilannya (tamu dengan status pegawai)
-    $opdIdYangSudahAdaPerwakilan = $agenda->tamu
-        ->where('status', 'pegawai')
-        ->pluck('opd_id')
-        ->unique()
-        ->filter(); // Remove null values
-    
-    // Hitung OPD yang diundang tapi sudah ada perwakilan
-    $opdDiundangYangSudahHadir = $opdIdDiundang->intersect($opdIdYangSudahAdaPerwakilan)->count();
+    // Hitung OPD berdasarkan status dari database
+    $opdDiundangYangSudahHadir = $opdDiundang->where('status', 'hadir')->count();
     
     // Total Belum Hadir = OPD yang diundang tapi belum ada perwakilan
     $totalBelumHadir = $opdDiundang->count() - $opdDiundangYangSudahHadir;
