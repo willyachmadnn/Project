@@ -52,7 +52,7 @@
   <input type="hidden" id="pageHidden" name="page" value="{{ request('page', 1) }}">
 
   {{-- ================== CONTROLS (Show / Search / Filter) ================== --}}
-  <section class="mx-auto mt-4 max-w-7xl px-2 sm:px-1">
+  <section class="w-full mt-4 px-2 sm:px-1">
     <div id="controls" class="flex flex-wrap items-center justify-between gap-4 mb-4">
 
       <div id="showWrap" class="inline-flex items-center gap-2 text-sm text-gray-700">

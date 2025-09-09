@@ -61,7 +61,7 @@
 
 @php
     $isLogin = request()->routeIs('login');
-    $isLanding = request()->routeIs('landing'); // sticky & footer hanya di landing
+    $isLanding = request()->routeIs('landing') || request()->is('403') || request()->is('404') || request()->is('500') || request()->is('503') || http_response_code() === 404; // sticky & footer di landing dan error pages
     $admin = Auth::guard('admin');
     $adminUser = $admin->user();
     $adminName = $admin->check()
@@ -70,7 +70,7 @@
     $adminOpd = $admin->check() ? $adminUser->opd->nama_opd ?? null : null;
 @endphp
 
-<body class="min-h-screen overflow-x-hidden bg-white text-slate-900 antialiased">
+<body class="{{ $isLanding ? 'min-h-screen flex flex-col overflow-x-hidden bg-white text-slate-900 antialiased' : 'min-h-screen overflow-x-hidden bg-white text-slate-900 antialiased' }}">
 
     {{-- ===== HEADER / NAV ===== --}}
     <header id="siteHeader" data-scrolled="0"
@@ -174,7 +174,7 @@
             }
         </style>
 
-        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="w-full px-4 sm:px-6 lg:px-8">
             <nav class="flex h-16 items-center justify-between">
                 {{-- Logo --}}
                 <a href="{{ route('landing') }}" class="flex items-center gap-3 shrink-0" aria-label="LogoMokad">
@@ -184,53 +184,11 @@
                     <span class="sr-only">E-Agenda Kab. Mojokerto</span>
                 </a>
 
-                <!-- Navigation Links - Desktop -->
-                <div class="hidden md:flex items-center space-x-8">
-                  <a href="{{ route('landing') }}" class="text-white hover:text-red-200 transition-colors duration-200 font-medium">
-                    Beranda
-                  </a>
-                  @auth('admin')
-                    <a href="{{ route('agenda.index') }}" class="text-white hover:text-red-200 transition-colors duration-200 font-medium">
-                      Dashboard
-                    </a>
-                  @endauth
-                </div>
+                
 
-                <!-- Mobile menu button -->
-                <div class="md:hidden" x-data="{ mobileMenuOpen: false }">
-                  <button @click="mobileMenuOpen = !mobileMenuOpen" 
-                          class="text-white hover:text-red-200 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-red-700 rounded-md p-2 transition-colors duration-200"
-                          aria-expanded="false" aria-label="Toggle navigation menu">
-                    <svg x-show="!mobileMenuOpen" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
-                    </svg>
-                    <svg x-show="mobileMenuOpen" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" x-cloak>
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
-                    </svg>
-                  </button>
-                  
-                  <!-- Mobile menu -->
-                  <div x-show="mobileMenuOpen" 
-                       x-transition:enter="transition ease-out duration-200"
-                       x-transition:enter-start="opacity-0 scale-95"
-                       x-transition:enter-end="opacity-100 scale-100"
-                       x-transition:leave="transition ease-in duration-150"
-                       x-transition:leave-start="opacity-100 scale-100"
-                       x-transition:leave-end="opacity-0 scale-95"
-                       @click.away="mobileMenuOpen = false"
-                       class="absolute top-full right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50"
-                       x-cloak>
-                    <a href="{{ route('landing') }}" 
-                       class="block px-4 py-2 text-gray-700 hover:bg-red-50 hover:text-red-700 transition-colors duration-200 font-medium">
-                      Beranda
-                    </a>
-                    @auth('admin')
-                      <a href="{{ route('agenda.index') }}" 
-                         class="block px-4 py-2 text-gray-700 hover:bg-red-50 hover:text-red-700 transition-colors duration-200 font-medium">
-                        Dashboard
-                      </a>
-                    @endauth
-                  </div>
+                <!-- Mobile menu button - Hidden -->
+                <div class="hidden">
+                  <!-- Mobile menu button removed for mobile view -->
                 </div>
 
                 {{-- Kanan --}}
@@ -258,27 +216,45 @@
                                 <p class="text-gray-500">{{ $adminOpd ? "OPD $adminOpd" : 'Admin' }}</p>
                             </div>
 
-                            <div class="py-1">
-                                <a href="{{ route('dashboard') }}"
-                                    class="block px-4 py-2 text-sm hover:bg-gray-50 hover:border-l-4 hover:border-blue-500 transition-all duration-200">Dashboard</a>
-                            </div>
+                            
 
                             <div class="border-t border-gray-200"></div>
 
                             <div class="py-1">
+                                @if ($isLanding)
+                                    {{-- Ketika di landing page, tampilkan menu Dashboard --}}
+                                    <a href="{{ route('dashboard') }}"
+                                        class="w-full text-left px-4 py-2 text-sm hover:bg-gray-50 hover:border-l-4 hover:border-red-500 transition-all duration-200 block">
+                                        
+                                        Dashboard
+                                    </a>
+                                @else
+                                    {{-- Ketika di dashboard, tampilkan menu Halaman Utama --}}
+                                    <a href="{{ route('landing') }}"
+                                        class="w-full text-left px-4 py-2 text-sm hover:bg-gray-50 hover:border-l-4 hover:border-red-500 transition-all duration-200 block">
+                                        
+                                        Halaman Utama
+                                    </a>
+                                @endif
+                                
+                                <div class="border-t border-gray-200 my-1"></div>
+                                
                                 <form method="POST" action="{{ route('logout') }}">
                                     @csrf
                                     <button type="submit"
-                                        class="w-full text-left px-4 py-2 text-sm hover:bg-gray-50 hover:border-l-4 hover:border-red-500 transition-all duration-200">Sign out</button>
+                                        class="w-full text-left px-4 py-2 text-sm hover:bg-gray-50 hover:border-l-4 hover:border-red-500 transition-all duration-200">
+                                        
+                                        Sign out
+                                    </button>
                                 </form>
                             </div>
                         </div>
                     </div>
                 @else
                     @if (Route::has('login') && !$isLogin)
-                        {{-- Login: semi transparan di top (landing), solid saat scroll/non-landing; teks tebal --}}
+                        {{-- Login: hidden on mobile, visible on desktop --}}
                         <a href="{{ route('login') }}"
-                            class="login-btn relative z-[60] pointer-events-auto inline-flex items-center rounded-md px-5 py-2 text-sm font-bold
+                            class="login-btn relative z-[60] pointer-events-auto hidden md:inline-flex items-center rounded-md px-5 py-2 text-sm font-bold
                       focus:outline-none focus-visible:ring-1 focus-visible:ring-white
                       focus-visible:ring-offset-1 focus-visible:ring-offset-[#ac1616]">
                             Login
@@ -310,14 +286,14 @@
     </header>
 
     {{-- ===== KONTEN ===== --}}
-    <main id="app" class="{{ $isLanding ? 'min-h-[calc(100vh-4rem)]' : 'min-h-screen pt-16' }} w-full">
+    <main id="app" class="{{ $isLanding ? 'flex-1 flex flex-col' : 'min-h-screen pt-16' }} w-full">
         {{ $slot }}
     </main>
 
     {{-- ===== FOOTER: hanya di landing ===== --}}
     @if ($isLanding)
         <footer class=" border-t border-white/10 bg-gradient-to-r from-[#ac1616] to-[#7e0f0f] text-white">
-            <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-4 text-sm text-white flex items-center gap-2">
+            <div class="w-full px-4 sm:px-6 lg:px-8 py-4 text-sm text-white flex items-center gap-2">
                 &copy; {{ now()->year }}
                 <div class="flex items-center gap-1">
                     <img src="https://mojokertokab.go.id/storage/tenantdiskominfo/app/gambar/config/site-logo-1686395812.png"

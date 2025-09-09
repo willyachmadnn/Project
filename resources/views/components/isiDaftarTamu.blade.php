@@ -9,22 +9,27 @@
         ->where('agenda_opd.agenda_id', $agenda->agenda_id)
         ->get();
     
-    // Ambil tamu non-pegawai (tamu yang instansinya = 43, yaitu OPD 'Umum')
-    $tamuNonPegawai = $agenda->tamu->where('instansi', 43);
+    // Total Diundang = jumlah OPD yang diundang
+    $totalDiundang = $opdDiundang->count();
     
-    // Total Diundang = jumlah OPD + tamu non-pegawai
-    $totalDiundang = $opdDiundang->count() + $tamuNonPegawai->count();
+    // Total Hadir = jumlah semua tamu yang hadir di agenda ini
+    $totalHadir = $agenda->tamu->count();
     
-    // Ambil OPD yang ada perwakilannya di tamu (cocokkan opd_id dengan instansi)
-    $opdHadir = $opdDiundang->filter(function($opd) use ($agenda) {
-        return $agenda->tamu->where('instansi', $opd->opd_id)->count() > 0;
-    });
+    // Ambil OPD ID yang diundang
+    $opdIdDiundang = $opdDiundang->pluck('opd_id');
     
-    // Total Hadir = tamu non-pegawai + OPD yang ada perwakilannya
-    $totalHadir = $tamuNonPegawai->count() + $opdHadir->count();
+    // Ambil OPD ID yang sudah ada perwakilannya (tamu dengan status pegawai)
+    $opdIdYangSudahAdaPerwakilan = $agenda->tamu
+        ->where('status', 'pegawai')
+        ->pluck('opd_id')
+        ->unique()
+        ->filter(); // Remove null values
     
-    // Total Tidak Hadir = OPD yang tidak ada perwakilannya
-    $totalTidakHadir = $opdDiundang->count() - $opdHadir->count();
+    // Hitung OPD yang diundang tapi sudah ada perwakilan
+    $opdDiundangYangSudahHadir = $opdIdDiundang->intersect($opdIdYangSudahAdaPerwakilan)->count();
+    
+    // Total Belum Hadir = OPD yang diundang tapi belum ada perwakilan
+    $totalBelumHadir = $opdDiundang->count() - $opdDiundangYangSudahHadir;
 @endphp
 
 <div class="bg-white/90 backdrop-blur-sm rounded-lg p-8 h-full overflow-y-auto shadow-lg border border-gray-200">
@@ -55,13 +60,13 @@
     </div>
     <!-- Statistics Cards -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <!-- Total Tamu Diundang -->
+        <!-- Total OPD Diundang -->
         <div class="bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg p-6 border border-blue-200 hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-blue-600 text-sm font-medium mb-1">Total Diundang</p>
                     <p class="text-3xl font-bold text-blue-800">{{ $totalDiundang }}</p>
-                    <p class="text-blue-500 text-xs mt-1">Tamu yang diundang</p>
+                    <p class="text-blue-500 text-xs mt-1">OPD yang diundang</p>
                 </div>
                 <div class="w-12 h-12 bg-gradient-to-r from-blue-500 to-blue-600 rounded-lg flex items-center justify-center">
                     <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -71,13 +76,13 @@
             </div>
         </div>
 
-        <!-- Total Tamu Hadir -->
+        <!-- Total Semua Tamu Hadir -->
         <div class="bg-gradient-to-br from-green-50 to-green-100 rounded-lg p-6 border border-green-200 hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
             <div class="flex items-center justify-between">
                 <div>
                     <p class="text-green-600 text-sm font-medium mb-1">Total Hadir</p>
                     <p class="text-3xl font-bold text-green-800">{{ $totalHadir }}</p>
-                    <p class="text-green-500 text-xs mt-1">Tamu yang hadir</p>
+                    <p class="text-green-500 text-xs mt-1">Semua tamu yang hadir</p>
                 </div>
                 <div class="w-12 h-12 bg-gradient-to-r from-green-500 to-green-600 rounded-lg flex items-center justify-center">
                     <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -87,13 +92,13 @@
             </div>
         </div>
 
-        <!-- Total Tamu Tidak Hadir -->
+        <!-- Total OPD Belum Hadir -->
         <div class="bg-gradient-to-br from-red-50 to-red-100 rounded-lg p-6 border border-red-200 hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
             <div class="flex items-center justify-between">
                 <div>
-                    <p class="text-red-600 text-sm font-medium mb-1">Tidak Hadir</p>
-                    <p class="text-3xl font-bold text-red-800">{{ $totalTidakHadir }}</p>
-                    <p class="text-red-500 text-xs mt-1">Tamu tidak hadir</p>
+                    <p class="text-red-600 text-sm font-medium mb-1">Belum Hadir</p>
+                    <p class="text-3xl font-bold text-red-800">{{ $totalBelumHadir }}</p>
+                    <p class="text-red-500 text-xs mt-1">OPD belum ada perwakilan</p>
                 </div>
                 <div class="w-12 h-12 bg-gradient-to-r from-red-500 to-red-600 rounded-lg flex items-center justify-center">
                     <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">

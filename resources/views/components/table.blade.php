@@ -85,7 +85,7 @@
   </section>
 
   {{-- ==================== TABLE + PAGINATION (dibungkus #tableWrap untuk AJAX) ==================== --}}
-  <section id="tableWrap" class="mx-auto mt-4 max-w-7xl px-2 sm:px-1">
+  <section id="tableWrap" class="w-full mt-4 px-2 sm:px-1">
     <div class="rounded-lg  bg-white shadow-xl">
       <div class="overflow-x-auto">
         <table class="agenda-table w-full table-fixed text-xs sm:text-sm
