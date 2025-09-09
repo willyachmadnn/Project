@@ -67,7 +67,7 @@
                                  x-transition:leave="transition ease-in duration-75" 
                                  x-transition:leave-start="transform opacity-100 scale-100" 
                                  x-transition:leave-end="transform opacity-0 scale-95" 
-                                 class="absolute right-0 z-10 mt-2 w-full origin-top-right rounded-md bg-white shadow-lg border border-slate-300 focus:outline-none"
+                                 class="absolute right-0 z-10 bottom-full mb-2 w-full origin-bottom-right rounded-md bg-white shadow-lg border border-slate-300 focus:outline-none"
                                  style="display: none;">
                                 <div class="py-1" role="menu" aria-orientation="vertical">
                                      <a href="#" @click.prevent="updateFilter('', 'Add Filter'); open=false" class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-100 hover:text-blue-900 hover:border-l-4 hover:border-blue-500 transition-all duration-200" role="menuitem">Semua</a>
