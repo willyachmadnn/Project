@@ -1,14 +1,6 @@
 @php
-    // Logika untuk menentukan status OPD berdasarkan kehadiran perwakilan
-    $opdDiundangWithStatus = $opdDiundang->map(function($opd) use ($agenda) {
-        // Cek apakah ada perwakilan dari OPD ini yang hadir (tamu dengan status pegawai dan opd_id yang sesuai)
-        $hasRepresentative = $agenda->tamu
-            ->where('status', 'pegawai')
-            ->where('opd_id', $opd->opd_id)
-            ->count() > 0;
-        $opd->status = $hasRepresentative ? 'hadir' : 'diundang';
-        return $opd;
-    });
+    // Status OPD sekarang diambil langsung dari database (kolom status di tabel agenda_opd)
+    $opdDiundangWithStatus = $opdDiundang;
 @endphp
 
 <x-layout title="OPD yang Diundang - {{ $agenda->judul_agenda }}">
