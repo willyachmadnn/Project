@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Agenda;
+use App\Models\Opd;
 use App\Models\Tamu;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -149,7 +150,9 @@ class TamuController extends Controller
         if ($type === 'pegawai') {
             return view('tamu.pegawai', compact('agendaId', 'type'));
         } elseif ($type === 'non-pegawai') {
-            return view('tamu.non-pegawai', compact('agendaId', 'type'));
+            // Ambil semua data OPD untuk dropdown
+            $opdList = Opd::orderBy('nama_opd', 'asc')->get();
+            return view('tamu.non-pegawai', compact('agendaId', 'type', 'opdList'));
         }
 
         abort(400, 'Type tidak valid');
@@ -232,7 +235,9 @@ class TamuController extends Controller
             // Jika status non-asn, instansi wajib diisi
             if ($request->status === 'non-asn') {
                 $validationRules['instansi'] = 'required|string|max:255';
+                $validationRules['opd_id'] = 'nullable|exists:opd,opd_id'; // Optional, harus valid jika diisi
                 $validationMessages['instansi.required'] = 'Instansi wajib diisi untuk status Non-ASN.';
+                $validationMessages['opd_id.exists'] = 'OPD yang dipilih tidak valid.';
             }
 
             $nonPegawaiValidator = Validator::make($request->all(), $validationRules, $validationMessages);
@@ -257,11 +262,19 @@ class TamuController extends Controller
             }
 
             // Tentukan nilai opd_id dan instansi berdasarkan status
-            $opdId = null; // Non-pegawai tidak terkait dengan OPD
+            $opdId = null;
             $instansiValue = null;
             
             if ($request->status === 'non-asn') {
-                $instansiValue = $request->instansi; // Gunakan input text instansi
+                $instansiValue = $request->instansi;
+                
+                // Gunakan opd_id dari form jika tersedia (dari dropdown selection)
+                if ($request->filled('opd_id')) {
+                    $opdId = $request->opd_id;
+                } else {
+                    // Jika opd_id kosong, berarti input manual - tetap null
+                    $opdId = null;
+                }
             } elseif ($request->status === 'umum') {
                 $instansiValue = null; // Umum tidak perlu instansi
             }
