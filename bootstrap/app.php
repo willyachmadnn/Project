@@ -14,6 +14,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware): void {
         $middleware->alias([
             'cache.headers' => \App\Http\Middleware\CacheHeaders::class,
+            'admin.auth' => \App\Http\Middleware\AdminAuth::class,
         ]);
         
         // Exclude CSRF verification for public tamu routes
