@@ -72,7 +72,8 @@
                                 <div class="py-1" role="menu" aria-orientation="vertical">
                                      <a href="#" @click.prevent="updateFilter('', 'Add Filter'); open=false" class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-100 hover:text-blue-900 hover:border-l-4 hover:border-blue-500 transition-all duration-200" role="menuitem">Semua</a>
                                      <a href="#" @click.prevent="updateFilter('pegawai', 'Pegawai'); open=false" class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-100 hover:text-blue-900 hover:border-l-4 hover:border-blue-500 transition-all duration-200" role="menuitem">Pegawai</a>
-                                     <a href="#" @click.prevent="updateFilter('non-pegawai', 'Non-Pegawai'); open=false" class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-100 hover:text-blue-900 hover:border-l-4 hover:border-blue-500 transition-all duration-200" role="menuitem">Non-Pegawai</a>
+                                     <a href="#" @click.prevent="updateFilter('non-pegawai', 'Non-ASN'); open=false" class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-100 hover:text-blue-900 hover:border-l-4 hover:border-blue-500 transition-all duration-200" role="menuitem">Non-ASN</a>
+                                     <a href="#" @click.prevent="updateFilter('umum', 'Umum'); open=false" class="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-100 hover:text-blue-900 hover:border-l-4 hover:border-blue-500 transition-all duration-200" role="menuitem">Umum</a>
                                  </div>
                             </div>
                         </div>
@@ -123,8 +124,14 @@
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-center">
                                         <span class="inline-flex items-center px-2.5 py-0.5 rounded-lg text-xs font-medium
-                                            {{ str_starts_with($item->NIP, 'NP') ? 'bg-purple-100 text-purple-800' : 'bg-green-100 text-green-800' }}">
-                                            {{ str_starts_with($item->NIP, 'NP') ? 'Non-Pegawai' : 'Pegawai' }}
+                                            @if($item->status === 'pegawai') bg-green-100 text-green-800
+                                            @elseif($item->status === 'non-asn') bg-purple-100 text-purple-800
+                                            @else bg-gray-100 text-gray-800
+                                            @endif">
+                                            @if($item->status === 'pegawai') Pegawai
+                                            @elseif($item->status === 'non-asn') Non-ASN
+                                            @else {{ ucfirst($item->status) }}
+                                            @endif
                                         </span>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
@@ -439,6 +446,61 @@
         const fileName =
             `Daftar_Hadir_{{ \Illuminate\Support\Str::slug($agenda->nama_agenda) }}_{{ \Carbon\Carbon::parse($agenda->tanggal)->format('d_m_Y') }}.pdf`;
         doc.save(fileName);
+    }
+
+    // Fungsi untuk filter berdasarkan status
+    function updateFilter(filterValue, filterLabel) {
+        const rows = document.querySelectorAll('tbody tr');
+        
+        rows.forEach(row => {
+            if (filterValue === '') {
+                // Tampilkan semua baris
+                row.style.display = '';
+            } else {
+                // Ambil kolom status (kolom ke-6, index 5)
+                const statusCell = row.querySelectorAll('td')[5];
+                if (statusCell) {
+                    const statusText = statusCell.textContent.trim().toLowerCase();
+                    
+                    // Cocokkan dengan filter
+                    let shouldShow = false;
+                    if (filterValue === 'pegawai' && statusText === 'pegawai') {
+                        shouldShow = true;
+                    } else if (filterValue === 'non-pegawai' && statusText === 'non-asn') {
+                        shouldShow = true;
+                    } else if (filterValue === 'umum' && statusText === 'umum') {
+                        shouldShow = true;
+                    }
+                    
+                    row.style.display = shouldShow ? '' : 'none';
+                }
+            }
+        });
+    }
+
+    // Fungsi untuk pencarian
+    function updateSearch(searchValue) {
+        const rows = document.querySelectorAll('tbody tr');
+        const searchTerm = searchValue.toLowerCase();
+        
+        rows.forEach(row => {
+            if (searchTerm === '') {
+                row.style.display = '';
+            } else {
+                const cells = row.querySelectorAll('td');
+                let found = false;
+                
+                // Cari di semua kolom (NIP, Nama, Jenis Kelamin, Instansi, Tipe)
+                for (let i = 1; i < cells.length - 1; i++) { // Skip kolom No dan Waktu Daftar
+                    if (cells[i].textContent.toLowerCase().includes(searchTerm)) {
+                        found = true;
+                        break;
+                    }
+                }
+                
+                row.style.display = found ? '' : 'none';
+            }
+        });
     }
 </script>
 
