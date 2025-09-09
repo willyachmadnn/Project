@@ -82,7 +82,7 @@
                             <input type="text" id="opd_search" 
                                 class="w-full px-4 py-2 text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-red-500"
                                 placeholder="Cari atau pilih instansi OPD..." autocomplete="off">
-                            <div id="opd_dropdown" class="absolute z-10 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto hidden">
+                            <div id="opd_dropdown" class="absolute z-10 w-full bottom-full mb-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-y-auto hidden">
                                 @if(isset($opdList))
                                     @foreach($opdList as $opd)
                                         <div class="opd-option px-4 py-2 hover:bg-red-50 cursor-pointer border-b border-gray-100 last:border-b-0" 
