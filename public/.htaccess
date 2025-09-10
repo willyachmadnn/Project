@@ -1,53 +1,63 @@
+# ===============================================
 # Laravel Optimized & Secure .htaccess Configuration
-# Performance, Security, and HTTPS Enforcement
+# Performance, Security, HTTPS Enforcement + Iklan
+# ===============================================
 
-# ========================================
-# HTTPS REDIRECT (301 Permanent)
-# ========================================
 <IfModule mod_rewrite.c>
+    <IfModule mod_negotiation.c>
+        Options -MultiViews -Indexes
+    </IfModule>
+
     RewriteEngine On
-    
+
+    # ============================================
+    # HTTPS REDIRECT (301 Permanent)
+    # ============================================
     # Force HTTPS redirect for all traffic
-    # Prevents ad injection and ensures encrypted connections
     RewriteCond %{HTTPS} off
     RewriteCond %{HTTP:X-Forwarded-Proto} !https
     RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
-    
+
+    # ============================================
+    # Redirect trailing slashes
+    # ============================================
+    RewriteRule ^(.*)/$ /$1 [L,R=301]
+
+    # ============================================
     # Handle Authorization Header for API routes
+    # ============================================
     RewriteCond %{HTTP:Authorization} .
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
-    
-    # Laravel Front Controller Pattern
+
+    # ============================================
+    # Laravel Front Controller Pattern (JANGAN HAPUS)
+    # ============================================
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteRule ^ index.php [L]
 </IfModule>
 
-# ========================================
+# ===============================================
 # SECURITY HEADERS
-# ========================================
+# ===============================================
 <IfModule mod_headers.c>
     # Prevent clickjacking attacks
     Header always set X-Frame-Options "SAMEORIGIN"
-    
+
     # Prevent MIME type sniffing
     Header always set X-Content-Type-Options "nosniff"
-    
+
     # Enable XSS protection
     Header always set X-XSS-Protection "1; mode=block"
-    
+
     # Referrer Policy for privacy
     Header always set Referrer-Policy "strict-origin-when-cross-origin"
-    
-    # Content Security Policy (basic)
-    Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self';"
-    
+
+    # Content Security Policy (basic, tambahin link iklan/CDN kamu di sini)
+    Header always set Content-Security-Policy "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; img-src 'self' data: https:; font-src 'self' data: https://cdn.jsdelivr.net https://cdnjs.cloudflare.com"
+
     # Strict Transport Security (HSTS) - 1 year
     Header always set Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
-    
-    # Remove server signature
-    Header unset Server
-    Header unset X-Powered-By
 </IfModule>
 
 # ========================================
