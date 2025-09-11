@@ -24,7 +24,16 @@ class NotulenController extends Controller
                 ->with('info', 'Notulen untuk agenda ini sudah ada. Silakan edit.');
         }
 
-        return view('notulen.create', compact('agenda'));
+        // Ambil nama pimpinan rapat terakhir yang pernah digunakan oleh admin ini
+        $lastPimpinanRapat = Notulen::whereHas('agenda', function($query) {
+            $query->where('admin_id', auth('admin')->id());
+        })
+        ->whereNotNull('pimpinan_rapat_ttd')
+        ->where('pimpinan_rapat_ttd', '!=', '')
+        ->orderBy('updated_at', 'desc')
+        ->value('pimpinan_rapat_ttd');
+
+        return view('notulen.create', compact('agenda', 'lastPimpinanRapat'));
     }
 
     /**
@@ -34,6 +43,7 @@ class NotulenController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'isi_notulen' => 'required|string',
+            'pimpinan_rapat_ttd' => 'required|string|max:255',
         ]);
 
         if ($validator->fails()) {
@@ -44,6 +54,7 @@ class NotulenController extends Controller
         $notulen = new Notulen();
         $notulen->agenda_id = $agenda->agenda_id;
         $notulen->isi_notulen = $request->isi_notulen;
+        $notulen->pimpinan_rapat_ttd = $request->pimpinan_rapat_ttd;
         $notulen->pembuat = auth('admin')->user()->nama_admin;
         $notulen->save();
 
@@ -57,7 +68,21 @@ class NotulenController extends Controller
      */
     public function edit(Agenda $agenda, Notulen $notulen)
     {
-        return view('notulen.edit', compact('agenda', 'notulen'));
+        // Ambil data pimpinan rapat terakhir yang pernah digunakan oleh admin ini untuk fallback
+        $lastPimpinanRapat = Notulen::whereHas('agenda', function($query) {
+            $query->where('admin_id', auth('admin')->id());
+        })
+        ->whereNotNull('pimpinan_rapat_ttd')
+        ->where('pimpinan_rapat_ttd', '!=', '')
+        ->orderBy('updated_at', 'desc')
+        ->value('pimpinan_rapat_ttd');
+        
+        // Jika pimpinan_rapat_ttd kosong, isi dengan data terakhir
+        if (empty($notulen->pimpinan_rapat_ttd) && $lastPimpinanRapat) {
+            $notulen->pimpinan_rapat_ttd = $lastPimpinanRapat;
+        }
+        
+        return view('notulen.edit', compact('agenda', 'notulen', 'lastPimpinanRapat'));
     }
 
     /**
@@ -67,6 +92,7 @@ class NotulenController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'isi_notulen' => 'required|string',
+            'pimpinan_rapat_ttd' => 'required|string|max:255',
         ]);
 
         if ($validator->fails()) {
@@ -76,7 +102,7 @@ class NotulenController extends Controller
                 ->withInput();
         }
 
-        $notulenData = $request->only(['isi_notulen']);
+        $notulenData = $request->only(['isi_notulen', 'pimpinan_rapat_ttd']);
         // Mengupdate nama pembuat dengan user yang sedang login saat update
         $notulenData['pembuat'] = auth('admin')->user()->nama_admin;
 

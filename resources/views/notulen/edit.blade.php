@@ -22,6 +22,42 @@
     <!-- Pustaka untuk ekspor PDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.3.2/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.3.1/jspdf.umd.min.js"></script>
+    
+    <!-- CSS khusus untuk modal Summernote -->
+    <style>
+        /* Perbaikan z-index untuk modal Summernote */
+        .note-modal {
+            z-index: 9999 !important;
+        }
+        
+        .modal-backdrop {
+            z-index: 9998 !important;
+        }
+        
+        /* Pastikan input dalam modal dapat diklik dan diketik */
+        .note-modal input,
+        .note-modal textarea,
+        .note-modal select {
+            pointer-events: auto !important;
+            z-index: 10000 !important;
+        }
+        
+        /* Perbaikan untuk dialog link dan picture */
+        .note-link-dialog input[type="text"],
+        .note-image-dialog input[type="text"],
+        .note-image-dialog input[type="file"] {
+            background-color: white !important;
+            border: 1px solid #ccc !important;
+            padding: 8px !important;
+            width: 100% !important;
+        }
+        
+        /* Pastikan tombol dalam modal dapat diklik */
+        .note-modal .btn {
+            pointer-events: auto !important;
+            z-index: 10001 !important;
+        }
+    </style>
 </head>
 <body class="bg-gray-100">
 
@@ -65,9 +101,45 @@
                         ['insert', ['link', 'picture', 'hr']],
                         ['view', ['fullscreen', 'codeview', 'help']]
                     ],
+                    dialogsInBody: true,
+                    dialogsFade: true,
                     callbacks: {
                         onInit: function() {
                             console.log('Summernote berhasil diinisialisasi di halaman edit.');
+                            
+                            // Perbaikan z-index untuk modal Summernote
+                            $('.note-modal').css('z-index', '9999');
+                            $('.modal-backdrop').css('z-index', '9998');
+                        },
+                        onDialogShown: function() {
+                            // Pastikan modal muncul di atas elemen lain
+                            $('.note-modal').css('z-index', '9999');
+                            $('.modal-backdrop').css('z-index', '9998');
+                            
+                            // Perbaikan khusus untuk input dalam modal
+                            $('.note-modal input, .note-modal textarea, .note-modal select').each(function() {
+                                $(this).css({
+                                    'pointer-events': 'auto',
+                                    'z-index': '10000',
+                                    'position': 'relative'
+                                });
+                            });
+                            
+                            // Focus pada input pertama dalam modal
+                            setTimeout(function() {
+                                $('.note-modal input:visible:first').focus().click();
+                            }, 150);
+                        },
+                        onImageUpload: function(files) {
+                            // Handle image upload jika diperlukan
+                            for (let i = 0; i < files.length; i++) {
+                                const file = files[i];
+                                const reader = new FileReader();
+                                reader.onload = function(e) {
+                                    $(editor).summernote('insertImage', e.target.result);
+                                };
+                                reader.readAsDataURL(file);
+                            }
                         }
                     }
                 });
