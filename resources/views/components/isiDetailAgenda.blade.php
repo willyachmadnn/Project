@@ -110,7 +110,15 @@
     submitDeleteForm() {
         document.getElementById('delete-agenda-form').submit();
     }
-}" class="bg-white/90 backdrop-blur-sm rounded-lg p-8 h-full overflow-y-auto shadow-lg border border-gray-200">
+}" 
+x-effect="
+    if (showQrModal) {
+        document.body.classList.add('modal-open');
+    } else {
+        document.body.classList.remove('modal-open');
+    }
+" 
+class="bg-white/90 backdrop-blur-sm rounded-lg p-8 h-full overflow-y-auto shadow-lg border border-gray-200">
     <div class="flex flex-col lg:flex-row lg:justify-between lg:items-start gap-6 mb-8">
         <div class="flex items-center space-x-4">
             <div class="w-12 h-12 bg-gradient-to-br from-red-600 to-red-700 rounded-lg flex items-center justify-center shadow-lg">
@@ -724,6 +732,22 @@
     /* Modal responsive fixes */
     .qr-modal {
         padding: 0.75rem;
+    }
+    
+    /* Prevent layout shift when modal opens */
+    body.modal-open {
+        overflow: hidden;
+        padding-right: 0;
+    }
+    
+    /* Ensure modal is properly positioned */
+    .qr-modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 1001;
     }
     
     @media (max-height: 700px) {

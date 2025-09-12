@@ -309,6 +309,55 @@
     @endif
 
     @stack('scripts')
+    
+    {{-- SweetAlert2 Global Configuration --}}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Configure SweetAlert2 to prevent layout shift
+            if (typeof Swal !== 'undefined') {
+                // Override default SweetAlert2 behavior
+                const originalFire = Swal.fire;
+                Swal.fire = function(...args) {
+                    // Add body class to prevent scrolling and layout shift
+                    document.body.classList.add('swal2-shown');
+                    
+                    // Call original Swal.fire
+                    const result = originalFire.apply(this, args);
+                    
+                    // Handle cleanup when modal closes
+                    if (result && typeof result.then === 'function') {
+                        result.finally(() => {
+                            // Remove body class when modal closes
+                            document.body.classList.remove('swal2-shown');
+                        });
+                    }
+                    
+                    return result;
+                };
+                
+                // Also handle direct close events
+                document.addEventListener('click', function(e) {
+                    if (e.target.classList.contains('swal2-backdrop') || 
+                        e.target.closest('.swal2-close') ||
+                        e.target.closest('.swal2-confirm') ||
+                        e.target.closest('.swal2-cancel')) {
+                        setTimeout(() => {
+                            document.body.classList.remove('swal2-shown');
+                        }, 100);
+                    }
+                });
+                
+                // Handle ESC key
+                document.addEventListener('keydown', function(e) {
+                    if (e.key === 'Escape' && document.querySelector('.swal2-container')) {
+                        setTimeout(() => {
+                            document.body.classList.remove('swal2-shown');
+                        }, 100);
+                    }
+                });
+            }
+        });
+    </script>
 </body>
 
 </html>
