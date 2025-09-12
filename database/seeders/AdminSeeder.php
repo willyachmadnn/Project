@@ -86,16 +86,16 @@ class AdminSeeder extends Seeder
             
             $this->command->info("Berhasil membuat " . $admins->count() . " admin OPD.");
 
-            $this->command->info("Membuat 15 agenda untuk setiap admin OPD menggunakan AgendaFactory...");
-            $bar = $this->command->getOutput()->createProgressBar($admins->count() * 15);
+            $this->command->info("Membuat 7 agenda untuk setiap admin OPD menggunakan AgendaFactory...");
+            $bar = $this->command->getOutput()->createProgressBar($admins->count() * 7);
             $bar->start();
             
-            // Untuk setiap admin, buat 15 agenda menggunakan factory
+            // Untuk setiap admin, buat 7 agenda menggunakan factory
             foreach ($admins as $admin) {
-                // Buat 15 agenda untuk admin ini menggunakan factory
+                // Buat 7 agenda untuk admin ini menggunakan factory
                 // dan atur admin_id secara eksplisit
                 Agenda::factory()
-                    ->count(15)
+                    ->count(7)
                     ->state(function (array $attributes) use ($admin) {
                         // Tambahkan nama admin dan OPD ke nama agenda untuk memudahkan identifikasi
                         $namaAgenda = $attributes['nama_agenda'];
@@ -122,12 +122,12 @@ class AdminSeeder extends Seeder
                     })
                     ->create();
                 
-                // Advance progress bar by 15 (number of agendas created for this admin)
-                $bar->advance(15);
+                // Advance progress bar by 7 (number of agendas created for this admin)
+                $bar->advance(7);
             }
             
             $bar->finish();
-            $this->command->info("\nBerhasil membuat " . ($admins->count() * 15) . " agenda untuk " . $admins->count() . " admin OPD.");
+            $this->command->info("\nBerhasil membuat " . ($admins->count() * 7) . " agenda untuk " . $admins->count() . " admin OPD.");
         
         // Commit transaksi jika semua operasi berhasil
         DB::commit();

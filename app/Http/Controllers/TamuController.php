@@ -142,8 +142,8 @@ class TamuController extends Controller
         // Pastikan agenda exists
         $agenda = Agenda::findOrFail($agendaId);
 
-        // Cek apakah agenda masih aktif
-        if ($agenda->status === 'selesai') {
+        // Cek apakah agenda masih aktif berdasarkan waktu
+        if ($agenda->status === 'Selesai') {
             return view('tamu.agenda-selesai', compact('agenda'));
         }
 
@@ -173,11 +173,11 @@ class TamuController extends Controller
         $agendaId = $validated['agenda_id'];
         $type = $validated['type'];
 
-        // Pastikan agenda exists dan masih aktif
+        // Pastikan agenda exists dan masih aktif berdasarkan waktu
         $agenda = Agenda::findOrFail($agendaId);
-        if ($agenda->status === 'selesai') {
-            // Redirect back with an error message
-            return redirect()->back()->withErrors(['general' => 'Maaf, agenda ini sudah selesai dan tidak menerima pendaftaran lagi.'])->withInput();
+        if ($agenda->status === 'Selesai') {
+            // Redirect ke halaman agenda selesai
+            return view('tamu.agenda-selesai', compact('agenda'));
         }
 
         // Validasi berdasarkan type
