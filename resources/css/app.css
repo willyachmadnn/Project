@@ -158,6 +158,30 @@ nav[role="navigation"] ul { display: flex; flex-wrap: wrap; gap: .25rem; }
   }
 }
 
+/* ====== SWEETALERT2 MODAL FIXES ====== */
+/* Prevent layout shift when SweetAlert2 modal opens */
+body.swal2-shown {
+  overflow: hidden !important;
+  padding-right: 0 !important;
+}
+
+/* Ensure SweetAlert2 modal is properly positioned */
+.swal2-container {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  z-index: 10000 !important;
+  padding: 0.75rem !important;
+}
+
+/* SweetAlert2 backdrop styling */
+.swal2-backdrop-show {
+  background-color: rgba(0, 0, 0, 0.4) !important;
+  backdrop-filter: blur(4px) !important;
+}
+
 /* ====== FOOTER ====== */
 footer img { height: 24px; width: auto; display: block; }
 @media (max-width: 640px){
