@@ -56,18 +56,18 @@ class Agenda extends Model
     public function scopeMenunggu(Builder $query): void
     {
         $now = Carbon::now('Asia/Jakarta')->toDateTimeString();
-        $query->whereRaw("datetime(date(tanggal) || ' ' || jam_mulai) > ?", [$now]);
+        $query->whereRaw("TIMESTAMP(tanggal, jam_mulai) > ?", [$now]);
     }
 
     public function scopeBerlangsung(Builder $query): void
     {
         $now = Carbon::now('Asia/Jakarta')->toDateTimeString();
-        $query->whereRaw("datetime(date(tanggal) || ' ' || jam_mulai) <= ?", [$now])
+        $query->whereRaw("TIMESTAMP(tanggal, jam_mulai) <= ?", [$now])
             ->whereRaw("
                 CASE
-                    WHEN time(jam_mulai) <= time(jam_selesai)
-                    THEN datetime(date(tanggal) || ' ' || jam_selesai)
-                    ELSE datetime(date(tanggal, '+1 day') || ' ' || jam_selesai)
+                    WHEN TIME(jam_mulai) <= TIME(jam_selesai)
+                    THEN TIMESTAMP(tanggal, jam_selesai)
+                    ELSE TIMESTAMP(DATE_ADD(tanggal, INTERVAL 1 DAY), jam_selesai)
                 END >= ?
               ", [$now]);
     }
@@ -77,9 +77,9 @@ class Agenda extends Model
         $now = Carbon::now('Asia/Jakarta')->toDateTimeString();
         $query->whereRaw("
             CASE
-                WHEN time(jam_mulai) <= time(jam_selesai)
-                THEN datetime(date(tanggal) || ' ' || jam_selesai)
-                ELSE datetime(date(tanggal, '+1 day') || ' ' || jam_selesai)
+                WHEN TIME(jam_mulai) <= TIME(jam_selesai)
+                THEN TIMESTAMP(tanggal, jam_selesai)
+                ELSE TIMESTAMP(DATE_ADD(tanggal, INTERVAL 1 DAY), jam_selesai)
             END < ?
         ", [$now]);
     }
