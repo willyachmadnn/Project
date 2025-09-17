@@ -3,96 +3,160 @@ import '../css/landing.css';
 
 document.addEventListener('DOMContentLoaded', () => {
   // ==================================================================
-  // BAGIAN 1: LOGIKA ANIMASI DUA ARAH (diperbaiki untuk lebih smooth)
   // ==================================================================
-  const REFLOW_DELAY = 200;
-  const STAGGER_DELAY = 400;
-
-  const animatedItems = document.querySelectorAll('.animate-item');
+  
+  const heroTitle = document.getElementById('hero-title');
+  const heroDescription = document.getElementById('hero-description');
+  const typewriterLines = document.querySelectorAll('.typewriter-line');
   const heroSpacer = document.querySelector('.hero-spacer');
+  
   let isInitialLoad = true;
-  let lastScrollY = 0;
-  let isScrollingUp = false;
   let animationInProgress = false;
-
-  // Deteksi arah scroll untuk animasi yang lebih smooth
-  const handleScroll = () => {
-    const currentScrollY = window.scrollY;
-    isScrollingUp = currentScrollY < lastScrollY;
-    lastScrollY = currentScrollY;
-  };
-
-  window.addEventListener('scroll', handleScroll, { passive: true });
-
-  const runAnimation = (direction, smooth = true) => {
+  let typewriterTimeout;
+  
+  // Typewriter animation controller
+  const startTypewriterAnimation = (delay = 2000) => {
     if (animationInProgress) return;
     animationInProgress = true;
-
-    // Reset semua animasi dengan durasi 2 detik
-    animatedItems.forEach(item => {
-      item.classList.remove('is-visible', 'slide-from-top', 'slide-from-bottom');
-      item.style.transition = 'transform 2s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 2s ease-out';
-      item.classList.add(direction);
+    
+    // Clear any existing timeouts
+    if (typewriterTimeout) {
+      clearTimeout(typewriterTimeout);
+    }
+    
+    // Reset all animations
+    resetTypewriterAnimations();
+    
+    typewriterTimeout = setTimeout(() => {
+      // Start title typewriter animation
+      if (heroTitle) {
+        heroTitle.style.opacity = '1';
+        heroTitle.classList.add('typing');
+        
+        // Start description animation simultaneously with title
+        if (heroDescription) {
+          heroDescription.classList.add('show');
+          
+          // Animate all lines simultaneously
+          typewriterLines.forEach((line, index) => {
+            line.classList.add('typing');
+          });
+          
+          // Mark animation as complete after animation duration
+          setTimeout(() => {
+            animationInProgress = false;
+          }, 1000); // Match CSS animation duration
+        }
+      }
+    }, delay);
+  };
+  
+  // Reset all typewriter animations
+  const resetTypewriterAnimations = () => {
+    if (heroTitle) {
+      heroTitle.style.opacity = '0';
+      heroTitle.classList.remove('typing');
+    }
+    
+    if (heroDescription) {
+      heroDescription.classList.remove('show');
+    }
+    
+    typewriterLines.forEach(line => {
+      line.classList.remove('typing');
     });
-
-    setTimeout(() => {
-      animatedItems.forEach((item, index) => {
-        setTimeout(() => { 
-          item.classList.add('is-visible');
-          if (index === animatedItems.length - 1) {
-            setTimeout(() => { animationInProgress = false; }, 800);
-          }
-        }, index * STAGGER_DELAY);
+  };
+  
+  // Restart animation function for click interactions
+  const restartTypewriterAnimation = () => {
+    if (typewriterTimeout) {
+      clearTimeout(typewriterTimeout);
+    }
+    animationInProgress = false;
+    startTypewriterAnimation(500); // Shorter delay for restarts
+  };
+  
+  // Initial animation with 2-second delay
+  startTypewriterAnimation(2000);
+  
+  // Scroll Animation Observer
+  const scrollAnimationObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('animate-in');
+        // Unobserve after animation to prevent re-triggering
+        scrollAnimationObserver.unobserve(entry.target);
+      }
+    });
+  }, {
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px'
+  });
+  
+  // Function to initialize scroll animations
+  const initScrollAnimations = () => {
+    // Add scroll-animate class to main sections
+    const elementsToAnimate = [
+      '#kpi-cards',
+      '.content-body .table-container',
+      '.content-body .card',
+      '.content-body .btn',
+      '.content-body .agenda-item'
+    ];
+    
+    elementsToAnimate.forEach((selector, index) => {
+      const elements = document.querySelectorAll(selector);
+      elements.forEach((element, elementIndex) => {
+        element.classList.add('scroll-animate');
+        if (elementIndex > 0) {
+          element.classList.add(`scroll-animate-delay-${Math.min(elementIndex, 3)}`);
+        }
+        scrollAnimationObserver.observe(element);
       });
-    }, REFLOW_DELAY);
-  };
-
-  const resetAnimation = () => {
-    if (animationInProgress) return;
-    animatedItems.forEach(item => {
-      item.classList.remove('is-visible');
-      item.style.transition = 'transform 1.0s ease-out, opacity 0.8s ease-out';
     });
   };
-
-  // Delay 1 detik untuk memastikan DOM siap, lalu jalankan animasi awal
-  setTimeout(() => {
-    runAnimation('slide-from-top', false);
-  }, 1000);
-
+  
+  // Initialize scroll animations on page load
+  initScrollAnimations();
+  
+  // Intersection Observer for scroll-based animations
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
-        // Jika bukan load pertama, gunakan animasi berdasarkan arah scroll
         if (!isInitialLoad) {
-          const direction = isScrollingUp ? 'slide-from-bottom' : 'slide-from-top';
-          runAnimation(direction, true);
-        } else {
-          // Untuk load pertama, pastikan animasi berjalan dengan delay 1 detik
-          setTimeout(() => {
-            runAnimation('slide-from-top', false);
-          }, 1000);
+          startTypewriterAnimation(500);
         }
       } else {
-        resetAnimation();
+        if (!isInitialLoad) {
+          resetTypewriterAnimations();
+          animationInProgress = false;
+        }
         isInitialLoad = false;
       }
     });
   }, { root: null, threshold: 0.1, rootMargin: '100px' });
-
+  
   if (heroSpacer) observer.observe(heroSpacer);
-
-  // Deteksi klik pada link untuk memaksa animasi dari atas
+  
+  // Click interaction handlers for navigation
   document.addEventListener('click', (e) => {
     const link = e.target.closest('a[href*="#"], a[href="/"], a[href*="landing"]');
     if (link) {
-      isInitialLoad = true; // Reset flag untuk memaksa animasi dari atas
-      // Trigger animasi setelah navigasi dengan delay 1 detik
+      // Restart animation after navigation
       setTimeout(() => {
         if (heroSpacer && heroSpacer.getBoundingClientRect().top < window.innerHeight) {
-          runAnimation('slide-from-top', false);
+          restartTypewriterAnimation();
         }
-      }, 1000);
+      }, 300);
+    }
+  });
+  
+  // Handle page visibility changes (when user returns to tab)
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden && heroSpacer && heroSpacer.getBoundingClientRect().top < window.innerHeight) {
+      setTimeout(() => {
+        restartTypewriterAnimation();
+      }, 500);
     }
   });
 
