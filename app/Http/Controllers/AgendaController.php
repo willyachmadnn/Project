@@ -109,12 +109,12 @@ class AgendaController extends Controller
         $agendas = $query->with(['admin', 'tamu'])
             ->orderByRaw("
                 CASE 
-                    WHEN datetime(date(tanggal) || ' ' || jam_mulai) > ? THEN 1 -- Menunggu (prioritas tertinggi)
-                    WHEN datetime(date(tanggal) || ' ' || jam_mulai) <= ? AND 
+                    WHEN TIMESTAMP(tanggal, jam_mulai) > ? THEN 1 -- Menunggu (prioritas tertinggi)
+                    WHEN TIMESTAMP(tanggal, jam_mulai) <= ? AND 
                         CASE 
-                            WHEN time(jam_mulai) <= time(jam_selesai) 
-                            THEN datetime(date(tanggal) || ' ' || jam_selesai) 
-                            ELSE datetime(date(tanggal, '+1 day') || ' ' || jam_selesai) 
+                            WHEN TIME(jam_mulai) <= TIME(jam_selesai) 
+                            THEN TIMESTAMP(tanggal, jam_selesai) 
+                            ELSE TIMESTAMP(DATE_ADD(tanggal, INTERVAL 1 DAY), jam_selesai) 
                         END >= ? THEN 2 -- Berlangsung (prioritas kedua)
                     ELSE 3 -- Berakhir (prioritas terendah)
                 END
