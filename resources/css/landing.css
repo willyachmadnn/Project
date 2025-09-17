@@ -1,5 +1,8 @@
 /* File: resources/css/landing.css */
 
+/* Import Google Fonts untuk tampilan yang lebih elegan */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&family=Source+Sans+Pro:wght@300;400;600;700&display=swap');
+
 :root {
     --radius-xl: 1.5rem;
     --shadow-text: 0 2px 8px rgba(0,0,0,.6);
@@ -34,19 +37,79 @@
     left: 50%;
     transform: translate(-50%, -50%);
     width: 100%;
-    padding: 1rem;
+    max-width: 1200px;
+    padding: clamp(1rem, 4vw, 2rem);
     text-align: center;
     z-index: 1;
+    opacity: 1;
+}* {
+    text-shadow: none !important;
 }
-.text-shadow { text-shadow: var(--shadow-text); }
+.text-shadow { text-shadow: none !important; }
+
+/* Styling font elegan untuk hero title */
+#hero-title {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: clamp(1.1, 1.2, 1.3);
+    font-size: clamp(1.75rem, 5vw, 3.5rem);
+    margin-bottom: clamp(0.75rem, 2vw, 1.5rem);
+}
+
+#hero-title span {
+    display: block;
+    margin-bottom: 0.25rem;
+}
+
+/* Styling font elegan untuk hero description */
 #hero-description {
     width: 100%;
-    line-height: 1.2;
+    max-width: clamp(300px, 90%, 800px);
+    margin: 0 auto;
+    line-height: clamp(1.5, 1.7, 1.8);
+    font-family: 'Source Sans Pro', sans-serif;
+    font-weight: 400;
+    letter-spacing: 0.01em;
+    margin-top: clamp(0.5rem, 2vw, 1rem);
+}
+
+#hero-description .typewriter-line {
+    font-family: 'Source Sans Pro', sans-serif;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    line-height: clamp(1.5, 1.8, 2);
+    font-size: clamp(0.875rem, 2.5vw, 1.25rem);
+    text-shadow: none !important;
 }
 
 /* Pemberi Jarak & Trigger Animasi */
 .hero-spacer {
     height: 100vh;
+}
+
+/* Scroll Animation Classes */
+.scroll-animate {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+.scroll-animate.animate-in {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.scroll-animate-delay-1 {
+  transition-delay: 0.1s;
+}
+
+.scroll-animate-delay-2 {
+  transition-delay: 0.2s;
+}
+
+.scroll-animate-delay-3 {
+  transition-delay: 0.3s;
 }
 
 /* Area Konten Putih */
@@ -82,8 +145,236 @@
 body { overflow-x: hidden; }
 
 /* ================================================================== */
-/* CSS UNTUK ANIMASI DUA ARAH (DIPERBAIKI UNTUK LEBIH SMOOTH) */
+/* RESPONSIVE TABLE TO CARDS LAYOUT */
 /* ================================================================== */
+
+/* Desktop table styling */
+@media (min-width: 768px) {
+    .table-container table {
+        width: 100%;
+        border-collapse: collapse;
+        background: white;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+    }
+    
+    .table-container th,
+    .table-container td {
+        padding: 1rem;
+        text-align: left;
+        border-bottom: 1px solid #e5e7eb;
+        word-wrap: break-word;
+        max-width: 200px;
+    }
+    
+    .table-container th {
+        background-color: #f9fafb;
+        font-weight: 600;
+        color: #374151;
+        font-size: 0.875rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+    
+    .table-container td {
+        color: #6b7280;
+        font-size: 0.875rem;
+        line-height: 1.5;
+    }
+}
+
+/* Mobile card layout */
+@media (max-width: 767px) {
+    .table-container table,
+    .table-container thead,
+    .table-container tbody,
+    .table-container th,
+    .table-container td,
+    .table-container tr {
+        display: block;
+    }
+    
+    .table-container thead {
+        display: none;
+    }
+    
+    .table-container tbody {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .table-container tr {
+        background: white;
+        border-radius: 12px;
+        padding: 1.5rem;
+        box-shadow: 0 2px 8px rgb(0 0 0 / 0.1);
+        border: 1px solid #e5e7eb;
+        margin-bottom: 0;
+    }
+    
+    .table-container td {
+        border: none;
+        padding: 0.5rem 0;
+        display: flex;
+        flex-direction: column;
+        text-align: left;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+    }
+    
+    .table-container td:before {
+        content: attr(data-label);
+        font-weight: 600;
+        color: #374151;
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-bottom: 0.25rem;
+        display: block;
+    }
+    
+    .table-container td:empty {
+        display: none;
+    }
+    
+    /* Status badges responsive */
+    .table-container .badge,
+    .table-container .status-badge {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        border-radius: 9999px;
+        font-size: 0.75rem;
+        font-weight: 500;
+        text-align: center;
+        max-width: fit-content;
+        margin-top: 0.25rem;
+    }
+}
+
+/* Text wrapping and overflow handling */
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.table-container td,
+.table-container th {
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
+    max-width: 100%;
+}
+
+/* Responsive text sizing */
+@media (max-width: 640px) {
+    .table-container td {
+        font-size: 0.8rem;
+        line-height: 1.4;
+    }
+    
+    .table-container td:before {
+        font-size: 0.7rem;
+    }
+}
+
+/* ================================================================== */
+/* ================================================================== */
+
+/* Typewriter container setup */
+.typewriter-container {
+    overflow: hidden;
+    margin-bottom: 1rem;
+}
+
+/* Base slide-in styles */
+.typewriter-text {
+    opacity: 0;
+    transform: translateY(-30px);
+    transition: transform 1.2s ease-out;
+    will-change: transform;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Slide-in animation keyframes */
+@keyframes slideInFromTop {
+    0% {
+        opacity: 0;
+        transform: translateY(-30px);
+        text-shadow: none;
+    }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+        text-shadow: none;
+    }
+}
+
+/* Active slide-in animation */
+.typewriter-text.typing {
+    animation: slideInFromTop 0.8s ease-out forwards;
+}
+
+/* Hero title specific styling */
+#hero-title.typewriter-text {
+    white-space: normal;
+    line-height: 1.2;
+}
+
+#hero-title.typewriter-text.typing {
+    animation: slideInFromTop 0.8s ease-out forwards;
+}
+
+/* Description slide-in with delay */
+.typewriter-description {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: transform 1.2s ease-out;
+    will-change: transform;
+}
+
+.typewriter-description.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.typewriter-description .typewriter-line {
+    transform: translateY(-20px);
+    margin-bottom: 0.5rem;
+    will-change: transform;
+    transition: transform 1s ease-out;
+}
+
+.typewriter-description .typewriter-line.typing {
+    animation: slideInFromTop 0.8s ease-out forwards;
+    text-shadow: none !important;
+}
+
+/* Performance optimizations */
+.typewriter-text,
+.typewriter-line {
+    transform: translateZ(0);
+    backface-visibility: hidden;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .typewriter-text {
+        white-space: normal;
+    }
+    
+    #hero-title.typewriter-text.typing {
+        animation-duration: 0.2s;
+    }
+    
+    .typewriter-description .typewriter-line.typing {
+        animation-duration: 0.2s;
+    }
+}
+
+/* Fallback for older animations (kept for compatibility) */
 .slide-in-wrapper {
     overflow: hidden;
     margin-bottom: 1rem;
@@ -106,25 +397,4 @@ body { overflow-x: hidden; }
 .animate-item.is-visible {
     transform: translateY(0) scale(1);
     opacity: 1;
-}
-
-/* Animasi khusus untuk elemen yang berbeda */
-#hero-title.animate-item {
-    transition: transform 1s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.8s ease-out;
-}
-
-#hero-description.animate-item {
-    transition: transform 0.9s cubic-bezier(0.25, 0.46, 0.45, 0.94), opacity 0.7s ease-out;
-}
-
-/* Efek blur saat transisi untuk smoothness */
-.animate-item:not(.is-visible) {
-    filter: blur(1px);
-}
-
-.animate-item.is-visible {
-    filter: blur(0);
-    transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94), 
-                opacity 0.6s ease-out, 
-                filter 0.4s ease-out;
 }
