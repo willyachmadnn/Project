@@ -23,19 +23,20 @@
     <main id="landing-page-wrapper">
         <section class="hero-spacer"></section>
 
-        <div class="hero-text-content">
-            <div class="slide-in-wrapper">
+        <div class="hero-text-content text-center">
+            <div class="typewriter-container">
                 <h1 id="hero-title"
-                    class="animate-item text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight mb-4 text-white text-shadow">
-                    Sistem Informasi E-Agenda Pemerintah Kabupaten Mojokerto 
+                    class="typewriter-text text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold tracking-tight mb-3 text-white">
+                    <span class="block">Portal E-Agenda</span>
+                    <span class="block">Pemerintah Kabupaten Mojokerto</span>
                 </h1>
             </div>
             
-            <div id="hero-description"
-                 class="text-base sm:text-lg md:text-xl leading-relaxed opacity-95 text-white text-shadow space-y-3">
-                <p class="animate-item">
-                    Portal E-Agenda ini merupakan platform digital resmi yang dikelola oleh Pemerintah Kabupaten Mojokerto. Sistem ini dirancang untuk menyajikan informasi jadwal kegiatan pimpinan dan pemerintah daerah secara terpusat, akurat, dan transparan kepada seluruh masyarakat dan pihak terkait.
-                </p>
+            <div id="hero-description" class="typewriter-description max-w-6xl mx-auto">
+                <div class="typewriter-line text-base sm:text-lg md:text-xl text-gray-200 leading-relaxed text-center">
+                    Layanan Informasi Agenda Pimpinan dan Kegiatan Resmi Pemerintah Kabupaten Mojokerto<br>
+                    yang Terintegrasi dan Mudah Diakses untuk Transparansi Optimal
+                </div>
             </div>
         </div>
 

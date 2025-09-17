@@ -28,7 +28,8 @@
     {{-- Critical CSS first --}}
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     
-
+    {{-- Additional page-specific styles --}}
+    @stack('styles')
     
     {{-- Non-critical CSS with preload --}}
     <link rel="preload" href="https://rsms.me/inter/inter.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
