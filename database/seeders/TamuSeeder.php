@@ -7,6 +7,7 @@ use Illuminate\Database\Seeder;
 use App\Models\Tamu;
 use App\Models\Agenda;
 use App\Models\Pegawai;
+use App\Models\Opd;
 use Illuminate\Support\Facades\DB;
 
 class TamuSeeder extends Seeder
@@ -19,6 +20,19 @@ class TamuSeeder extends Seeder
         // Pastikan tabel agendas sudah memiliki data
         if (Agenda::count() === 0) {
             $this->command->warn('Tabel agendas kosong. Jalankan AgendaSeeder terlebih dahulu untuk mendapatkan data yang lebih realistis.');
+            return;
+        }
+        
+        // Pastikan tabel OPD sudah memiliki data
+        if (Opd::count() === 0) {
+            $this->command->error('Tabel OPD kosong! Jalankan OpdSeeder terlebih dahulu.');
+            return;
+        }
+        
+        // Validasi bahwa OPD dengan ID 58 (Umum) ada
+        $umumOpd = Opd::find(58);
+        if (!$umumOpd) {
+            $this->command->error('OPD dengan ID 58 (Umum) tidak ditemukan! Pastikan OpdSeeder sudah dijalankan dengan benar.');
             return;
         }
         
@@ -79,7 +93,7 @@ class TamuSeeder extends Seeder
                     'NIP' => '#tamu' . str_pad($tamuCounter, 3, '0', STR_PAD_LEFT),
                     'nama_tamu' => $tamu['nama'],
                     'jk' => $tamu['jk'],
-                    'instansi' => 43, // ID instansi untuk tamu non-pegawai (Umum)
+                    'instansi' => 58, // ID instansi untuk tamu non-pegawai (Umum - ID terakhir dari OpdSeeder)
                     'agenda_id' => $agenda->agenda_id,
                 ]);
                 $tamuCounter++;
@@ -104,7 +118,7 @@ class TamuSeeder extends Seeder
                 'NIP' => '#tamu' . str_pad($tamuCounter, 3, '0', STR_PAD_LEFT),
                 'nama_tamu' => $randomName,
                 'jk' => $randomGender,
-                'instansi' => 43, // Umum
+                'instansi' => 58, // Umum - ID terakhir dari OpdSeeder
                 'agenda_id' => $randomAgenda->agenda_id,
             ]);
             $tamuCounter++;

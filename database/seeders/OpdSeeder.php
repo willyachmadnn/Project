@@ -84,7 +84,7 @@ class OpdSeeder extends Seeder
     ];
 
         // Hapus data OPD yang sudah ada untuk menghindari duplikasi
-        DB::table('opd')->truncate();
+        DB::table('opd')->delete();
 
         // Insert data OPD dengan opd_id auto increment
         foreach ($opdList as $index => $namaOpd) {
